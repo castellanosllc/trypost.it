@@ -44,10 +44,24 @@ return new class extends Migration
             $table->integer('last_activity')->index();
         });
 
+        Schema::create('plans', function (Blueprint $table) {
+            $table->uuid('id')->primary();
+            $table->string('name');
+            $table->string('internal_id');
+            $table->integer('price');
+            $table->string('stripe_id')->nullable();
+            $table->boolean('is_monthly');
+            $table->integer('access_level');
+            $table->boolean('is_private');
+            $table->boolean('is_archived');
+            $table->timestamps();
+            $table->softDeletes();
+        });
+
         Schema::create('workspaces', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->string('name');
-
+            $table->foreignUuid('plan_id')->constrained();
             $table->string('stripe_id')->nullable()->index();
             $table->string('pm_type')->nullable();
             $table->string('pm_last_four', 4)->nullable();

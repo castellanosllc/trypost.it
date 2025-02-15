@@ -4,6 +4,8 @@ namespace App\Models;
 
 use function Illuminate\Events\queueable;
 
+use App\Models\Traits\WorkspaceUsage;
+
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
@@ -26,7 +28,7 @@ class Workspace extends Model
     use HasUuids;
     use Billable;
     use SoftDeletes;
-
+    use WorkspaceUsage;
     /**
      * The "booted" method of the model.
      */
@@ -79,17 +81,26 @@ class Workspace extends Model
         ];
     }
 
-    // public function getFeaturesAttribute()
-    // {
-    //     return Feature::all();
-    // }
+    /**
+     * The accessors to append to the model's array form.
+     *
+     * @var array
+     */
+    protected $appends = [
+        'logo_url'
+    ];
 
-    // public function updateFeatureFlags()
-    // {
-    //     foreach ($this->features as $key => $feature) {
-    //         Feature::for($this)->forget($key);
-    //     }
-    // }
+    public function getFeaturesAttribute()
+    {
+        return Feature::all();
+    }
+
+    public function updateFeatureFlags()
+    {
+        foreach ($this->features as $key => $feature) {
+            Feature::for($this)->forget($key);
+        }
+    }
 
     /**
      * Get the workspace name that should be synced to Stripe.
@@ -99,12 +110,12 @@ class Workspace extends Model
         return $this->name;
     }
 
-    // public function getLogoUrlAttribute()
-    // {
-    //     return $this->logo
-    //         ? asset($this->logo)
-    //         : 'https://ui-avatars.com/api/?name=' . urlencode($this->name) . '&color=FFFFFF&background=000000&length=1';
-    // }
+    public function getLogoUrlAttribute()
+    {
+        return $this->logo
+            ? asset($this->logo)
+            : 'https://ui-avatars.com/api/?name=' . urlencode($this->name) . '&color=FFFFFF&background=000000&length=1';
+    }
 
     public function users()
     {

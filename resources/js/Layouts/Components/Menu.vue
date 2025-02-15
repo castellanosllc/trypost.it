@@ -14,24 +14,18 @@ import {
 
 const navigation = [
     {
-        name: "Analytics",
-        href: route("analytics.index"),
-        icon: PhChartLineUp,
-        current: route().current("analytics.*"),
+        name: "Calendar",
+        href: route("calendar.index"),
+        icon: PhCursorClick,
+        current: route().current("calendar.*"),
     },
     {
-        name: "Links",
-        href: route("links.index"),
+        name: "Posts",
+        href: route("posts.index"),
         icon: PhLink,
-        current: route().current("links.*"),
+        current: route().current("posts.*"),
     },
 
-    {
-        name: "Events",
-        href: route("events.index"),
-        icon: PhCursorClick,
-        current: route().current("events.*"),
-    },
     {
         name: "Settings",
         href: route("setting.workspace.edit"),
@@ -43,23 +37,6 @@ const navigation = [
                 name: "Workspace",
                 href: route("setting.workspace.edit"),
                 current: route().current("setting.workspace.*"),
-            },
-            {
-                name: "Domains",
-                href: route("setting.domains.index"),
-                current: route().current("setting.domains.*"),
-            },
-
-            {
-                name: "API Tokens",
-                href: route("setting.api-tokens.index"),
-                current: route().current("setting.api-tokens.*"),
-            },
-
-            {
-                name: "Tags",
-                href: route("setting.tags.index"),
-                current: route().current("setting.tags.*"),
             },
             {
                 name: "Users",

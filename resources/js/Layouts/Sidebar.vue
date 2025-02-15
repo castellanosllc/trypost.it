@@ -11,7 +11,6 @@ import { PhList, PhX } from "@phosphor-icons/vue";
 
 import UserDropdown from "./Components/UserDropdown.vue";
 import Menu from "./Components/Menu.vue";
-import Usage from "./Components/Usage.vue";
 
 const sidebarOpen = ref(false);
 
@@ -110,7 +109,7 @@ defineExpose({
             <Menu />
 
             <div class="flex items-center justify-between">
-                <Usage class="flex-1" />
+                <!-- <Usage class="flex-1" /> -->
             </div>
         </div>
     </div>

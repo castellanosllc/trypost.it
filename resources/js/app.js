@@ -8,6 +8,9 @@ import { ZiggyVue } from '../../vendor/tightenco/ziggy';
 
 import { i18nVue } from 'laravel-vue-i18n'
 
+// Import modules...
+import FloatingVue from "floating-vue";
+
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
 
 createInertiaApp({
@@ -21,11 +24,12 @@ createInertiaApp({
         return createApp({ render: () => h(App, props) })
             .use(plugin)
             .use(ZiggyVue)
+            .use(FloatingVue)
             .use(i18nVue, {
-                resolve: async lang => {
-                    const langs = import.meta.glob('../../lang/*.json');
+                resolve: async (lang) => {
+                    const langs = import.meta.glob("../../lang/*.json");
                     return await langs[`../../lang/php_${lang}.json`]();
-                }
+                },
             })
             .mount(el);
     },

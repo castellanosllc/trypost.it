@@ -13,7 +13,19 @@ return [
     |
     */
 
-    'name' => env('APP_NAME', 'Laravel'),
+    'name' => env('APP_NAME', 'TryPost.it'),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Application Pagination
+    |--------------------------------------------------------------------------
+    |
+    | This is default pagination value for the application.
+    |
+    */
+    'pagination' => [
+        'default' => 20,
+    ],
 
     /*
     |--------------------------------------------------------------------------
@@ -52,7 +64,7 @@ return [
     |
     */
 
-    'url' => env('APP_URL', 'http://localhost'),
+    'url' => env('APP_URL', 'https://trypost.it'),
 
     /*
     |--------------------------------------------------------------------------

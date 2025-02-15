@@ -1,7 +1,7 @@
 import defaultTheme from 'tailwindcss/defaultTheme';
 import forms from '@tailwindcss/forms';
 import typograph from '@tailwindcss/typography';
-
+import aspectRatio from '@tailwindcss/aspect-ratio';
 /** @type {import('tailwindcss').Config} */
 export default {
     darkMode: "class",
@@ -23,5 +23,6 @@ export default {
     plugins: [
         forms,
         typograph,
+        aspectRatio,
     ],
 };

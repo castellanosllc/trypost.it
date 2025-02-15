@@ -22,9 +22,12 @@
     },
     "dependencies": {
         "@headlessui/vue": "^1.7.23",
+        "@phosphor-icons/vue": "^2.2.1",
         "@tabler/icons-vue": "^3.30.0",
+        "@tailwindcss/aspect-ratio": "^0.4.2",
         "@tailwindcss/typography": "^0.5.16",
         "dayjs": "^1.11.13",
+        "floating-vue": "^5.2.2",
         "laravel-vue-i18n": "^2.7.8"
     }
 }
