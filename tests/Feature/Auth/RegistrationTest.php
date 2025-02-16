@@ -15,5 +15,10 @@ test('new users can register', function () {
     ]);
 
     $this->assertAuthenticated();
-    $response->assertRedirect(route('calendar.index', absolute: false));
+    $response->assertRedirect(route(' {
+        name: "Calendar",
+        href: route("posts.index"),
+        icon: PhCursorClick,
+        current: route().current("calendar.*"),
+    },.index', absolute: false));
 });

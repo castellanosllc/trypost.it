@@ -31,6 +31,7 @@ class WorkspaceController extends Controller
             'name' => ['required', 'string', 'max:255'],
         ]);
 
+
         DB::beginTransaction();
 
         try {
@@ -52,7 +53,7 @@ class WorkspaceController extends Controller
 
             DB::commit();
 
-            return redirect(route('calendar.index'));
+            return redirect(route('posts.index'));
         } catch (\Exception $e) {
             Log::error($e);
             DB::rollBack();
@@ -71,6 +72,6 @@ class WorkspaceController extends Controller
             abort(403);
         }
 
-        return Inertia::location(route('calendar.index'));
+        return Inertia::location(route('posts.index'));
     }
 }

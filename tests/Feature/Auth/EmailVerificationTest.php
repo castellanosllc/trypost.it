@@ -28,7 +28,12 @@ test('email can be verified', function () {
 
     Event::assertDispatched(Verified::class);
     expect($user->fresh()->hasVerifiedEmail())->toBeTrue();
-    $response->assertRedirect(route('calendar.index', absolute: false).'?verified=1');
+    $response->assertRedirect(route(' {
+        name: "Calendar",
+        href: route("posts.index"),
+        icon: PhCursorClick,
+        current: route().current("calendar.*"),
+    },.index', absolute: false).'?verified=1');
 });
 
 test('email is not verified with invalid hash', function () {

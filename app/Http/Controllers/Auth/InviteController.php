@@ -47,8 +47,7 @@ class InviteController extends Controller
         if (!$invite) {
             session()->flash('flash.banner', 'Invalid Invite.');
             session()->flash('flash.bannerStyle', 'danger');
-
-            return redirect(route('auth.invites.show', $invite->id));
+            return back();
         }
 
         // user

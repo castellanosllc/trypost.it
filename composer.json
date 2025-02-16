@@ -14,7 +14,9 @@
         "laravel/pennant": "^1.16",
         "laravel/reverb": "^1.0",
         "laravel/sanctum": "^4.0",
+        "laravel/socialite": "^5.18",
         "laravel/tinker": "^2.9",
+        "socialiteproviders/linkedin": "^5.0",
         "spatie/laravel-medialibrary": "^11.12",
         "tightenco/ziggy": "^2.0"
     },

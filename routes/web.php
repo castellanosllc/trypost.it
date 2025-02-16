@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 use Illuminate\Support\Facades\Route;
 
+use App\Http\Controllers\Account\LinkedinController;
+use App\Http\Controllers\Account\TwitterController;
+
 use App\Http\Controllers\WorkspaceController;
-use App\Http\Controllers\CalendarController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\MediaController;
 
@@ -33,11 +35,9 @@ Route::group(
         Route::post('/workspaces', [WorkspaceController::class, 'store'])->name('workspaces.store')->withoutMiddleware(['billing']);
         Route::put('/workspaces/update-current', [WorkspaceController::class, 'setCurrentStore'])->name('workspaces.update-current')->withoutMiddleware(['billing']);
 
-        // calendar
-        Route::get('/calendar', [CalendarController::class, 'index'])->name('calendar.index');
-
         // posts
-        Route::get('/posts/{id?}', [PostController::class, 'index'])->name('posts.index');
+        Route::get('/posts', [PostController::class, 'index'])->name('posts.index');
+        Route::get('/posts/{id}', [PostController::class, 'edit'])->name('posts.edit');
         Route::post('/posts', [PostController::class, 'store'])->name('posts.store');
         Route::put('/posts/{id}', [PostController::class, 'update'])->name('posts.update');
         Route::delete('/posts/{id}', [PostController::class, 'destroy'])->name('posts.destroy');
@@ -48,6 +48,18 @@ Route::group(
         Route::post('/medias/sort', [MediaController::class, 'sort'])->name('medias.sort');
         Route::post('/medias/{modelId}/thumbnail/{id}', [MediaController::class, 'thumbnail'])->name('medias.thumbmail');
         Route::delete('/medias/{modelId}/{id}', [MediaController::class, 'destroy'])->name('medias.destroy');
+
+        // accounts
+        Route::get('/accounts', [AccountController::class, 'index'])->name('accounts.index');
+        Route::delete('/accounts/{id}', [AccountController::class, 'destroy'])->name('accounts.destroy');
+
+        // linkedin
+        Route::get('/accounts/linkedin/connect', [LinkedinController::class, 'connect'])->name('accounts.linkedin.connect');
+        Route::get('/accounts/linkedin/callback', [LinkedinController::class, 'callback'])->name('accounts.linkedin.callback');
+
+        // twitter
+        Route::get('/accounts/twitter/connect', [TwitterController::class, 'connect'])->name('accounts.twitter.connect');
+        Route::get('/accounts/twitter/callback', [TwitterController::class, 'callback'])->name('accounts.twitter.callback');
 
         // settings
         Route::prefix('settings')->group(function () {

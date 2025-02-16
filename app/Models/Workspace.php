@@ -10,17 +10,12 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\SoftDeletes;
-
-use App\Enums\CacheKey;
-
-use Illuminate\Support\Facades\Cache;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 use Laravel\Pennant\Feature;
 use Laravel\Pennant\Concerns\HasFeatures;
 
 use Laravel\Cashier\Billable;
-
-use App\Observers\WorkspaceObserver;
 
 class Workspace extends Model
 {
@@ -29,6 +24,7 @@ class Workspace extends Model
     use Billable;
     use SoftDeletes;
     use WorkspaceUsage;
+    use HasFeatures;
     /**
      * The "booted" method of the model.
      */
@@ -133,5 +129,20 @@ class Workspace extends Model
     public function plan()
     {
         return $this->belongsTo(Plan::class);
+    }
+
+    public function accounts()
+    {
+        return $this->hasMany(Account::class);
+    }
+
+    public function posts(): HasMany
+    {
+        return $this->hasMany(Post::class);
+    }
+
+    public function postStats(): HasMany
+    {
+        return $this->hasMany(PostStat::class);
     }
 }

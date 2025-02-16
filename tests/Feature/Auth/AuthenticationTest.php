@@ -17,7 +17,12 @@ test('users can authenticate using the login screen', function () {
     ]);
 
     $this->assertAuthenticated();
-    $response->assertRedirect(route('calendar.index', absolute: false));
+    $response->assertRedirect(route(' {
+        name: "Calendar",
+        href: route("posts.index"),
+        icon: PhCursorClick,
+        current: route().current("calendar.*"),
+    },.index', absolute: false));
 });
 
 test('users can not authenticate with invalid password', function () {

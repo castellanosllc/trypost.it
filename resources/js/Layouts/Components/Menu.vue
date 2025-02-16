@@ -14,16 +14,16 @@ import {
 
 const navigation = [
     {
-        name: "Calendar",
-        href: route("calendar.index"),
-        icon: PhCursorClick,
-        current: route().current("calendar.*"),
-    },
-    {
         name: "Posts",
         href: route("posts.index"),
         icon: PhLink,
         current: route().current("posts.*"),
+    },
+    {
+        name: "Accounts",
+        href: route("accounts.index"),
+        icon: PhLink,
+        current: route().current("accounts.*"),
     },
 
     {

@@ -21,6 +21,12 @@
         "vue": "^3.4.0"
     },
     "dependencies": {
+        "@fullcalendar/core": "^6.1.10",
+        "@fullcalendar/daygrid": "^6.1.10",
+        "@fullcalendar/interaction": "^6.1.10",
+        "@fullcalendar/list": "^6.1.10",
+        "@fullcalendar/timegrid": "^6.1.15",
+        "@fullcalendar/vue3": "^6.1.10",
         "@headlessui/vue": "^1.7.23",
         "@phosphor-icons/vue": "^2.2.1",
         "@tabler/icons-vue": "^3.30.0",
@@ -28,6 +34,7 @@
         "@tailwindcss/typography": "^0.5.16",
         "dayjs": "^1.11.13",
         "floating-vue": "^5.2.2",
-        "laravel-vue-i18n": "^2.7.8"
+        "laravel-vue-i18n": "^2.7.8",
+        "v-calendar": "^3.1.2"
     }
 }
