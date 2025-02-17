@@ -12,6 +12,9 @@ class CreateRequest extends FormRequest
     {
         return [
             'content' => ['required', 'string', 'min:2'],
+            // 'scheduled_at' => ['required', 'date', 'after:now'],
+            'accounts' => ['required', 'array'],
+            'accounts.*' => ['required', 'exists:accounts,id'],
         ];
     }
 }

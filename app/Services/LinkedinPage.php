@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Http\Client\RequestException;
 use Illuminate\Support\Facades\Log;
 
-class Linkedin
+class LinkedinPage
 {
     private string $baseUrl = 'https://api.linkedin.com';
     private string $apiVersion = 'v2';
@@ -27,32 +27,25 @@ class Linkedin
             // First verify if token is valid
             $this->verifyToken();
 
-            // Get user profile URN
-            $profileUrn = $this->getProfileUrn();
-
             $response = Http::withToken($this->account->access_token)
                 ->withHeaders([
                     'X-Restli-Protocol-Version' => '2.0.0',
                     'Content-Type' => 'application/json',
                 ])
-                ->post("{$this->baseUrl}/{$this->apiVersion}/ugcPosts", [
-                    'author' => "urn:li:person:{$profileUrn}",
-                    'lifecycleState' => 'PUBLISHED',
-                    'specificContent' => [
-                        'com.linkedin.ugc.ShareContent' => [
-                            'shareCommentary' => [
-                                'text' => $post->content
-                            ],
-                            'shareMediaCategory' => 'NONE'
+                ->post("{$this->baseUrl}/{$this->apiVersion}/shares", [
+                    'owner' => "urn:li:organization:{$this->account->platform_id}",
+                    'text' => [
+                        'text' => $post->content
+                    ],
+                    'distribution' => [
+                        'linkedInDistributionTarget' => [
+                            'visibleToGuest' => true
                         ]
                     ],
-                    'visibility' => [
-                        'com.linkedin.ugc.MemberNetworkVisibility' => 'PUBLIC'
-                    ]
                 ]);
 
             if (!$response->successful()) {
-                Log::error('LinkedIn Profile Post Error', [
+                Log::error('LinkedIn Post Error', [
                     'status' => $response->status(),
                     'body' => $response->json(),
                     'account_id' => $this->account->id
@@ -68,34 +61,13 @@ class Linkedin
             $response->throw();
             return $response->json();
         } catch (RequestException $e) {
-            Log::error('LinkedIn Profile API Error', [
+            Log::error('LinkedIn API Error', [
                 'error' => $e->getMessage(),
                 'response' => $e->response?->json(),
                 'account_id' => $this->account->id
             ]);
 
-            throw new \Exception('Failed to post to LinkedIn Profile: ' . $e->getMessage());
-        }
-    }
-
-    private function getProfileUrn(): string
-    {
-        try {
-            $response = Http::withToken($this->account->access_token)
-                ->get("{$this->baseUrl}/{$this->apiVersion}/me");
-
-            if (!$response->successful()) {
-                throw new \Exception('Failed to get LinkedIn profile information');
-            }
-
-            return $response->json('id');
-        } catch (\Exception $e) {
-            Log::error('LinkedIn Get Profile Error', [
-                'error' => $e->getMessage(),
-                'account_id' => $this->account->id
-            ]);
-
-            throw new \Exception('Failed to get LinkedIn profile information: ' . $e->getMessage());
+            throw new \Exception('Failed to post to LinkedIn: ' . $e->getMessage());
         }
     }
 
@@ -108,6 +80,7 @@ class Linkedin
 
     private function isTokenExpired(): bool
     {
+        // Check if token is expired based on expires_in
         if (!$this->account->expires_in) {
             return false;
         }
@@ -139,7 +112,7 @@ class Linkedin
                 // Refresh the account instance
                 $this->account->refresh();
             } else {
-                Log::error('LinkedIn Profile Token Refresh Error', [
+                Log::error('LinkedIn Token Refresh Error', [
                     'status' => $response->status(),
                     'body' => $response->json(),
                     'account_id' => $this->account->id
@@ -148,7 +121,7 @@ class Linkedin
                 throw new \Exception('Failed to refresh LinkedIn token');
             }
         } catch (\Exception $e) {
-            Log::error('LinkedIn Profile Token Refresh Exception', [
+            Log::error('LinkedIn Token Refresh Exception', [
                 'error' => $e->getMessage(),
                 'account_id' => $this->account->id
             ]);

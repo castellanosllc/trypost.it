@@ -88,14 +88,13 @@ class LinkedinPageController extends Controller
             'user' => ['required', 'string'],
         ]);
 
-
         $workspace = Auth::user()->currentWorkspace;
         $linkedinUser = decrypt($request->user);
 
         Account::updateOrCreate([
             'workspace_id' => $workspace->id,
             'platform' => Platform::LINKEDIN_PAGE,
-            'platform_id' => $request->page_id, // Usando o ID da página ao invés do usuário
+            'platform_id' => $request->page_id,
         ], [
             'name' => $request->name,
             'username' => $request->name,

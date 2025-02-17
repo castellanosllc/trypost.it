@@ -15,7 +15,6 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->foreignUuid('account_id')->constrained();
             $table->foreignUuid('post_id')->constrained();
-            $table->string('url')->nullable();
             $table->string('platform')->nullable();
 
             $table->string('status')->nullable();
