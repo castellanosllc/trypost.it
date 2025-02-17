@@ -12,11 +12,14 @@ import Dropdown from "@/Components/Dropdown.vue";
 import Textarea from "@/Components/Textarea.vue";
 import DatePicker from "@/Components/DatePicker.vue";
 import dayjs from "@/dayjs";
+import Account from "@/Components/Account.vue";
+const accounts = usePage().props.accounts;
 
 const form = useForm({
     content: "",
     scheduled_at: dayjs().format("YYYY-MM-DD HH:mm:ss"),
-    status: "draft",
+    status: "scheduled",
+    accounts: [],
 });
 const show = ref(false);
 
@@ -57,6 +60,43 @@ const store = () => {
                 <Accordion :is-open="true">
                     <template #title> General </template>
                     <template #content>
+                        <div class="col-span-6">
+                            <Label
+                                for="scheduled_at"
+                                value="Date and Time"
+                                :required="false"
+                                class="sr-only"
+                            />
+
+                            <div class="flex flex-wrap gap-4">
+                                <div
+                                    v-for="account in accounts"
+                                    :key="account.id"
+                                    :class="{
+                                        'cursor-pointer': true,
+                                        'opacity-50': !form.accounts.includes(
+                                            account.id
+                                        ),
+                                    }"
+                                    @click="
+                                        form.accounts.includes(account.id)
+                                            ? form.accounts.splice(
+                                                  form.accounts.indexOf(
+                                                      account.id
+                                                  ),
+                                                  1
+                                              )
+                                            : form.accounts.push(account.id)
+                                    "
+                                >
+                                    <Account :account="account" />
+                                </div>
+                            </div>
+                            <InputError
+                                :message="form.errors.scheduled_at"
+                                class="mt-2"
+                            />
+                        </div>
                         <div class="col-span-6">
                             <Label for="content" value="Content" />
                             <Textarea id="content" v-model="form.content" />

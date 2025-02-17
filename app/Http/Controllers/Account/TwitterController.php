@@ -7,9 +7,11 @@ use App\Http\Controllers\Controller;
 use Laravel\Socialite\Facades\Socialite;
 use Illuminate\Support\Facades\Auth;
 
+use Inertia\Inertia;
+
 use App\Models\Account;
 
-use App\Enums\Account\Platform;
+use App\Enums\Platform;
 use App\Enums\Account\Status;
 
 class TwitterController extends Controller
@@ -18,7 +20,7 @@ class TwitterController extends Controller
 
     public function connect()
     {
-        return Socialite::driver($this->network)->redirect();
+        return Inertia::location(Socialite::driver($this->network)->redirect());
     }
 
     public function callback()
@@ -32,7 +34,8 @@ class TwitterController extends Controller
             'platform' => Platform::TWITTER,
             'platform_id' => $twitterUser->getId(),
         ], [
-            'username' => $twitterUser->getName(),
+            'name' => $twitterUser->getName(),
+            'username' => $twitterUser->getNickname(),
             'photo' => $twitterUser->getAvatar(),
             'access_token' => $twitterUser->token,
             'refresh_token' => $twitterUser->tokenSecret,

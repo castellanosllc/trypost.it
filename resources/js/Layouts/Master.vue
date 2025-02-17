@@ -24,8 +24,6 @@ defineProps({
         <Sidebar />
 
         <div class="lg:pl-64 pl-2 pr-2 py-2 overflow-hidden w-full h-full">
-            <Sandbox class="mb-2 rounded-md" />
-            <Announcement class="mb-2 rounded-md" />
             <div
                 class="bg-white dark:bg-zinc-800 w-full h-full border border-zinc-300 dark:border-zinc-700 rounded-lg shadow-lg dark:shadow-none overflow-hidden"
             >

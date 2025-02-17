@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 
-use App\Enums\Account\Platform;
+use App\Enums\Platform;
 use App\Enums\Account\Status;
 
 class Account extends Model
@@ -17,12 +17,14 @@ class Account extends Model
         'workspace_id',
         'platform',
         'platform_id',
+        'name',
         'username',
         'photo',
         'access_token',
         'refresh_token',
         'expires_in',
         'status',
+        'is_verified'
     ];
 
     /**
@@ -35,8 +37,15 @@ class Account extends Model
         return [
             'platform' => Platform::class,
             'status' => Status::class,
+            'is_verified' => 'boolean',
         ];
     }
+
+    protected $hidden = [
+        'access_token',
+        'refresh_token',
+        'expires_in',
+    ];
 
     public function workspace()
     {

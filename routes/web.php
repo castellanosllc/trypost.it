@@ -5,6 +5,7 @@ declare(strict_types=1);
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\Account\LinkedinController;
+use App\Http\Controllers\Account\LinkedinPageController;
 use App\Http\Controllers\Account\TwitterController;
 
 use App\Http\Controllers\WorkspaceController;
@@ -56,6 +57,12 @@ Route::group(
         // linkedin
         Route::get('/accounts/linkedin/connect', [LinkedinController::class, 'connect'])->name('accounts.linkedin.connect');
         Route::get('/accounts/linkedin/callback', [LinkedinController::class, 'callback'])->name('accounts.linkedin.callback');
+
+        // linkedin page
+        Route::get('/accounts/linkedin-page/connect', [LinkedinPageController::class, 'connect'])->name('accounts.linkedin-page.connect');
+        Route::get('/accounts/linkedin-page/callback', [LinkedinPageController::class, 'callback'])->name('accounts.linkedin-page.callback');
+        Route::get('/accounts/linkedin-page/select', [LinkedinPageController::class, 'selectPage'])->name('accounts.linkedin-page.select');
+        Route::post('/accounts/linkedin-page/store', [LinkedinPageController::class, 'store'])->name('accounts.linkedin-page.store');
 
         // twitter
         Route::get('/accounts/twitter/connect', [TwitterController::class, 'connect'])->name('accounts.twitter.connect');

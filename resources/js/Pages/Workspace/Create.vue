@@ -28,6 +28,7 @@ const submit = () => {
 
 <template>
     <Head title="New Workspace" />
+
     <Banner />
 
     <div
@@ -86,19 +87,6 @@ const submit = () => {
                                 }}
                             </span>
                         </Button>
-                        <div v-if="user.workspaces.length >= 1">
-                            <a
-                                :href="route(' {
-        name: "Calendar",
-        href: route("posts.index"),
-        icon: PhCursorClick,
-        current: route().current("calendar.*"),
-    },.index')"
-                                class="mt-4 cursor-pointer text-zinc-800 dark:text-zinc-300 hover:text-zinc-500 font-medium text-sm w-full flex items-center justify-center"
-                            >
-                                Cancel
-                            </a>
-                        </div>
                     </div>
                 </template>
             </FormSection>

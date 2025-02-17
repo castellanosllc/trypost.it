@@ -12,12 +12,13 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('post_stats', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary();
             $table->foreignUuid('account_id')->constrained();
             $table->foreignUuid('post_id')->constrained();
             $table->string('url')->nullable();
+            $table->string('platform')->nullable();
 
-            $table->string('status');
+            $table->string('status')->nullable();
             $table->text('http_response')->nullable();
             $table->timestamp('published_at')->nullable();
 

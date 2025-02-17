@@ -10,31 +10,33 @@ use Laravel\Socialite\Facades\Socialite;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Auth;
 
 use App\Models\Account;
 
-use App\Enums\Account\Platform;
+use App\Enums\Platform;
 use App\Enums\Account\Status;
+
+use Inertia\Inertia;
 
 class LinkedinController extends Controller
 {
     private string $network = 'linkedin-openid';
 
-    public function connect(Request $request): RedirectResponse
+    public function connect()
     {
-        return Socialite::driver($this->network)
+        return Inertia::location(Socialite::driver($this->network)
         ->scopes([
+            'r_basicprofile',
             "w_organization_social",
             "r_organization_social",
             "rw_organization_admin",
             "w_member_social",
         ])
-        ->redirect();
+        ->redirect());
     }
 
-    public function callback(Request $request)
+    public function callback()
     {
         $linkedinUser = Socialite::driver($this->network)->user();
 
@@ -45,7 +47,8 @@ class LinkedinController extends Controller
             'platform' => Platform::LINKEDIN,
             'platform_id' => $linkedinUser->getId(),
         ], [
-            'username' => $linkedinUser->getName(),
+            'name' => $linkedinUser->getName(),
+            'username' => $linkedinUser->getNickname(),
             'photo' => $linkedinUser->getAvatar(),
             'access_token' => $linkedinUser->token,
             'refresh_token' => $linkedinUser->refreshToken,
@@ -53,7 +56,7 @@ class LinkedinController extends Controller
             'status' => Status::CONNECTED,
         ]);
 
-        session()->flash('flash.banner', 'LinkedIn account connected successfully.');
+        session()->flash('flash.banner', 'LinkedIn Page was connected successfully.');
         session()->flash('flash.bannerStyle', 'success');
 
         return redirect(route('accounts.index'));

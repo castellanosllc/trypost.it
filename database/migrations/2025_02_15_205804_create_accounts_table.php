@@ -16,12 +16,14 @@ return new class extends Migration
             $table->foreignUuid('workspace_id')->constrained();
             $table->string('platform');
             $table->string('platform_id')->unique();
+            $table->string('name')->nullable();
             $table->string('username')->nullable();
             $table->string('photo')->nullable();
             $table->text('access_token');
             $table->text('refresh_token')->nullable();
             $table->integer('expires_in')->nullable();
             $table->string('status');
+            $table->boolean('is_verified')->default(false);
             $table->timestamps();
             $table->softDeletes();
         });

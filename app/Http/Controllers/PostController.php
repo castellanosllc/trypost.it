@@ -12,9 +12,11 @@ use Illuminate\Support\Facades\Gate;
 use App\Http\Requests\Post\CreateRequest;
 use App\Http\Requests\Post\UpdateRequest;
 
-use App\Enums\Post\Status;
+use App\Enums\PostStat\Status as PostStatStatus;
 
+use App\Models\Account;
 use App\Models\Post;
+use App\Models\PostStat;
 
 use Inertia\Inertia;
 use Inertia\Response;
@@ -23,10 +25,9 @@ class PostController extends Controller
 {
     public function index(Request $request)
     {
+        $workspace = Auth::user()->currentWorkspace;
+
         if ($request->has('start') && $request->has('end')) {
-
-            $workspace = Auth::user()->currentWorkspace;
-
             $query = Post::where('workspace_id', $workspace->id)->latest();
             $query->whereBetween('scheduled_at', [$request->start, $request->end]);
             $posts = $query->get();
@@ -34,7 +35,11 @@ class PostController extends Controller
             return response()->json($posts);
         }
 
-        return Inertia::render('Post/Index/Index');
+        $accounts = Account::where('workspace_id', $workspace->id)->get();
+
+        return Inertia::render('Post/Index/Index', [
+            'accounts' => $accounts,
+        ]);
     }
 
     public function store(CreateRequest $request)
@@ -54,6 +59,17 @@ class PostController extends Controller
             'status' => $request->status,
             'scheduled_at' => $request->scheduled_at,
         ]);
+
+        foreach ($request->accounts as $accountId) {
+
+            $account = Account::where('workspace_id', $workspace->id)->where('id', $accountId)->firstOrFail();
+
+            PostStat::create([
+                'account_id' => $account->id,
+                'post_id' => $post->id,
+                'platform' => $account->platform,
+            ]);
+        }
 
         session()->flash('flash.banner', 'Post created successfully.');
         session()->flash('flash.bannerStyle', 'success');

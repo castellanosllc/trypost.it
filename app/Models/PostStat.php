@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 use App\Enums\PostStat\Status;
+use App\Enums\Platform;
 
 class PostStat extends Model
 {
@@ -28,6 +29,7 @@ class PostStat extends Model
         'status',
         'http_response',
         'published_at',
+        'platform',
     ];
 
     /**
@@ -39,6 +41,7 @@ class PostStat extends Model
     {
         return [
             'status' => Status::class,
+            'platform' => Platform::class,
             'published_at' => 'datetime',
         ];
     }
