@@ -3,11 +3,11 @@ import { onMounted } from "vue";
 import { Head, router } from "@inertiajs/vue3";
 import AppLayout from "@/Layouts/Master.vue";
 
-import { PhSpinnerGap } from "@phosphor-icons/vue";
+import { IconLoader } from "@tabler/icons-vue";
 
 onMounted(() => {
     setTimeout(() => {
-        router.visit(route("setting.billing.index"));
+        router.visit(route("posts.index"));
     }, 8000);
 });
 </script>
@@ -18,7 +18,7 @@ onMounted(() => {
         <div class="flex min-h-full flex-1 flex-col justify-center">
             <div class="max-w-3xl mx-auto">
                 <div class="flex items-center space-x-2">
-                    <PhSpinnerGap
+                    <IconLoader
                         class="h-6 w-6 text-zinc-800 dark:text-zinc-300 animate-spin"
                     />
                     <div

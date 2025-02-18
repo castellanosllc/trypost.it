@@ -22,8 +22,9 @@ class Plan extends Model
         'is_monthly',
         'stripe_id',
         'access_level',
-        'is_private',
-        'is_archived'
+        'max_accounts',
+        'can_create_teams',
+        'is_private'
     ];
 
     /**

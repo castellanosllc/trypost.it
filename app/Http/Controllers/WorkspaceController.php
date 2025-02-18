@@ -28,7 +28,7 @@ class WorkspaceController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name' => ['required', 'string', 'max:255'],
+            'name' => ['required', 'string', 'max:255']
         ]);
 
 
@@ -53,7 +53,7 @@ class WorkspaceController extends Controller
 
             DB::commit();
 
-            return redirect(route('posts.index'));
+            return redirect(route('setting.billing.start-trial'));
         } catch (\Exception $e) {
             Log::error($e);
             DB::rollBack();

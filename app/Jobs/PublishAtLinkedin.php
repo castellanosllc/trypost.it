@@ -43,6 +43,8 @@ class PublishAtLinkedin implements ShouldQueue
         $this->postStat->update([
             'published_at' => now(),
             'status' => PostStatStatus::PUBLISHED,
+            'url' => $data['url'],
+            'platform_id' => $data['id'],
         ]);
     }
 }

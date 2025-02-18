@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Enums\User\Role;
+
 use function Illuminate\Events\queueable;
 
 use App\Models\Traits\WorkspaceUsage;
@@ -44,8 +46,8 @@ class Workspace extends Model
      */
     protected $fillable = [
         'name',
-        'trial_ends_at',
         'plan_id',
+        'trial_ends_at',
     ];
 
     /**
@@ -104,6 +106,14 @@ class Workspace extends Model
     public function stripeName(): string|null
     {
         return $this->name;
+    }
+
+    /**
+     * Get the customer name that should be synced to Stripe.
+     */
+    public function stripeEmail(): string|null
+    {
+        return $this->users()->where('role', Role::OWNER)->first()->email;
     }
 
     public function getLogoUrlAttribute()

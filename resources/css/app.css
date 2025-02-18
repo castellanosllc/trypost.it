@@ -13,18 +13,18 @@
  * Global
  */
 .card {
-    @apply rounded border-2 border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-zinc-700;
+    @apply rounded border-2 border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-zinc-700 dark:text-white;
 }
 
 .card-hover {
-    @apply hover:bg-zinc-50 dark:hover:bg-zinc-900 text-zinc-700;
+    @apply hover:bg-zinc-50 dark:hover:bg-zinc-900 text-zinc-700 dark:text-white;
 }
 
 /**
  * Button
  */
 .btn {
-    @apply text-nowrap inline-flex items-center shadow justify-center px-3 py-2 focus:outline-none transition ease-in-out duration-150 rounded-md font-medium text-sm;
+    @apply inline-flex items-center justify-center px-3 py-1.5 focus:outline-none transition ease-in-out duration-200 rounded-md font-medium text-sm;
 }
 
 .btn.btn-sm {
@@ -35,20 +35,20 @@
     @apply px-2 py-1 text-xs;
 }
 
-.btn.btn-lg {
-    @apply px-6 py-2.5 text-base;
+.btn-primary {
+    @apply border border-transparent font-semibold bg-black text-white dark:bg-white dark:text-black hover:bg-black/90 dark:hover:bg-white/90 focus:bg-black/90 dark:focus:bg-white/90 active:bg-black/90 dark:active:bg-white/90
 }
 
-.btn-primary {
-    @apply border border-transparent bg-zinc-800 dark:bg-violet-700 text-white hover:bg-zinc-900 dark:hover:bg-violet-800 focus:bg-zinc-900 active:bg-zinc-900 dark:focus:bg-violet-800 dark:active:bg-violet-800
+.btn-primary-outline {
+    @apply border border-transparent font-semibold bg-violet-50 text-violet-600 hover:text-white focus:text-white active:text-white hover:bg-violet-700 focus:bg-violet-700 active:bg-violet-700
 }
 
 .btn-secondary {
-    @apply bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 text-black dark:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800 focus:bg-zinc-100 dark:focus:bg-zinc-800 active:bg-zinc-100 dark:active:bg-zinc-800;
+    @apply bg-white dark:bg-transparent border border-zinc-200 dark:border-zinc-700 text-black dark:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800 focus:bg-zinc-100 dark:focus:bg-zinc-800 active:bg-zinc-100 dark:active:bg-zinc-800
 }
 
 .btn-danger {
-    @apply border border-transparent bg-red-500 text-white hover:bg-red-400 focus:bg-red-400 active:bg-red-400;
+    @apply border border-transparent bg-red-500 text-white hover:bg-red-400 focus:bg-red-400 active:bg-red-400
 }
 
 .btn-danger-outline {
@@ -59,27 +59,20 @@
     @apply border border-transparent bg-black dark:bg-zinc-200 text-white dark:text-zinc-800 hover:bg-zinc-800 dark:hover:bg-white focus:bg-zinc-800 dark:focus:bg-white active:bg-zinc-900 dark:active:bg-zinc-300
 }
 
+.btn.rounded {
+    @apply rounded-full;
+}
 
 .link {
     @apply text-zinc-800 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-zinc-400;
 }
 
 
-
 /**
  * Heading
  */
-
 .page-title {
-    @apply text-3xl font-semibold text-black dark:text-white capitalize;
-}
-
-.setting-page-title {
-    @apply text-base font-semibold text-zinc-900 dark:text-zinc-300;
-}
-
-.setting-page-subtitle {
-    @apply mt-1 max-w-2xl text-sm text-zinc-600 dark:text-zinc-400;
+    @apply text-xl font-semibold text-black dark:text-zinc-300 capitalize;
 }
 
 .page-description {
@@ -103,7 +96,7 @@
 }
 
 .table-thead {
-    @apply bg-zinc-50 dark:bg-zinc-900
+    @apply bg-zinc-50 dark:bg-zinc-800;
 }
 
 .table-th {
@@ -123,14 +116,22 @@
 }
 
 /**
+ * Button
+ */
+.header-action-btn-back {
+    @apply -ml-3 inline-flex items-center font-medium space-x-1 mb-2 text-black dark:text-white hover:bg-white dark:hover:bg-zinc-800 px-2.5 py-1.5;
+}
+
+
+/**
  * Form
  */
 .form-input {
-    @apply px-3 py-2 rounded-md shadow text-sm focus:outline border-zinc-200 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-300 focus:border-black focus:ring-black dark:focus:border-zinc-800 dark:focus:ring-zinc-800 dark:hover:bg-zinc-900/80 disabled:bg-zinc-100 dark:disabled:bg-zinc-900 disabled:cursor-not-allowed;
+    @apply px-3 py-1.5 rounded-md text-sm focus:outline bg-zinc-100 dark:bg-black/80 placeholder:text-zinc-400 dark:placeholder:text-zinc-400 border-zinc-300 dark:border-zinc-600 dark:bg-zinc-900 dark:text-zinc-300 focus:border-zinc-300 focus:ring-zinc-300 dark:focus:border-zinc-600 dark:focus:ring-zinc-600 disabled:bg-zinc-100 dark:disabled:bg-zinc-900 disabled:cursor-not-allowed;
 }
 
 .label {
-    @apply flex items-center font-normal text-sm text-zinc-900 dark:text-zinc-300 mb-1;
+    @apply block font-normal text-sm text-zinc-600 dark:text-zinc-300 mb-1;
 }
 
 .badge {
@@ -157,20 +158,63 @@
     @apply bg-zinc-100 dark:bg-zinc-900 text-zinc-500 dark:text-zinc-400 ring-zinc-300 dark:ring-zinc-700;
 }
 
+.badge-yellow {
+    @apply bg-yellow-100 dark:bg-yellow-900 text-yellow-500 dark:text-yellow-300 ring-yellow-300 dark:ring-yellow-700;
+}
+
+/**
+ * Prose
+ */
 .prose-formatter {
-    @apply prose prose-sm dark:prose-invert prose-img:rounded-lg max-w-full text-zinc-800 dark:text-zinc-200 p-4 focus:outline-none overflow-auto min-w-full;
+    @apply prose prose-sm dark:prose-invert prose-video:rounded-lg prose-img:rounded-lg prose-tr:border-zinc-200 dark:prose-tr:border-zinc-700 prose-td:border-zinc-200 dark:prose-table:border-zinc-700 max-w-full text-zinc-800 dark:text-zinc-200 focus:outline-none min-w-full;
 }
 
+.prose-formatter.prose-formatter-no-border * {
+    @apply w-[calc(100%-3rem)];
+}
 
-/**
-* Tiptap
-*/
-p:empty:not(:last-child)::after {
-    content: "\00A0";
+.prose-formatter.prose-formatter-no-border>* {
+    @apply ml-12;
+}
+
+.prose-formatter.prose-formatter-border {
+    @apply border border-zinc-200 dark:border-zinc-700 rounded-lg px-4 py-2;
 }
 
 /**
- * vue3-colorpicker
+ * Tooltip
+ */
+.v-popper__inner {
+    word-break: break-all !important;
+    font-size: 12px !important;
+    padding: 4px 8px !important;
+    border-radius: 4px !important;
+    font-weight: 500 !important;
+    box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1) !important;
+    background: #ffffff !important;
+    border: 1px solid #e2e8f0 !important;
+    color: #000000 !important;
+    opacity: 1 !important;
+    max-width: 300px !important;
+}
+
+.tooltip-inner {
+    word-break: break-all !important;
+
+    width: max-content !important;
+    text-align: left;
+}
+
+.v-popper__arrow-outer {
+    visibility: hidden;
+}
+
+.v-popper__arrow-inner {
+    visibility: hidden;
+}
+
+/**
+ * Color Picker
  */
 .vc-input-toggle {
     display: none !important;
@@ -178,8 +222,20 @@ p:empty:not(:last-child)::after {
 
 .vc-color-wrap {
     border-radius: 4px !important;
+    width: 22px !important;
+    height: 22px !important;
+    margin-right: 0px !important;
 }
 
-.vc-color-wrap {
-    width: 32px !important;
+
+/**
+* Tiptap
+*/
+p:empty:after {
+    content: "\00A0";
+}
+
+.tiptap.resize-cursor {
+    cursor: ew-resize;
+    cursor: col-resize;
 }

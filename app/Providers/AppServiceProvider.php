@@ -2,9 +2,28 @@
 
 namespace App\Providers;
 
+use Laravel\Cashier\Cashier;
+
+use Illuminate\Database\Eloquent\Relations\Relation;
+use Illuminate\Auth\Notifications\VerifyEmail;
+use Illuminate\Notifications\Messages\MailMessage;
+
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Vite;
 use Illuminate\Support\ServiceProvider;
-use Illuminate\Support\Facades\Event;
+
+use App\Policies\WorkspacePolicy;
+
+use App\Models\Workspace;
+use App\Models\User;
+use App\Models\Account;
+use App\Models\Invite;
+use App\Models\Post;
+use App\Models\PostStat;
+use App\Models\Media;
+use App\Models\Language;
+use App\Models\Plan;
+
 class AppServiceProvider extends ServiceProvider
 {
     /**
@@ -23,6 +42,38 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        // Cashier configuration
+        Cashier::useCustomerModel(Workspace::class);
+
+        // Prefetch assets
         Vite::prefetch(concurrency: 3);
+
+        // Custom email verification template
+        VerifyEmail::toMailUsing(function (User $user, string $url) {
+            return (new MailMessage)
+                ->subject('Verify Email Address')
+                ->view('mail.email-verification', [
+                    'title' => 'Confirm your email address',
+                    'previewText' => 'Please confirm your email address.',
+                    'user' => $user,
+                    'url' => $url
+                ]);
+        });
+
+        // Gate policies
+        Gate::policy(Workspace::class, WorkspacePolicy::class);
+
+        // Morph map for polymorphic relationships
+        Relation::enforceMorphMap([
+            'account' => Account::class,
+            'invite' => Invite::class,
+            'language' => Language::class,
+            'media' => Media::class,
+            'plan' => Plan::class,
+            'post' => Post::class,
+            'postStat' => PostStat::class,
+            'user' => User::class,
+            'workspace' => Workspace::class,
+        ]);
     }
 }

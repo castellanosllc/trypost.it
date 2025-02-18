@@ -72,9 +72,9 @@ Route::group(
         Route::prefix('settings')->group(function () {
 
             // account
-            Route::get('/account', [AccountController::class, 'edit'])->name('setting.account.edit')->withoutMiddleware(['set-store']);
-            Route::post('/account', [AccountController::class, 'update'])->name('setting.account.update')->withoutMiddleware(['set-store']);
-            Route::delete('/account/photo', [AccountController::class, 'deletePhoto'])->name('setting.account.photo.destroy')->withoutMiddleware(['set-store']);
+            Route::get('/account', [AccountController::class, 'edit'])->name('setting.account.edit');
+            Route::post('/account', [AccountController::class, 'update'])->name('setting.account.update');
+            Route::delete('/account/photo', [AccountController::class, 'deletePhoto'])->name('setting.account.photo.destroy');
 
             // workspace
             Route::get('/workspace', [SettingWorkspaceController::class, 'edit'])->name('setting.workspace.edit');
@@ -82,12 +82,11 @@ Route::group(
             Route::delete('/workspace/photo', [SettingWorkspaceController::class, 'deleteLogo'])->name('setting.workspace.logo.destroy');
 
             // billing
+            Route::get('/billing/start-trial', [BillingController::class, 'trial'])->name('setting.billing.start-trial');
             Route::get('/billing', [BillingController::class, 'index'])->name('setting.billing.index');
-            Route::get('/billing/upgrade', [BillingController::class, 'upgrade'])->name('setting.billing.upgrade');
-            Route::get('/billing/checkout/{planId}', [BillingController::class, 'checkout'])->name('setting.billing.checkout');
+            Route::get('/billing/checkout/{id}', [BillingController::class, 'checkout'])->name('setting.billing.checkout');
             Route::get('/billing/portal', [BillingController::class, 'billingPortal'])->name('setting.billing.portal');
-            Route::get('/billing/swap-free-plan', [BillingController::class, 'swapFreePlan'])->name('setting.billing.swap-free-plan');
-            Route::inertia('/billing/checkout-success', 'Setting/Billing/Success')->name('setting.billing.checkout-success');
+            Route::get('/billing/success', [BillingController::class, 'checkoutSuccess'])->name('setting.billing.checkout-success');
 
             // users
             Route::get('/users', [TeamMemberController::class, 'index'])->name('setting.team-members.index');

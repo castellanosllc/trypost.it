@@ -33,7 +33,7 @@ class PublishAtTwitter implements ShouldQueue
     public function handle(): void
     {
         $twitter = new Twitter($this->account);
-        $x = $twitter->post($this->post);
+        $data = $twitter->post($this->post);
 
         // update post
         $this->post->status = PostStatus::PUBLISHED;
@@ -43,7 +43,8 @@ class PublishAtTwitter implements ShouldQueue
         $this->postStat->update([
             'status' => PostStatStatus::PUBLISHED,
             'published_at' => now(),
-            'url' => "https://x.com/{$this->account->username}/status/{$x->data->id}",
+            'url' => "https://x.com/{$this->account->username}/status/{$data['id']}",
+            'platform_id' => $data['id'],
         ]);
     }
 }

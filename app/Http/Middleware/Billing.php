@@ -12,7 +12,17 @@ class Billing
 {
     public function handle(Request $request, Closure $next)
     {
-        Inertia::share('usage', auth()->user()->currentWorkspace->usage());
+        $workspace = $request->user()?->currentWorkspace;
+
+        $subscription = $workspace->subscribed('default');
+        $onTrial = $workspace->subscription('default')->onTrial();
+        $isOnBillingPage = $request->routeIs('setting.billing.*');
+
+        if (!$isOnBillingPage && (!$subscription || !$onTrial)) {
+            return redirect(route('setting.billing.start-trial'));
+        }
+
+        Inertia::share('usage', $request->user()->currentWorkspace->usage());
         return $next($request);
     }
 }

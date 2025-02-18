@@ -52,8 +52,9 @@ return new class extends Migration
             $table->string('stripe_id')->nullable();
             $table->boolean('is_monthly');
             $table->integer('access_level');
+            $table->integer('max_accounts');
+            $table->boolean('can_create_teams');
             $table->boolean('is_private');
-            $table->boolean('is_archived');
             $table->timestamps();
             $table->softDeletes();
         });

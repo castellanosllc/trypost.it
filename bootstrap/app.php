@@ -31,8 +31,8 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
 
         $middleware->alias([
-            'billing' => \App\Http\Middleware\Billing::class,
             'set-workspace' => \App\Http\Middleware\SetWorkspace::class,
+            'billing' => \App\Http\Middleware\Billing::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {

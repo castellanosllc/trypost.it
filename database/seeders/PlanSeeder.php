@@ -9,80 +9,108 @@ class PlanSeeder extends Seeder
 {
     public function run()
     {
-        // Pro
+        // Creator Monthly
+        Plan::create([
+            'name' => 'Creator',
+            'internal_id' => 'creator-monthly',
+            'price' => 29,
+            'is_monthly' => true,
+            'stripe_id' => 'price_1QtrwwLPUlXWeZgGOVkHQfDd',
+            'access_level' => 1,
+            'is_private' => false,
+            'max_accounts' => 5,
+            'can_create_teams' => false,
+        ]);
+
+        // Creator Yearly
+        Plan::create([
+            'name' => 'Creator',
+            'internal_id' => 'creator-yearly',
+            'price' => 290,
+            'is_monthly' => false,
+            'stripe_id' => 'price_1QtrwwLPUlXWeZgG5lKXGWX0',
+            'access_level' => 1,
+            'is_private' => false,
+            'max_accounts' => 5,
+            'can_create_teams' => false,
+        ]);
+
+        // Pro Monthly
         Plan::create([
             'name' => 'Pro',
             'internal_id' => 'pro-monthly',
-            'price' => 49,
+            'price' => 39,
             'is_monthly' => true,
-            'stripe_id' => 'price_1Qj8IPDyFIFKS9tcDlxQDtbV',
+            'stripe_id' => 'price_1QtrxOLPUlXWeZgGtdCuQVNd',
             'access_level' => 2,
             'is_private' => false,
-            'is_archived' => false
+            'max_accounts' => 10,
+            'can_create_teams' => true,
         ]);
 
-        // Scale
+        // Pro Yearly
         Plan::create([
-            'name' => 'Scale',
-            'internal_id' => 'scale-monthly',
-            'price' => 99,
+            'name' => 'Pro',
+            'internal_id' => 'pro-yearly',
+            'price' => 390,
+            'is_monthly' => false,
+            'stripe_id' => 'price_1QtrxOLPUlXWeZgG4ieMvafn',
+            'access_level' => 2,
+            'is_private' => false,
+            'max_accounts' => 10,
+            'can_create_teams' => true,
+        ]);
+
+        // Growth Monthly
+        Plan::create([
+            'name' => 'Growth',
+            'internal_id' => 'growth-monthly',
+            'price' => 49,
             'is_monthly' => true,
-            'stripe_id' => 'price_1Qj8IBDyFIFKS9tcru7wwBTR',
+            'stripe_id' => 'price_1QtrxfLPUlXWeZgGwyTH9ZG1',
             'access_level' => 3,
             'is_private' => false,
-            'is_archived' => false
+            'max_accounts' => 30,
+            'can_create_teams' => true,
         ]);
 
-        /**
-         * Addons
-         */
-
-        // Seats
+        // Growth Yearly
         Plan::create([
-            'name' => 'Extra Seats',
-            'internal_id' => 'extra-seats',
-            'price' => 20,
-            'is_monthly' => true,
-            'stripe_id' => 'price_1Qj8IsDyFIFKS9tclsD805cj',
-            'access_level' => 0,
+            'name' => 'Growth',
+            'internal_id' => 'growth-yearly',
+            'price' => 490,
+            'is_monthly' => false,
+            'stripe_id' => 'price_1QtrxsLPUlXWeZgGedpZBvvq',
+            'access_level' => 3,
             'is_private' => false,
-            'is_archived' => false
+            'max_accounts' => 30,
+            'can_create_teams' => true,
         ]);
 
-        // Contacts
+        // Agency Monthly
         Plan::create([
-            'name' => 'Extra Contacts',
-            'internal_id' => 'extra-contacts',
-            'price' => 20,
+            'name' => 'Agency',
+            'internal_id' => 'agency-monthly',
+            'price' => 99,
             'is_monthly' => true,
-            'stripe_id' => 'price_1Qj8JTDyFIFKS9tc9xig040x',
-            'access_level' => 0,
+            'stripe_id' => 'price_1QtryTLPUlXWeZgGub7WPJ03',
+            'access_level' => 4,
             'is_private' => false,
-            'is_archived' => false
+            'max_accounts' => 100,
+            'can_create_teams' => true,
         ]);
 
-        // Helpdesk
+        // Agency Yearly
         Plan::create([
-            'name' => 'Extra Helpdesk',
-            'internal_id' => 'extra-helpdesk',
-            'price' => 50,
-            'is_monthly' => true,
-            'stripe_id' => 'price_1Qj8JjDyFIFKS9tciK8E8p3k',
-            'access_level' => 0,
+            'name' => 'Agency',
+            'internal_id' => 'agency-yearly',
+            'price' => 990,
+            'is_monthly' => false,
+            'stripe_id' => 'price_1QtryTLPUlXWeZgGMNBdgXAy',
+            'access_level' => 4,
             'is_private' => false,
-            'is_archived' => false
-        ]);
-
-        // News Center
-        Plan::create([
-            'name' => 'Extra News Center',
-            'internal_id' => 'extra-news-center',
-            'price' => 50,
-            'is_monthly' => true,
-            'stripe_id' => 'price_1Qj8K5DyFIFKS9tcHHFrcRXR',
-            'access_level' => 0,
-            'is_private' => false,
-            'is_archived' => false
+            'max_accounts' => 100,
+            'can_create_teams' => true,
         ]);
     }
 }

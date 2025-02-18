@@ -66,7 +66,12 @@ class Linkedin
             }
 
             $response->throw();
-            return $response->json();
+            $postData = $response->json();
+
+            return [
+                'id' => $postData['id'],
+                'url' => "https://www.linkedin.com/feed/update/urn:li:share:{$postData['id']}"
+            ];
         } catch (RequestException $e) {
             Log::error('LinkedIn Profile API Error', [
                 'error' => $e->getMessage(),

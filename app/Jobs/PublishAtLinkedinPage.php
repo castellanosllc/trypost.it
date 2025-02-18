@@ -35,9 +35,6 @@ class PublishAtLinkedinPage implements ShouldQueue
         $linkedin = new LinkedinPage($this->account);
         $data = $linkedin->post($this->post);
 
-        // Extrair o activity ID do URN retornado pela API
-        $activityId = str_replace('urn:li:share:', '', $data['id']);
-
         // update post
         $this->post->status = PostStatus::PUBLISHED;
         $this->post->save();
@@ -45,7 +42,9 @@ class PublishAtLinkedinPage implements ShouldQueue
         // update post stat
         $this->postStat->update([
             'status' => PostStatStatus::PUBLISHED,
-            'published_at' => now(),'url' => "https://www.linkedin.com/company/{$this->account->platform_id}/posts/{$activityId}",
+            'published_at' => now(),
+            'url' => $data['url'],
+            'platform_id' => $data['id'],
         ]);
     }
 }
