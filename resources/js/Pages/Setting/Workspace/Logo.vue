@@ -22,7 +22,7 @@ const upload = async () => {
         formData.append("media", event.target.files[0]);
         formData.append("model", "Workspace");
         formData.append("model_id", workspace.value.id);
-        formData.append("collection", "logos");
+        formData.append("collection", "logo");
         formData.append("visibility", "public");
 
         await axios
@@ -65,20 +65,13 @@ const destroy = () => {
     <div class="flex items-center justify-between">
         <div class="flex items-center space-x-4">
             <div>
-                <img
-                    :src="workspace.logo_url"
-                    :alt="workspace.name"
-                    class="h-10 w-10 rounded-full"
-                />
+                <img :src="workspace.logo_url" :alt="workspace.name" class="h-10 w-10 rounded-full" />
             </div>
             <div>
-                <Button
-                    @click="upload"
-                    :class="{
-                        'btn-secondary btn-sm': true,
-                        'opacity-25': isLoading,
-                    }"
-                >
+                <Button @click="upload" :class="{
+                    'btn-secondary btn-sm': true,
+                    'opacity-25': isLoading,
+                }">
                     Choose
                 </Button>
             </div>
@@ -87,11 +80,8 @@ const destroy = () => {
             </div>
         </div>
 
-        <div
-            v-if="workspace.media?.length >= 1"
-            @click="destroy"
-            class="p-2 hover:bg-zinc-100 rounded-md cursor-pointer"
-        >
+        <div v-if="workspace.media?.length >= 1" @click="destroy"
+            class="p-2 hover:bg-zinc-100 rounded-md cursor-pointer">
             <PhTrash class="text-zinc-500" size="20" />
         </div>
     </div>

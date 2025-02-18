@@ -17,9 +17,12 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Laravel\Pennant\Feature;
 use Laravel\Pennant\Concerns\HasFeatures;
 
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
+
 use Laravel\Cashier\Billable;
 
-class Workspace extends Model
+class Workspace extends Model implements HasMedia
 {
     use HasFactory;
     use HasUuids;
@@ -27,6 +30,8 @@ class Workspace extends Model
     use SoftDeletes;
     use WorkspaceUsage;
     use HasFeatures;
+    use InteractsWithMedia;
+
     /**
      * The "booted" method of the model.
      */
@@ -116,10 +121,16 @@ class Workspace extends Model
         return $this->users()->where('role', Role::OWNER)->first()->email;
     }
 
+    public function registerMediaCollections(): void
+    {
+        $this->addMediaCollection('logo')
+            ->singleFile();
+    }
+
     public function getLogoUrlAttribute()
     {
-        return $this->logo
-            ? asset($this->logo)
+        return $this->hasMedia('logo')
+            ? $this->getFirstMediaUrl('logo')
             : 'https://ui-avatars.com/api/?name=' . urlencode($this->name) . '&color=FFFFFF&background=000000&length=1';
     }
 

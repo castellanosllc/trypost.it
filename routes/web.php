@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use Illuminate\Support\Facades\Route;
 
+use App\Http\Controllers\Account\HomeController as AccountHomeController;
 use App\Http\Controllers\Account\LinkedinController;
 use App\Http\Controllers\Account\LinkedinPageController;
 use App\Http\Controllers\Account\TwitterController;
@@ -52,8 +53,7 @@ Route::group(
         Route::delete('/medias/{modelId}/{id}', [MediaController::class, 'destroy'])->name('medias.destroy');
 
         // accounts
-        Route::get('/accounts', [AccountController::class, 'index'])->name('accounts.index');
-        Route::delete('/accounts/{id}', [AccountController::class, 'destroy'])->name('accounts.destroy');
+        Route::get('/accounts', [AccountHomeController::class, 'index'])->name('accounts.index');
 
         // linkedin
         Route::get('/accounts/linkedin/connect', [LinkedinController::class, 'connect'])->name('accounts.linkedin.connect');

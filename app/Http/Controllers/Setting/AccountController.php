@@ -11,20 +11,16 @@ use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
 
-use App\Models\Account;
-
 class AccountController extends Controller
 {
     /**
      * Display the user's profile form.
      */
-    public function index(Request $request): Response
+    public function edit(Request $request): Response
     {
-
-        $accounts = Account::where('workspace_id', $request->user()->current_workspace_id)->get();
-
-        return Inertia::render('Account/Index', [
-            'accounts' => $accounts,
+        return Inertia::render('Setting/Account/Edit', [
+            'mustVerifyEmail' => $request->user() instanceof MustVerifyEmail,
+            'status' => session('status'),
         ]);
     }
 

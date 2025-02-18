@@ -34,6 +34,7 @@ const update = () => {
 </script>
 
 <template>
+
     <Head title="Account" />
 
     <AppLayout>
@@ -54,63 +55,40 @@ const update = () => {
                     </p>
                 </div>
                 <div>
-                    <Button
-                        :class="{
-                            'flex items-center space-x-1.5 btn-primary': true,
-                            'opacity-25': form.processing,
-                        }"
-                        :disabled="form.processing"
-                        @click="update"
-                    >
+                    <Button :class="{
+                        'flex items-center space-x-1.5 btn-primary': true,
+                        'opacity-25': form.processing,
+                    }" :disabled="form.processing" @click="update">
                         Save Changes
                     </Button>
                 </div>
             </div>
             <div
-                class="mt-6 space-y-8 border-b border-zinc-200 dark:border-zinc-700 pb-12 sm:space-y-0 sm:divide-y sm:divide-zinc-200 sm:dark:divide-zinc-700 sm:border-t sm:pb-0"
-            >
-                <div
-                    class="sm:grid sm:grid-cols-3 sm:items-start sm:gap-4 sm:py-6"
-                >
+                class="mt-6 space-y-8 border-b border-zinc-200 dark:border-zinc-700 pb-12 sm:space-y-0 sm:divide-y sm:divide-zinc-200 sm:dark:divide-zinc-700 sm:border-t sm:pb-0">
+                <div class="sm:grid sm:grid-cols-3 sm:items-start sm:gap-4 sm:py-6">
                     <Label for="name" value="Name" :required="true" />
                     <div class="mt-2 sm:col-span-2 sm:mt-0">
-                        <Input
-                            id="name"
-                            v-model="form.name"
-                            type="text"
-                            autocomplete="name"
-                        />
+                        <Input id="name" v-model="form.name" type="text" autocomplete="name" />
                         <InputError :message="form.errors.name" class="mt-2" />
                     </div>
                 </div>
 
-                <div
-                    class="sm:grid sm:grid-cols-3 sm:items-start sm:gap-4 sm:py-6"
-                >
+                <div class="sm:grid sm:grid-cols-3 sm:items-start sm:gap-4 sm:py-6">
                     <Label for="email" value="Email" :required="true" />
                     <div class="mt-2 sm:col-span-2 sm:mt-0">
-                        <Input
-                            id="email"
-                            v-model="form.email"
-                            type="text"
-                            autocomplete="email"
-                        />
+                        <Input id="email" v-model="form.email" type="text" autocomplete="email" />
                         <InputError :message="form.errors.email" class="mt-2" />
                     </div>
                 </div>
 
-                <div
-                    class="sm:grid sm:grid-cols-3 sm:items-start sm:gap-4 sm:py-6"
-                >
+                <div class="sm:grid sm:grid-cols-3 sm:items-start sm:gap-4 sm:py-6">
                     <Label for="avatar" value="Avatar" />
                     <div class="mt-2 sm:col-span-2 sm:mt-0">
                         <Avatar />
                     </div>
                 </div>
 
-                <div
-                    class="sm:grid sm:grid-cols-3 sm:items-start sm:gap-4 sm:py-6"
-                >
+                <div class="sm:grid sm:grid-cols-3 sm:items-start sm:gap-4 sm:py-6">
                     <div>
                         <Label for="current_password" value="Password" />
                         <p class="text-sm text-zinc-500 dark:text-zinc-400">
@@ -120,75 +98,43 @@ const update = () => {
                     </div>
                     <div class="mt-2 sm:col-span-2 sm:mt-0 space-y-2">
                         <div>
-                            <Input
-                                id="current_password"
-                                v-model="form.current_password"
-                                type="password"
-                                autocomplete="new-password"
-                                placeholder="Current Password"
-                            />
+                            <Input id="current_password" v-model="form.current_password" type="password"
+                                autocomplete="new-password" placeholder="Current Password" />
 
-                            <InputError
-                                :message="form.errors.password"
-                                class="mt-2"
-                            />
+                            <InputError :message="form.errors.password" class="mt-2" />
                         </div>
                         <div>
-                            <Input
-                                id="password"
-                                v-model="form.password"
-                                type="password"
-                                autocomplete="new-password"
-                                placeholder="New Password"
-                            />
+                            <Input id="password" v-model="form.password" type="password" autocomplete="new-password"
+                                placeholder="New Password" />
 
-                            <InputError
-                                :message="form.errors.password"
-                                class="mt-2"
-                            />
+                            <InputError :message="form.errors.password" class="mt-2" />
                         </div>
                         <div>
-                            <Input
-                                id="password_confirmation"
-                                v-model="form.password_confirmation"
-                                type="password"
-                                autocomplete="current-password"
-                                placeholder="Confirm Password"
-                            />
-                            <InputError
-                                :message="form.errors.password_confirmation"
-                                class="mt-2"
-                            />
+                            <Input id="password_confirmation" v-model="form.password_confirmation" type="password"
+                                autocomplete="current-password" placeholder="Confirm Password" />
+                            <InputError :message="form.errors.password_confirmation" class="mt-2" />
                         </div>
                     </div>
                 </div>
 
-                <div
-                    class="sm:grid sm:grid-cols-3 sm:items-start sm:gap-4 sm:py-6"
-                >
+                <div class="sm:grid sm:grid-cols-3 sm:items-start sm:gap-4 sm:py-6">
                     <Label for="theme" value="Theme" :required="true" />
 
                     <div class="mt-2 sm:col-span-2 sm:mt-0">
-                        <Dropdown
-                            id="theme"
-                            :search="true"
-                            :options="[
-                                {
-                                    id: 'LIGHT',
-                                    label: 'Light',
-                                },
-                                {
-                                    id: 'DARK',
-                                    label: 'Dark',
-                                },
-                                {
-                                    id: 'SYSTEM',
-                                    label: 'System',
-                                },
-                            ]"
-                            class="w-full"
-                            v-model="form.theme"
-                        />
+                        <Dropdown id="theme" :search="true" :options="[
+                            {
+                                id: 'light',
+                                label: 'Light',
+                            },
+                            {
+                                id: 'dark',
+                                label: 'Dark',
+                            },
+                            {
+                                id: 'system',
+                                label: 'System',
+                            },
+                        ]" class="w-full" v-model="form.theme" />
 
                         <InputError :message="form.errors.theme" class="mt-2" />
                     </div>
