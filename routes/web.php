@@ -32,6 +32,7 @@ Route::group(
     function () {
 
         // workspaces
+        Route::get('/workspaces', [WorkspaceController::class, 'index'])->name('workspaces.index')->withoutMiddleware(['billing']);
         Route::get('/workspaces/create', [WorkspaceController::class, 'create'])->name('workspaces.create')->withoutMiddleware(['billing']);
         Route::post('/workspaces', [WorkspaceController::class, 'store'])->name('workspaces.store')->withoutMiddleware(['billing']);
         Route::put('/workspaces/update-current', [WorkspaceController::class, 'setCurrentStore'])->name('workspaces.update-current')->withoutMiddleware(['billing']);

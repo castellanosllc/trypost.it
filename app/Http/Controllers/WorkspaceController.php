@@ -20,6 +20,13 @@ use App\Models\Plan;
 
 class WorkspaceController extends Controller
 {
+    public function index(Request $request): Response
+    {
+        return Inertia::render('Workspace/Index', [
+            'workspaces' => $request->user()->workspaces
+        ]);
+    }
+
     public function create(): Response
     {
         return Inertia::render('Workspace/Create');

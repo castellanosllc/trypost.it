@@ -15,10 +15,10 @@ class Billing
         $workspace = $request->user()?->currentWorkspace;
 
         $subscription = $workspace->subscribed('default');
-        $onTrial = $workspace->subscription('default')->onTrial();
+        // $onTrial = $workspace->subscription('default')->onTrial();
         $isOnBillingPage = $request->routeIs('setting.billing.*');
 
-        if (!$isOnBillingPage && (!$subscription || !$onTrial)) {
+        if (!$isOnBillingPage && (!$subscription)) {
             return redirect(route('setting.billing.start-trial'));
         }
 
