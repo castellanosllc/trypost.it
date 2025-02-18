@@ -12,11 +12,15 @@ use Illuminate\Database\Eloquent\Builder;
 
 use App\Enums\Post\Status;
 
-class Post extends Model
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
+
+class Post extends Model implements HasMedia
 {
     use HasFactory;
     use HasUuids;
     use SoftDeletes;
+    use InteractsWithMedia;
 
     /**
      * The attributes that are mass assignable.
@@ -54,6 +58,12 @@ class Post extends Model
         return $query
             ->where('status', Status::PUBLISHED)
             ->where('scheduled_at', '<=', now());
+    }
+
+    public function registerMediaCollections(): void
+    {
+        $this->addMediaCollection('medias')
+            ->onlyKeepLatest(5);
     }
 
     public function account(): BelongsTo

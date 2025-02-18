@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 
 use Laravel\Socialite\Facades\Socialite;
 use Illuminate\Support\Facades\Auth;
-
+use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
 
 use App\Models\Account;
@@ -20,6 +20,16 @@ class TwitterController extends Controller
 
     public function connect()
     {
+        $workspace = Auth::user()->currentWorkspace;
+
+        $response = Gate::inspect('reached-accounts-limit', $workspace);
+        if ($response->denied()) {
+            session()->flash('flash.banner', 'You have reached the maximum number of accounts for your workspace.');
+            session()->flash('flash.bannerStyle', 'danger');
+
+            return back();
+        }
+
         return Inertia::location(Socialite::driver($this->network)->redirect());
     }
 

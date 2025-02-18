@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 
 use Laravel\Socialite\Facades\Socialite;
 
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
@@ -25,6 +26,16 @@ class LinkedinController extends Controller
 
     public function connect()
     {
+        $workspace = Auth::user()->currentWorkspace;
+
+        $response = Gate::inspect('reached-accounts-limit', $workspace);
+        if ($response->denied()) {
+            session()->flash('flash.banner', 'You have reached the maximum number of accounts for your workspace.');
+            session()->flash('flash.bannerStyle', 'danger');
+
+            return back();
+        }
+
         return Inertia::location(Socialite::driver($this->network)
         ->scopes([
             'r_basicprofile',
