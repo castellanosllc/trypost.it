@@ -39,8 +39,7 @@ Route::group(
         Route::put('/workspaces/update-current', [WorkspaceController::class, 'setCurrentStore'])->name('workspaces.update-current')->withoutMiddleware(['billing']);
 
         // posts
-        Route::get('/posts', [PostController::class, 'index'])->name('posts.index');
-        Route::get('/posts/{id}', [PostController::class, 'edit'])->name('posts.edit');
+        Route::get('/posts/{id?}', [PostController::class, 'index'])->name('posts.index');
         Route::post('/posts', [PostController::class, 'store'])->name('posts.store');
         Route::put('/posts/{id}', [PostController::class, 'update'])->name('posts.update');
         Route::delete('/posts/{id}', [PostController::class, 'destroy'])->name('posts.destroy');

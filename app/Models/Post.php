@@ -34,6 +34,8 @@ class Post extends Model implements HasMedia
         'status'
     ];
 
+    protected $with = ['media'];
+
     /**
      * Get the attributes that should be cast.
      *

@@ -4,23 +4,29 @@ import { router } from "@inertiajs/vue3";
 import Layout from "@/Layouts/Master.vue";
 import date from "@/date";
 import Calendar from "./Calendar.vue";
-import Create from "../Create.vue";
 import Button from "@/Components/Button.vue";
+import Edit from "../Edit/Index.vue";
 
-const createModal = ref(null);
+const { post } = defineProps({
+  post: {
+    type: Object,
+    default: null,
+  },
+});
+
 </script>
 
 <template>
-    <Create ref="createModal" />
-    <Layout>
-        <template #header>
-            <div class="flex justify-between items-center">
-                <h2 class="text-xl font-semibold">Posts</h2>
-                <Button class="btn btn-primary" @click="createModal.open()"
-                    >Create Post</Button
-                >
-            </div>
-        </template>
-        <Calendar />
-    </Layout>
+  <Edit v-if="post" :post="post" />
+  <Layout>
+    <template #header>
+      <div class="flex justify-between items-center">
+        <h2 class="text-xl font-semibold">Posts</h2>
+        <Button class="btn btn-primary" :href="route('posts.store')" method="post">
+          Create Post
+        </Button>
+      </div>
+    </template>
+    <Calendar />
+  </Layout>
 </template>

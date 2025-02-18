@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Gate;
 use App\Http\Requests\Post\CreateRequest;
 use App\Http\Requests\Post\UpdateRequest;
 
-use App\Enums\PostStat\Status as PostStatStatus;
+use App\Enums\Post\Status;
 
 use App\Models\Account;
 use App\Models\Post;
@@ -23,7 +23,7 @@ use Inertia\Response;
 
 class PostController extends Controller
 {
-    public function index(Request $request)
+    public function index(Request $request, $id = null)
     {
         $workspace = Auth::user()->currentWorkspace;
 
@@ -37,8 +37,14 @@ class PostController extends Controller
 
         $accounts = Account::where('workspace_id', $workspace->id)->get();
 
+
+
         return Inertia::render('Post/Index/Index', [
             'accounts' => $accounts,
+            'post' => $id ? Post::where('workspace_id', $workspace->id)
+                ->with('postStats')
+                ->where('id', $id)
+                ->firstOrFail() : null,
         ]);
     }
 
@@ -46,35 +52,30 @@ class PostController extends Controller
     {
         $workspace = Auth::user()->currentWorkspace;
 
-        // $response = Gate::inspect('reached-link-limit', $workspace);
-        // if (!$response->allowed()) {
-        //     session()->flash('flash.banner', 'You have reached the limit of links, please upgrade your plan.');
-        //     session()->flash('flash.bannerStyle', 'danger');
-        //     return back();
-        // }
-
         $post = Post::create([
             'workspace_id' => $workspace->id,
-            'content' => $request->content,
-            'status' => $request->status,
-            'scheduled_at' => $request->scheduled_at,
+            'content' => '',
+            'status' => Status::DRAFT,
+            'scheduled_at' => $request->scheduled_at ?? now(),
         ]);
 
-        foreach ($request->accounts as $accountId) {
+        return redirect(route('posts.index', ['id' => $post->id]));
+    }
 
-            $account = Account::where('workspace_id', $workspace->id)->where('id', $accountId)->firstOrFail();
+    public function edit($id)
+    {
+        $workspace = Auth::user()->currentWorkspace;
 
-            PostStat::create([
-                'account_id' => $account->id,
-                'post_id' => $post->id,
-                'platform' => $account->platform,
-            ]);
-        }
+        $post = Post::where('workspace_id', $workspace->id)
+            ->where('id', $id)
+            ->firstOrFail();
 
-        session()->flash('flash.banner', 'Post created successfully.');
-        session()->flash('flash.bannerStyle', 'success');
+        $accounts = Account::where('workspace_id', $workspace->id)->get();
 
-        return redirect(route('posts.index'));
+        return Inertia::render('Post/Edit/Index', [
+            'post' => $post,
+            'accounts' => $accounts,
+        ]);
     }
 
     public function update($id, UpdateRequest $request)
@@ -85,22 +86,35 @@ class PostController extends Controller
 
         $post->update([
             'content' => $request->content,
+            'status' => $request->status,
+            'scheduled_at' => $request->scheduled_at,
         ]);
 
-        session()->flash('flash.banner', 'Link updated successfully.');
-        session()->flash('flash.bannerStyle', 'success');
+        foreach ($request->accounts as $accountId) {
+
+            $account = Account::where('workspace_id', $workspace->id)->where('id', $accountId)->firstOrFail();
+
+            // create or update
+            PostStat::updateOrCreate([
+                'account_id' => $account->id,
+                'post_id' => $post->id,
+                'platform' => $account->platform,
+            ], [
+                //
+            ]);
+        }
 
         return redirect(route('posts.index'));
     }
 
-    public function destroy($id, Request $request)
+    public function destroy($id)
     {
         $workspace = Auth::user()->currentWorkspace;
 
-        $link = Link::where('workspace_id', $workspace->id)->where('id', $id)->firstOrFail();
-        $link->delete();
+        $post = Post::where('workspace_id', $workspace->id)->where('id', $id)->firstOrFail();
+        $post->delete();
 
-        session()->flash('flash.banner', 'Link deleted successfully.');
+        session()->flash('flash.banner', 'Post deleted successfully.');
         session()->flash('flash.bannerStyle', 'success');
 
         return redirect(route('posts.index'));

@@ -4,8 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models\Traits;
 
-use App\Models\Link;
-use App\Models\LinkStat;
+
 use App\Models\Plan;
 
 use Carbon\Carbon;
