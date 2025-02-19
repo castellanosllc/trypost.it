@@ -1,6 +1,6 @@
 <script setup>
 import { useForm, usePage, router } from "@inertiajs/vue3";
-import { ref, reactive } from "vue";
+import { ref, reactive, watch } from "vue";
 import Layout from "@/Layouts/Master.vue";
 import Accordion from "@/Components/Accordion.vue";
 import SlideOver from "@/Components/SlideOver.vue";
@@ -13,6 +13,7 @@ import Textarea from "@/Components/Textarea.vue";
 import DatePicker from "@/Components/DatePicker.vue";
 import dayjs from "@/dayjs";
 import Account from "@/Components/Account.vue";
+import Form from "./Partial/Form.vue";
 
 const loading = ref(false);
 const show = ref(false);
@@ -66,16 +67,18 @@ const update = () => {
     close();
   });
 };
+
+watch(form, (newVal) => {
+  console.log(newVal);
+}, { deep: true });
 </script>
 
 <template>
   <SlideOver max-width="3xl" :show="show" @close="close">
-    <template #title> Edit Post </template>
+    <template #title> New Post </template>
 
     <template #content>
-      <div class="flex flex-col gap-4">
-
-      </div>
+      <Form :form="form" />
     </template>
 
 

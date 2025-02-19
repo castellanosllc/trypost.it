@@ -25,12 +25,6 @@
         "vue": "^3.4.0"
     },
     "dependencies": {
-        "@fullcalendar/core": "^6.1.10",
-        "@fullcalendar/daygrid": "^6.1.10",
-        "@fullcalendar/interaction": "^6.1.10",
-        "@fullcalendar/list": "^6.1.10",
-        "@fullcalendar/timegrid": "^6.1.15",
-        "@fullcalendar/vue3": "^6.1.10",
         "@headlessui/vue": "^1.7.23",
         "@kurkle/color": "^0.3.4",
         "@phosphor-icons/vue": "^2.2.1",

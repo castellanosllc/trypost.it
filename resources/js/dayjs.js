@@ -6,6 +6,11 @@ import relativeTime from "dayjs/plugin/relativeTime";
 import calendar from "dayjs/plugin/calendar";
 import duration from "dayjs/plugin/duration";
 import updateLocale from "dayjs/plugin/updateLocale";
+import weekOfYear from 'dayjs/plugin/weekOfYear'
+import weekday from 'dayjs/plugin/weekday'
+
+dayjs.extend(weekOfYear)
+dayjs.extend(weekday)
 dayjs.extend(utc);
 dayjs.extend(timezone);
 dayjs.extend(calendar);

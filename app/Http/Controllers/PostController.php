@@ -18,43 +18,63 @@ use App\Models\Account;
 use App\Models\Post;
 use App\Models\PostStat;
 
-use Inertia\Inertia;
-use Inertia\Response;
-
 class PostController extends Controller
 {
-    public function index(Request $request, $id = null)
+    public function index(Request $request)
+    {
+        $request->validate([
+            'start' => 'required|date',
+            'end' => 'required|date',
+        ]);
+
+        $workspace = Auth::user()->currentWorkspace;
+
+        $query = Post::where('workspace_id', $workspace->id)->latest();
+        $query->whereBetween('scheduled_at', [$request->start, $request->end]);
+        $query->with('postStats.account');
+        $posts = $query->get();
+
+        return response()->json($posts);
+    }
+
+    public function edit($id)
     {
         $workspace = Auth::user()->currentWorkspace;
 
-        if ($request->has('start') && $request->has('end')) {
-            $query = Post::where('workspace_id', $workspace->id)->latest();
-            $query->whereBetween('scheduled_at', [$request->start, $request->end]);
-            $posts = $query->get();
+        $post = Post::where('workspace_id', $workspace->id)
+            ->where('id', $id)
+            ->with('postStats')
+            ->firstOrFail();
 
-            return response()->json($posts);
-        }
-        return Inertia::render('Post/Index/Index', [
-            'accounts' => $id ? Account::where('workspace_id', $workspace->id)->get() : [],
-            'post' => $id ? Post::where('workspace_id', $workspace->id)
-                ->with('postStats')
-                ->where('id', $id)
-                ->firstOrFail() : null,
-        ]);
+        return response()->json($post);
     }
-
     public function store(CreateRequest $request)
     {
         $workspace = Auth::user()->currentWorkspace;
 
         $post = Post::create([
             'workspace_id' => $workspace->id,
-            'content' => '',
-            'status' => Status::DRAFT,
-            'scheduled_at' => $request->scheduled_at ?? now(),
+            'content' => $request->content,
+            'status' => $request->status,
+            'scheduled_at' => $request->scheduled_at,
         ]);
 
-        return redirect(route('posts.index', ['id' => $post->id]));
+        foreach ($request->accounts as $accountId) {
+
+            $account = Account::where('workspace_id', $workspace->id)->where('id', $accountId)->firstOrFail();
+
+            // create or update
+            PostStat::create([
+                'account_id' => $account->id,
+                'post_id' => $post->id,
+                'platform' => $account->platform,
+            ]);
+        }
+
+        // load post stats
+        $post->load('postStats');
+
+        return response()->json($post);
     }
 
     public function update($id, UpdateRequest $request)
@@ -84,7 +104,7 @@ class PostController extends Controller
             ]);
         }
 
-        return redirect(route('posts.index'));
+        return response()->json($post);
     }
 
     public function destroy($id)
@@ -94,9 +114,6 @@ class PostController extends Controller
         $post = Post::where('workspace_id', $workspace->id)->where('id', $id)->firstOrFail();
         $post->delete();
 
-        session()->flash('flash.banner', 'Post deleted successfully.');
-        session()->flash('flash.bannerStyle', 'success');
-
-        return redirect(route('posts.index'));
+        return response()->json($post);
     }
 }

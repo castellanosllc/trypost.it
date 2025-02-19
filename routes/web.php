@@ -4,11 +4,13 @@ declare(strict_types=1);
 
 use Illuminate\Support\Facades\Route;
 
+
 use App\Http\Controllers\Account\HomeController as AccountHomeController;
 use App\Http\Controllers\Account\LinkedinController;
 use App\Http\Controllers\Account\LinkedinPageController;
 use App\Http\Controllers\Account\TwitterController;
 
+use App\Http\Controllers\PlannerController;
 use App\Http\Controllers\WorkspaceController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\MediaController;
@@ -37,6 +39,9 @@ Route::group(
         Route::get('/workspaces/create', [WorkspaceController::class, 'create'])->name('workspaces.create')->withoutMiddleware(['billing']);
         Route::post('/workspaces', [WorkspaceController::class, 'store'])->name('workspaces.store')->withoutMiddleware(['billing']);
         Route::put('/workspaces/update-current', [WorkspaceController::class, 'setCurrentStore'])->name('workspaces.update-current')->withoutMiddleware(['billing']);
+
+        // posts
+        Route::get('/planner', PlannerController::class)->name('planner');
 
         // posts
         Route::get('/posts/{id?}', [PostController::class, 'index'])->name('posts.index');
