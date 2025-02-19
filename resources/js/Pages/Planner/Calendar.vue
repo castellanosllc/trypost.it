@@ -32,7 +32,7 @@
     <div ref="container" class="isolate flex flex-auto flex-col overflow-auto bg-white h-screen">
       <div v-if="currentView === 'week'" class="flex max-w-full flex-none flex-col sm:max-w-none md:max-w-full">
         <div class="flex max-w-full flex-none flex-col sm:max-w-none md:max-w-full">
-          <div ref="containerNav" class="sticky top-0 z-30 flex-none bg-white shadow ring-1 ring-black/5 sm:pr-8">
+          <div ref="containerNav" class="sticky top-0 z-30 flex-none bg-white shadow ring-1 ring-black/5">
             <div class="grid grid-cols-7 text-sm/6 text-gray-500 sm:hidden">
               <button v-for="day in weekDays" :key="day.date" type="button"
                 class="flex flex-col items-center pb-3 pt-2">
@@ -66,7 +66,7 @@
                 style="grid-template-rows: repeat(24, minmax(5rem, 1fr))">
                 <div ref="containerOffset" class="row-end-1 h-7" />
                 <div v-for="slot in timeSlots" :key="slot.hour">
-                  <div class="sticky left-0 z-20 -ml-14 -mt-2.5 w-14 pr-2 text-right text-xs/5 text-gray-400">
+                  <div class="sticky left-0 z-20 -ml-14 -mt-2.5 w-14  text-right text-xs/5 text-gray-400">
                     {{ slot.label }}
                   </div>
                 </div>
@@ -87,8 +87,8 @@
 
               <!-- Grid de Eventos Existentes -->
               <ol
-                class="col-start-1 col-end-2 row-start-1 grid grid-cols-1 sm:grid-cols-7 sm:pr-8 pointer-events-none relative z-20"
-                style="grid-template-rows: repeat(24, minmax(5rem, 1fr)); margin-top: 1.75rem">
+                class="col-start-1 col-end-2 row-start-1 grid grid-cols-1 sm:grid-cols-7  pointer-events-none relative z-20"
+                style="grid-template-rows: repeat(24, minmax(5rem, 1fr));">
                 <template v-for="event in events" :key="event.id">
                   <li v-bind="getEventStyles(event)" class="pointer-events-auto">
                     <div @click="editPost(event)"
@@ -119,8 +119,8 @@
 
               <!-- Grid de Slots Vazios -->
               <div
-                class="col-start-1 col-end-2 row-start-1 grid grid-cols-1 sm:grid-cols-7 sm:pr-8 pointer-events-auto relative z-10"
-                style="grid-template-rows: repeat(24, minmax(5rem, 1fr)); margin-top: 1.75rem">
+                class="col-start-1 col-end-2 row-start-1 grid grid-cols-1 sm:grid-cols-7  pointer-events-auto relative z-10"
+                style="grid-template-rows: repeat(24, minmax(5rem, 1fr));">
                 <div v-for="slot in timeSlotGrid" :key="slot.key"
                   :style="{ gridRow: slot.hour + 1, gridColumn: slot.day }" class="relative">
                   <div v-if="!hasEventInSlot(slot.datetime) && !slot.isPast" @click="addPost(slot.datetime.format())"
