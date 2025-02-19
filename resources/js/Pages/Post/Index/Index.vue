@@ -17,7 +17,7 @@ const { post } = defineProps({
 </script>
 
 <template>
-  <Edit v-if="post" :post="post" />
+  <Edit v-if="post" />
   <Layout>
     <template #header>
       <div class="flex justify-between items-center">

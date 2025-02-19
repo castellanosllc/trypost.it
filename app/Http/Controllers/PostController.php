@@ -34,13 +34,8 @@ class PostController extends Controller
 
             return response()->json($posts);
         }
-
-        $accounts = Account::where('workspace_id', $workspace->id)->get();
-
-
-
         return Inertia::render('Post/Index/Index', [
-            'accounts' => $accounts,
+            'accounts' => $id ? Account::where('workspace_id', $workspace->id)->get() : [],
             'post' => $id ? Post::where('workspace_id', $workspace->id)
                 ->with('postStats')
                 ->where('id', $id)
@@ -62,22 +57,6 @@ class PostController extends Controller
         return redirect(route('posts.index', ['id' => $post->id]));
     }
 
-    public function edit($id)
-    {
-        $workspace = Auth::user()->currentWorkspace;
-
-        $post = Post::where('workspace_id', $workspace->id)
-            ->where('id', $id)
-            ->firstOrFail();
-
-        $accounts = Account::where('workspace_id', $workspace->id)->get();
-
-        return Inertia::render('Post/Edit/Index', [
-            'post' => $post,
-            'accounts' => $accounts,
-        ]);
-    }
-
     public function update($id, UpdateRequest $request)
     {
         $workspace = Auth::user()->currentWorkspace;
@@ -90,17 +69,18 @@ class PostController extends Controller
             'scheduled_at' => $request->scheduled_at,
         ]);
 
+        // delete all post stats
+        PostStat::where('post_id', $post->id)->delete();
+
         foreach ($request->accounts as $accountId) {
 
             $account = Account::where('workspace_id', $workspace->id)->where('id', $accountId)->firstOrFail();
 
             // create or update
-            PostStat::updateOrCreate([
+            PostStat::create([
                 'account_id' => $account->id,
                 'post_id' => $post->id,
                 'platform' => $account->platform,
-            ], [
-                //
             ]);
         }
 

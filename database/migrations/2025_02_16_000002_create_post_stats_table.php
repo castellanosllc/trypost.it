@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('post_stats', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->foreignUuid('account_id')->constrained();
-            $table->foreignUuid('post_id')->constrained();
+            $table->foreignUuid('post_id')->constrained()->onDelete('cascade');
             $table->string('url')->nullable();
             $table->string('platform')->nullable();
             $table->string('platform_id')->nullable();
@@ -24,7 +24,6 @@ return new class extends Migration
             $table->timestamp('published_at')->nullable();
 
             $table->timestamps();
-            $table->softDeletes();
         });
     }
 

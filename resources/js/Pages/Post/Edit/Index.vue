@@ -1,5 +1,5 @@
 <script setup>
-import { useForm, usePage } from "@inertiajs/vue3";
+import { useForm, usePage, router } from "@inertiajs/vue3";
 import { ref } from "vue";
 import Layout from "@/Layouts/Master.vue";
 import Accordion from "@/Components/Accordion.vue";
@@ -16,49 +16,36 @@ import dayjs from "@/dayjs";
 import Account from "@/Components/Account.vue";
 import PostMediaUpload from "@/Pages/Post/Edit/Upload.vue";
 
-
 const confirmDeleteModal = ref(null);
 
-const { post, accounts } = defineProps({
-  post: Object,
-  accounts: Object,
-});
+const { post, accounts } = usePage().props;
 
 const form = useForm({
-  content: "",
-  scheduled_at: dayjs().format("YYYY-MM-DD HH:mm:ss"),
-  status: "scheduled",
-  accounts: [],
-});
-const show = ref(false);
-
-const open = () => {
-  form.reset();
-  form.clearErrors();
-  show.value = true;
-};
-
-const close = () => {
-  form.reset();
-  form.clearErrors();
-  show.value = false;
-};
-
-defineExpose({
-  open,
+  content: post.content,
+  scheduled_at: dayjs(post.scheduled_at).format("YYYY-MM-DD HH:mm:ss"),
+  status: post.status,
+  accounts: post.post_stats.map(a => a.account_id),
 });
 
-const store = () => {
-  console.log('123');
-  // form.put(route("posts.store"), {
-  //   preserveScroll: true,
-  //   preserveState: true,
-  //   onSuccess: () => {
-  // form.reset();
-  // form.clearErrors();
-  // show.value = false;
-  // },
-  // });
+
+const saveDraft = () => {
+  form.status = 'draft';
+  update();
+}
+
+const addToCalendar = () => {
+  form.status = 'scheduled';
+  update();
+}
+
+const update = () => {
+
+  form.put(route("posts.update", { id: post.id }), {
+    preserveScroll: true,
+    preserveState: true,
+    onSuccess: () => {
+    },
+  });
 };
 </script>
 
@@ -95,7 +82,7 @@ const store = () => {
                   <Account :account="account" :tooltip="true" />
                 </div>
               </div>
-              <InputError :message="form.errors.scheduled_at" class="mt-2" />
+              <InputError :message="form.errors.accounts" class="mt-2" />
             </div>
             <div class="col-span-6">
               <Label for="content" value="Content" />
@@ -145,14 +132,14 @@ const store = () => {
         Delete Post
       </Button>
 
-      <Button @click="store" :class="{
+      <Button @click="saveDraft" :class="{
         'opacity-25': form.processing,
         'btn-primary': true,
       }">
         Save as Draft
       </Button>
 
-      <Button @click="store" :class="{
+      <Button @click="addToCalendar" :class="{
         'opacity-25': form.processing,
         'btn-primary': true,
       }">
