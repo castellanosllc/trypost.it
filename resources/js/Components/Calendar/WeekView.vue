@@ -47,7 +47,7 @@
         <VerticalGrid />
 
         <!-- Grid de Eventos -->
-        <EventsGrid :events="events" :timezone="timezone" @edit-post="$emit('edit-post', $event)" />
+        <EventsGrid :events="events" :timezone="timezone" />
 
         <!-- Grid de Slots Vazios -->
         <EmptySlots :time-slot-grid="timeSlotGrid" :timezone="timezone" @add-post="$emit('add-post', $event)" />
@@ -79,8 +79,6 @@ const props = defineProps({
     required: true
   }
 })
-
-const emit = defineEmits(['edit-post', 'add-post'])
 
 // Refs
 const containerNav = ref(null)

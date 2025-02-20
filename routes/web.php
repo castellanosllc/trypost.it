@@ -40,8 +40,6 @@ Route::group(
         Route::post('/workspaces', [WorkspaceController::class, 'store'])->name('workspaces.store')->withoutMiddleware(['billing']);
         Route::put('/workspaces/update-current', [WorkspaceController::class, 'setCurrentStore'])->name('workspaces.update-current')->withoutMiddleware(['billing']);
 
-        // posts
-        Route::get('/planner', PlannerController::class)->name('planner');
 
         // posts
         Route::get('/posts/{id?}', [PostController::class, 'index'])->name('posts.index');

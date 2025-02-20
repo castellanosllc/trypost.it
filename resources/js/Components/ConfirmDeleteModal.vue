@@ -11,7 +11,7 @@ const deleteForm = useForm({});
 
 const url = ref("");
 
-defineProps({
+const props = defineProps({
   title: {
     type: String,
     default: "Are you sure?",
@@ -27,10 +27,17 @@ defineProps({
     type: String,
     default: "Delete",
   },
+
+  preserveState: {
+    type: Boolean,
+    default: false,
+  },
 });
 
 const remove = () => {
   deleteForm.delete(url.value, {
+    preserveScroll: true,
+    preserveState: props.preserveState,
     onSuccess: () => close(),
   });
 };

@@ -14,10 +14,10 @@ import {
 
 const navigation = [
   {
-    name: "Planner",
-    href: route("planner"),
+    name: "Posts",
+    href: route("posts.index"),
     icon: PhLink,
-    current: route().current("planner"),
+    current: route().current("posts.*"),
   },
   {
     name: "Accounts",

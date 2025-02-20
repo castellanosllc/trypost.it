@@ -1,21 +1,27 @@
 <script setup>
-import Layout from "@/Layouts/Master.vue";
 
+import { router } from '@inertiajs/vue3'
 import { ref, onMounted, computed, watch } from 'vue'
 import { IconChevronLeft, IconChevronRight } from '@tabler/icons-vue'
 import dayjs from "@/dayjs"
+
+import Layout from "@/Layouts/Master.vue";
 import WeekView from '@/Components/Calendar/WeekView.vue'
 import MonthView from '@/Components/Calendar/MonthView.vue'
 import Header from '@/Components/Calendar/Header.vue'
-import Edit from '@/Pages/Post/Edit.vue'
-import Create from '@/Pages/Post/Create.vue'
+import Edit from '@/Pages/Post/Edit/Index.vue'
 
 const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone
 const currentView = ref('week')
 const currentDate = ref(dayjs())
 const events = ref([])
-const createModal = ref(null)
-const editModal = ref(null)
+
+const { post } = defineProps({
+  post: {
+    type: Object,
+    default: null,
+  },
+});
 
 const currentMonthDisplay = computed(() => {
   return currentDate.value.format('MMMM YYYY')
@@ -67,12 +73,11 @@ const goToToday = () => {
 }
 
 const addPost = (datetime) => {
-  createModal.value.open(datetime)
+  router.post(route('posts.store', {
+    scheduled_at: datetime
+  }))
 }
 
-const editPost = (post) => {
-  editModal.value.open(post)
-}
 
 const handleNavigation = (action) => {
   switch (action) {
@@ -88,6 +93,11 @@ const handleNavigation = (action) => {
   }
 }
 
+const refresh = () => {
+  console.log('refresh')
+  getPosts()
+}
+
 watch(() => dateRange.value, getPosts, { deep: true })
 
 onMounted(getPosts)
@@ -101,13 +111,11 @@ onMounted(getPosts)
       <div class="flex-1 overflow-auto">
 
         <WeekView v-if="currentView === 'week'" :current-date="currentDate" :events="events" :timezone="timezone"
-          @edit-post="editPost" @add-post="addPost" />
-
-        <MonthView v-else :current-date="currentDate" :events="events" :timezone="timezone" @edit-post="editPost"
           @add-post="addPost" />
+
+        <MonthView v-else :current-date="currentDate" :events="events" :timezone="timezone" @add-post="addPost" />
       </div>
     </div>
-    <Edit ref="editModal" />
-    <Create ref="createModal" />
+    <Edit v-if="post" :post="post" @posts:refresh="refresh" />
   </Layout>
 </template>

@@ -21,20 +21,20 @@
 
           <!-- Lista de eventos do dia -->
           <ol v-if="date.events?.length" class="mt-2">
-            <li v-for="event in date.events.slice(0, 2)" :key="event.id" @click="$emit('edit-post', event)"
-              class="cursor-pointer">
-              <div class="group flex">
-                <p class="flex-auto truncate font-medium text-gray-900 group-hover:text-indigo-600">
-                  {{ event.content }}
-                </p>
-                <time :datetime="event.scheduled_at"
-                  class="ml-3 hidden flex-none text-gray-500 group-hover:text-indigo-600 xl:block">
-                  {{ formatEventTime(event.scheduled_at) }}
-                </time>
-              </div>
-            </li>
-            <li v-if="date.events.length > 2" class="text-gray-500">
-              + {{ date.events.length - 2 }} more
+            <Link as="li" v-for="event in date.events.slice(0, 2)" :key="event.id" class="cursor-pointer"
+              :href="route('posts.index', event.id)" preserve-scroll preserve-state>
+            <div class="group flex">
+              <p class="flex-auto truncate font-medium text-gray-900 group-hover:text-indigo-600">
+                {{ event.content }}
+              </p>
+              <time :datetime="event.scheduled_at"
+                class="ml-3 hidden flex-none text-gray-500 group-hover:text-indigo-600 xl:block">
+                {{ formatEventTime(event.scheduled_at) }}
+              </time>
+            </div>
+            </Link>
+            <li v-if="date.events.length > 5" class="text-gray-500">
+              + {{ date.events.length - 5 }} more
             </li>
           </ol>
         </div>
@@ -44,6 +44,7 @@
 </template>
 
 <script setup>
+import { Link } from '@inertiajs/vue3'
 import { computed } from 'vue'
 import dayjs from '@/dayjs'
 
@@ -61,8 +62,6 @@ const props = defineProps({
     required: true
   }
 })
-
-const emit = defineEmits(['edit-post'])
 
 // Computed
 const monthDays = computed(() => {
