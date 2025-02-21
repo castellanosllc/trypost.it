@@ -65,7 +65,7 @@ const close = () => {
   <ConfirmDeleteModal ref="confirmDeleteModal" @deleted="close" description="Are you sure you want to delete this post?"
     :preserveState="false" />
 
-  <SlideOver max-width="3xl" :show="true" @close="close">
+  <SlideOver max-width="2xl" :show="true" @close="close">
     <template #title> Edit Post </template>
     <template #content>
       <div class="flex flex-col gap-4">

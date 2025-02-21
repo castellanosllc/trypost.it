@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Account;
+namespace App\Http\Controllers\SocialAccount;
 
 use App\Http\Controllers\Controller;
 
@@ -9,10 +9,10 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
 
-use App\Models\Account;
+use App\Models\SocialAccount;
 
 use App\Enums\Platform;
-use App\Enums\Account\Status;
+use App\Enums\SocialAccount\Status;
 
 class TwitterController extends Controller
 {
@@ -39,7 +39,7 @@ class TwitterController extends Controller
 
         $user = Auth::user();
 
-        Account::updateOrCreate([
+        SocialAccount::updateOrCreate([
             'workspace_id' => $user->current_workspace_id,
             'platform' => Platform::TWITTER,
             'platform_id' => $twitterUser->getId(),
@@ -56,6 +56,6 @@ class TwitterController extends Controller
         session()->flash('flash.banner', 'LinkedIn account connected successfully.');
         session()->flash('flash.bannerStyle', 'success');
 
-        return redirect(route('accounts.index'));
+        return redirect(route('social-accounts.index'));
     }
 }

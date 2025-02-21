@@ -5,15 +5,18 @@ declare(strict_types=1);
 use Illuminate\Support\Facades\Route;
 
 
-use App\Http\Controllers\Account\HomeController as AccountHomeController;
-use App\Http\Controllers\Account\LinkedinController;
-use App\Http\Controllers\Account\LinkedinPageController;
-use App\Http\Controllers\Account\TwitterController;
+use App\Http\Controllers\SocialAccount\HomeController as SocialAccountHomeController;
+use App\Http\Controllers\SocialAccount\LinkedinController;
+use App\Http\Controllers\SocialAccount\LinkedinPageController;
+use App\Http\Controllers\SocialAccount\TwitterController;
+use App\Http\Controllers\SocialAccount\TiktokController;
 
-use App\Http\Controllers\PlannerController;
 use App\Http\Controllers\WorkspaceController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\MediaController;
+use App\Http\Controllers\TagController;
+use App\Http\Controllers\HashtagController;
+
 
 // setting
 use App\Http\Controllers\Setting\AccountController;
@@ -40,7 +43,6 @@ Route::group(
         Route::post('/workspaces', [WorkspaceController::class, 'store'])->name('workspaces.store')->withoutMiddleware(['billing']);
         Route::put('/workspaces/update-current', [WorkspaceController::class, 'setCurrentStore'])->name('workspaces.update-current')->withoutMiddleware(['billing']);
 
-
         // posts
         Route::get('/posts/{id?}', [PostController::class, 'index'])->name('posts.index');
         Route::post('/posts', [PostController::class, 'store'])->name('posts.store');
@@ -55,21 +57,38 @@ Route::group(
         Route::delete('/medias/{modelId}/{id}', [MediaController::class, 'destroy'])->name('medias.destroy');
 
         // accounts
-        Route::get('/accounts', [AccountHomeController::class, 'index'])->name('accounts.index');
+        Route::get('/social-accounts', [SocialAccountHomeController::class, 'index'])->name('social-accounts.index');
 
         // linkedin
-        Route::get('/accounts/linkedin/connect', [LinkedinController::class, 'connect'])->name('accounts.linkedin.connect');
-        Route::get('/accounts/linkedin/callback', [LinkedinController::class, 'callback'])->name('accounts.linkedin.callback');
+        Route::get('/social-accounts/linkedin/connect', [LinkedinController::class, 'connect'])->name('social-accounts.linkedin.connect');
+        Route::get('/social-accounts/linkedin/callback', [LinkedinController::class, 'callback'])->name('social-accounts.linkedin.callback');
 
         // linkedin page
-        Route::get('/accounts/linkedin-page/connect', [LinkedinPageController::class, 'connect'])->name('accounts.linkedin-page.connect');
-        Route::get('/accounts/linkedin-page/callback', [LinkedinPageController::class, 'callback'])->name('accounts.linkedin-page.callback');
-        Route::get('/accounts/linkedin-page/select', [LinkedinPageController::class, 'selectPage'])->name('accounts.linkedin-page.select');
-        Route::post('/accounts/linkedin-page/store', [LinkedinPageController::class, 'store'])->name('accounts.linkedin-page.store');
+        Route::get('/social-accounts/linkedin-page/connect', [LinkedinPageController::class, 'connect'])->name('social-accounts.linkedin-page.connect');
+        Route::get('/social-accounts/linkedin-page/callback', [LinkedinPageController::class, 'callback'])->name('social-accounts.linkedin-page.callback');
+        Route::get('/social-accounts/linkedin-page/select', [LinkedinPageController::class, 'selectPage'])->name('social-accounts.linkedin-page.select');
+        Route::post('/social-accounts/linkedin-page/store', [LinkedinPageController::class, 'store'])->name('social-accounts.linkedin-page.store');
 
         // twitter
-        Route::get('/accounts/twitter/connect', [TwitterController::class, 'connect'])->name('accounts.twitter.connect');
-        Route::get('/accounts/twitter/callback', [TwitterController::class, 'callback'])->name('accounts.twitter.callback');
+        Route::get('/social-accounts/twitter/connect', [TwitterController::class, 'connect'])->name('social-accounts.twitter.connect');
+        Route::get('/social-accounts/twitter/callback', [TwitterController::class, 'callback'])->name('social-accounts.twitter.callback');
+
+        // tiktok
+        Route::get('/social-accounts/tiktok/connect', [TiktokController::class, 'connect'])->name('social-accounts.tiktok.connect');
+        Route::get('/social-accounts/tiktok/callback', [TiktokController::class, 'callback'])->name('social-accounts.tiktok.callback');
+
+        // tags
+        Route::get('/tags', [TagController::class, 'index'])->name('setting.tags.index');
+        Route::post('/tags', [TagController::class, 'store'])->name('setting.tags.store');
+        Route::post('/tags/sort', [TagController::class, 'sort'])->name('setting.tags.sort');
+        Route::put('/tags/{id}', [TagController::class, 'update'])->name('setting.tags.update');
+        Route::delete('/tags/{id}', [TagController::class, 'destroy'])->name('setting.tags.destroy');
+
+        // hashtags
+        Route::get('/hashtags', [HashtagController::class, 'index'])->name('setting.hashtags.index');
+        Route::post('/hashtags', [HashtagController::class, 'store'])->name('setting.hashtags.store');
+        Route::put('/hashtags/{id}', [HashtagController::class, 'update'])->name('setting.hashtags.update');
+        Route::delete('/hashtags/{id}', [HashtagController::class, 'destroy'])->name('setting.hashtags.destroy');
 
         // settings
         Route::prefix('settings')->group(function () {

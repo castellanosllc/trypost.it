@@ -2,13 +2,10 @@
 
 declare(strict_types=1);
 
-namespace App\Http\Controllers\Account;
+namespace App\Http\Controllers\SocialAccount;
 
 use App\Http\Controllers\Controller;
 
-use App\Http\Requests\Account\UpdateRequest;
-use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;

@@ -35,7 +35,7 @@ const mainClass = computed(() => {
     case "medium":
       return "size-6";
     case "small":
-      return "size-4";
+      return "h-[20px] w-[20px]";
   }
 });
 
@@ -46,7 +46,7 @@ const ringClass = computed(() => {
     case "medium":
       return "size-3";
     case "small":
-      return "size-2";
+      return "h-[12px] w-[12px]";
   }
 });
 </script>

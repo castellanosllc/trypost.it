@@ -2,21 +2,19 @@
 
 declare(strict_types=1);
 
-namespace App\Http\Controllers\Account;
+namespace App\Http\Controllers\SocialAccount;
 
 use App\Http\Controllers\Controller;
 
 use Laravel\Socialite\Facades\Socialite;
 
 use Illuminate\Support\Facades\Gate;
-use Illuminate\Http\Request;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 
-use App\Models\Account;
+use App\Models\SocialAccount;
 
 use App\Enums\Platform;
-use App\Enums\Account\Status;
+use App\Enums\SocialAccount\Status;
 
 use Inertia\Inertia;
 
@@ -53,7 +51,7 @@ class LinkedinController extends Controller
 
         $user = Auth::user();
 
-        Account::updateOrCreate([
+        SocialAccount::updateOrCreate([
             'workspace_id' => $user->current_workspace_id,
             'platform' => Platform::LINKEDIN,
             'platform_id' => $linkedinUser->getId(),
@@ -70,6 +68,6 @@ class LinkedinController extends Controller
         session()->flash('flash.banner', 'LinkedIn Page was connected successfully.');
         session()->flash('flash.bannerStyle', 'success');
 
-        return redirect(route('accounts.index'));
+        return redirect(route('social-accounts.index'));
     }
 }

@@ -29,13 +29,6 @@ trait WorkspaceUsage
                     ->select('name')
                     ->first(),
             ],
-            'accounts' => [
-                'used' => number_format($this->accounts->count()),
-                'limit' => number_format($this->plan->max_accounts),
-                'percent' => $this->accounts->count() === 0 ? 0 : round(($this->accounts->count() / $this->plan->max_accounts) * 100),
-                'remaining' => number_format($this->plan->max_accounts - $this->accounts->count()),
-                'reached_limit' => $this->accounts->count() >= $this->plan->max_accounts,
-            ],
         ];
     }
 }

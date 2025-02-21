@@ -32,6 +32,8 @@ class Workspace extends Model implements HasMedia
     use HasFeatures;
     use InteractsWithMedia;
 
+    protected $with = ['plan'];
+
     /**
      * The "booted" method of the model.
      */
@@ -152,9 +154,14 @@ class Workspace extends Model implements HasMedia
         return $this->belongsTo(Plan::class);
     }
 
-    public function accounts()
+    public function socialSets(): HasMany
     {
-        return $this->hasMany(Account::class);
+        return $this->hasMany(SocialSet::class);
+    }
+
+    public function socialAccounts(): HasMany
+    {
+        return $this->hasMany(SocialAccount::class);
     }
 
     public function posts(): HasMany
@@ -165,5 +172,15 @@ class Workspace extends Model implements HasMedia
     public function postStats(): HasMany
     {
         return $this->hasMany(PostStat::class);
+    }
+
+    public function tags(): HasMany
+    {
+        return $this->hasMany(Tag::class);
+    }
+
+    public function hashtags(): HasMany
+    {
+        return $this->hasMany(Hashtag::class);
     }
 }

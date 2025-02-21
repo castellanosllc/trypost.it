@@ -7,14 +7,15 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 
 use App\Enums\Platform;
-use App\Enums\Account\Status;
+use App\Enums\SocialAccount\Status;
 
-class Account extends Model
+class SocialAccount extends Model
 {
     use HasFactory, HasUuids;
 
     protected $fillable = [
         'workspace_id',
+        'social_set_id',
         'platform',
         'platform_id',
         'name',

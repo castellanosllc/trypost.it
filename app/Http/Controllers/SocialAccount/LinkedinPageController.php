@@ -2,18 +2,18 @@
 
 declare(strict_types=1);
 
-namespace App\Http\Controllers\Account;
+namespace App\Http\Controllers\SocialAccount;
 
 use App\Http\Controllers\Controller;
 use Laravel\Socialite\Facades\Socialite;
 use Illuminate\Http\Request;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
-use App\Models\Account;
+
+use App\Models\SocialAccount;
 use App\Enums\Platform;
-use App\Enums\Account\Status;
+use App\Enums\SocialAccount\Status;
 
 use Inertia\Inertia;
 
@@ -60,7 +60,7 @@ class LinkedinPageController extends Controller
         if (empty($pages)) {
             session()->flash('flash.banner', 'No LinkedIn Pages found. Please make sure you have admin access to at least one page.');
             session()->flash('flash.bannerStyle', 'danger');
-            return redirect(route('accounts.index'));
+            return redirect(route('social-accounts.index'));
         }
 
         session()->put('linkedin_page_select', [
@@ -72,7 +72,7 @@ class LinkedinPageController extends Controller
             ])
         ]);
 
-        return redirect(route('accounts.linkedin-page.select'));
+        return redirect(route('social-accounts.linkedin-page.select'));
     }
 
     public function selectPage()
@@ -102,7 +102,7 @@ class LinkedinPageController extends Controller
         $workspace = Auth::user()->currentWorkspace;
         $linkedinUser = decrypt($request->user);
 
-        Account::updateOrCreate([
+        SocialAccount::updateOrCreate([
             'workspace_id' => $workspace->id,
             'platform' => Platform::LINKEDIN_PAGE,
             'platform_id' => $request->page_id,
@@ -122,7 +122,7 @@ class LinkedinPageController extends Controller
         session()->flash('flash.banner', 'LinkedIn Page was connected successfully.');
         session()->flash('flash.bannerStyle', 'success');
 
-        return redirect(route('accounts.index'));
+        return redirect(route('social-accounts.index'));
     }
 
     private function getLinkedInPages(string $accessToken): array

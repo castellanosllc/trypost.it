@@ -13,8 +13,8 @@ defineProps({
     style="grid-template-rows: repeat(24, minmax(5rem, 1fr))">
     <div ref="containerOffset" class="row-end-1" />
     <div v-for="slot in timeSlots" :key="slot.hour">
-      <div class="h-full sticky flex items-end justify-center z-20 -ml-14 w-14  text-right text-xs/5 text-gray-400">
-        <div class="mb-2">
+      <div class="h-full sticky flex items-center justify-center z-20 -ml-14 w-14 text-right text-[11px] text-gray-400">
+        <div>
           {{ slot.label }}
         </div>
       </div>

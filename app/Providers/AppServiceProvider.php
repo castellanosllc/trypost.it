@@ -13,11 +13,11 @@ use Illuminate\Support\Facades\Vite;
 use Illuminate\Support\ServiceProvider;
 
 use App\Policies\WorkspacePolicy;
-use App\Policies\AccountPolicy;
+use App\Policies\SocialAccountPolicy;
 
 use App\Models\Workspace;
 use App\Models\User;
-use App\Models\Account;
+use App\Models\SocialAccount;
 use App\Models\Invite;
 use App\Models\Post;
 use App\Models\PostStat;
@@ -63,11 +63,11 @@ class AppServiceProvider extends ServiceProvider
 
         // Gate policies
         Gate::policy(Workspace::class, WorkspacePolicy::class);
-        Gate::policy(Account::class, AccountPolicy::class);
+        Gate::policy(SocialAccount::class, SocialAccountPolicy::class);
 
         // Morph map for polymorphic relationships
         Relation::enforceMorphMap([
-            'account' => Account::class,
+            'socialAccount' => SocialAccount::class,
             'invite' => Invite::class,
             'language' => Language::class,
             'media' => Media::class,

@@ -22,23 +22,7 @@ class Plan extends Model
         'is_monthly',
         'stripe_id',
         'access_level',
-        'max_accounts',
-        'can_create_teams',
-        'is_private'
     ];
-
-    /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
-     */
-    protected function casts(): array
-    {
-        return [
-            'is_private' => 'boolean',
-            'is_archived' => 'boolean'
-        ];
-    }
 
     protected static function booted()
     {

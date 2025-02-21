@@ -17,7 +17,7 @@ use App\Enums\User\Role;
 
 use App\Models\Workspace;
 use App\Models\Plan;
-
+use App\Models\SocialSet;
 class WorkspaceController extends Controller
 {
     public function index(Request $request): Response
@@ -46,7 +46,12 @@ class WorkspaceController extends Controller
 
             $workspace = Workspace::create([
                 'name' => $request->name,
-                'plan_id' => Plan::where('internal_id', 'pro-monthly')->first()->id
+                'plan_id' => Plan::where('internal_id', 'free')->first()->id
+            ]);
+
+            SocialSet::create([
+                'name' => $request->name,
+                'workspace_id' => $workspace->id,
             ]);
 
             // attach user to project
@@ -60,7 +65,7 @@ class WorkspaceController extends Controller
 
             DB::commit();
 
-            return redirect(route('setting.billing.start-trial'));
+            return redirect(route('posts.index'));
         } catch (\Exception $e) {
             Log::error($e);
             DB::rollBack();

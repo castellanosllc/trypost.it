@@ -14,11 +14,7 @@
       <!-- Slot bloqueado (passado) -->
       <div v-if="slot.isPast" class="absolute inset-0 cursor-not-allowed group">
         <div class="absolute inset-0 bg-zinc-50/20 flex items-center justify-center"
-          style="background-image: repeating-linear-gradient(45deg, transparent, transparent 4px, rgba(200, 200, 200, 0.08) 4px, rgba(200, 200, 200, 0.08) 6px);">
-          <div class="opacity-0 group-hover:opacity-100 transition-opacity text-zinc-300 text-sm ">
-            Date Past
-          </div>
-        </div>
+          style="background-image: repeating-linear-gradient(45deg, transparent, transparent 4px, rgba(200, 200, 200, 0.08) 4px, rgba(200, 200, 200, 0.08) 6px);" />
       </div>
     </div>
   </div>

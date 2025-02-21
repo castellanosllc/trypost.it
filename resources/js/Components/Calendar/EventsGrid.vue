@@ -7,13 +7,32 @@
           placement: 'top',
           html: true,
           content: formatPostPreview(event),
-        }"
-          :class="{ 'group absolute inset-0 m-1 flex flex-col overflow-y-auto rounded-lg  px-3 py-2 text-sm hover:bg-blue-100 cursor-pointer': true, 'bg-blue-50': event.status === 'scheduled', 'bg-zinc-100/80': event.status === 'draft' }">
-        <div class="text-sm line-clamp-1 mb-2 text-zinc-800 font-medium">
-          {{ event.content }}
+        }" :class="{
+          'group absolute inset-0 m-1 flex flex-col overflow-y-auto rounded-lg  px-3 py-2 text-sm cursor-pointer': true,
+          'bg-blue-100/70 hover:bg-blue-100': event.status === 'scheduled',
+          'bg-zinc-100/70 hover:bg-zinc-100': event.status === 'draft',
+          'bg-green-100/70 hover:bg-green-100': event.status === 'published',
+          'bg-red-100/70 hover:bg-red-100': event.status === 'failed',
+        }">
+
+
+        <div class="flex items-start justify-start">
+          <div :class="{
+            'text-sm line-clamp-1 mb-2 font-medium': true,
+            'text-red-600': event.status === 'failed',
+            'text-blue-600': event.status === 'scheduled',
+            'text-green-600': event.status === 'published',
+            'text-zinc-600': event.status === 'draft',
+          }">
+            {{ event.content }}
+          </div>
+          <IconCircleX class="h-[18px] w-[18px] text-red-500 flex-none" v-if="event.status === 'failed'" />
+          <IconCircleDashed class="h-[18px] w-[18px] text-zinc-500 flex-none" v-if="event.status === 'draft'" />
+          <IconClock class="h-[18px] w-[18px] text-blue-500 flex-none" v-if="event.status === 'scheduled'" />
+          <IconCircleCheck class="h-[18px] w-[18px] text-green-500 flex-none" v-if="event.status === 'published'" />
         </div>
         <div class="flex flex-wrap gap-2">
-          <Account v-for="postStat in event.post_stats" :key="postStat.id" :account="postStat.account" size="medium"
+          <Account v-for="postStat in event.post_stats" :key="postStat.id" :account="postStat.account" size="small"
             :tooltip="true" />
         </div>
         </Link>
@@ -26,6 +45,15 @@
 import { Link } from '@inertiajs/vue3'
 import dayjs from '@/dayjs'
 import Account from '@/Components/Account.vue'
+
+import {
+  IconCircleDashed,
+  IconCircle,
+  IconCircleCheck,
+  IconCircleX,
+  IconInnerShadowRight,
+  IconClock,
+} from "@tabler/icons-vue";
 
 const props = defineProps({
   events: {

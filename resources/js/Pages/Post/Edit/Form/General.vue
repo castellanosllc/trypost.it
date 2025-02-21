@@ -48,14 +48,12 @@ const { form } = defineProps({
       </div>
       <div class="col-span-6">
         <Label for="content" value="Content" />
-        <Textarea id="content" v-model="form.content" rows="10" />
-
+        <Textarea id="content" v-model="form.content" rows="8" />
         <InputError :message="form.errors.content" class="mt-2" />
       </div>
 
       <div class="col-span-6">
         <Label for="scheduled_at" value="Date and Time" :required="false" />
-
         <DatePicker v-model="form.scheduled_at" mode="dateTime" />
         <InputError :message="form.errors.scheduled_at" class="mt-2" />
       </div>

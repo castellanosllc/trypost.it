@@ -14,13 +14,13 @@ class Billing
     {
         $workspace = $request->user()?->currentWorkspace;
 
-        $subscription = $workspace->subscribed('default');
-        // $onTrial = $workspace->subscription('default')->onTrial();
-        $isOnBillingPage = $request->routeIs('setting.billing.*');
+        // $subscription = $workspace->subscribed('default');
+        // // $onTrial = $workspace->subscription('default')->onTrial();
+        // $isOnBillingPage = $request->routeIs('setting.billing.*');
 
-        if (!$isOnBillingPage && (!$subscription)) {
-            return redirect(route('setting.billing.start-trial'));
-        }
+        // if (!$isOnBillingPage && (!$subscription)) {
+        //     return redirect(route('setting.billing.start-trial'));
+        // }
 
         Inertia::share('usage', $request->user()->currentWorkspace->usage());
         return $next($request);

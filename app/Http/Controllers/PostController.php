@@ -14,7 +14,7 @@ use App\Http\Requests\Post\UpdateRequest;
 
 use App\Enums\Post\Status;
 
-use App\Models\Account;
+use App\Models\SocialAccount;
 use App\Models\Post;
 use App\Models\PostStat;
 
@@ -37,7 +37,7 @@ class PostController extends Controller
         }
 
         return Inertia::render('Post/Index', [
-            'accounts' => Account::where('workspace_id', $workspace->id)->get(),
+            'accounts' => SocialAccount::where('workspace_id', $workspace->id)->get(),
             'post' => $id ? Post::where('workspace_id', $workspace->id)
                 ->with('postStats.account')
                 ->where('id', $id)
@@ -90,7 +90,7 @@ class PostController extends Controller
 
         foreach ($request->accounts as $accountId) {
 
-            $account = Account::where('workspace_id', $workspace->id)->where('id', $accountId)->firstOrFail();
+            $account = SocialAccount::where('workspace_id', $workspace->id)->where('id', $accountId)->firstOrFail();
 
             // create or update
             PostStat::create([
