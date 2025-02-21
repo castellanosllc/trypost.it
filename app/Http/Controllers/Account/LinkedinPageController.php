@@ -21,25 +21,17 @@ class LinkedinPageController extends Controller
 {
     private string $network = 'linkedin-openid';
 
+    private array $scopes = [
+        "w_organization_social",
+        "r_organization_social",
+        "rw_organization_admin",
+        "w_member_social",
+    ];
+
     public function connect()
     {
-        $workspace = Auth::user()->workspace;
-
-        $response = Gate::inspect('reached-accounts-limit', $workspace);
-        if ($response->denied()) {
-            session()->flash('flash.banner', 'You have reached the maximum number of accounts for your workspace.');
-            session()->flash('flash.bannerStyle', 'danger');
-
-            return back();
-        }
-
         return Inertia::location(Socialite::driver($this->network)
-            ->scopes([
-                "w_organization_social",
-                "r_organization_social",
-                "rw_organization_admin",
-                "w_member_social",
-            ])
+            ->scopes($this->scopes)
             ->with([
                 'redirect_uri' => config('services.linkedin-openid.redirect_page')
             ])
@@ -49,6 +41,7 @@ class LinkedinPageController extends Controller
     public function callback()
     {
         $linkedinUser = Socialite::driver($this->network)
+            ->scopes($this->scopes)
             ->with([
                 'redirect_uri' => config('services.linkedin-openid.redirect_page')
             ])
@@ -99,11 +92,12 @@ class LinkedinPageController extends Controller
             'user' => ['required', 'string'],
         ]);
 
-        $workspace = Auth::user()->workspace;
+        $user = Auth::user();
         $linkedinUser = decrypt($request->user);
 
         Account::updateOrCreate([
-            'workspace_id' => $workspace->id,
+            'workspace_id' => $user->workspace_id,
+            'space_id' => $user->currentSpace->id,
             'platform' => Platform::LINKEDIN_PAGE,
             'platform_id' => $request->page_id,
         ], [

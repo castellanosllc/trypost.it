@@ -17,30 +17,33 @@ class TikTokController extends Controller
 {
     private string $network = 'tiktok';
 
+    private array $scopes = [
+        'user.info.basic',
+        'user.info.profile',
+        'user.info.stats',
+        'video.list',
+        'video.publish',
+        'video.upload',
+    ];
+
     public function connect()
     {
         return Inertia::location(Socialite::driver($this->network)
-            ->scopes([
-                'user.info.basic',
-                'user.info.profile',
-                'user.info.stats',
-                'video.list',
-                'video.publish',
-                'video.upload',
-            ])
+            ->scopes($this->scopes)
             ->redirect());
     }
 
     public function callback()
     {
-        $tiktokUser = Socialite::driver($this->network)->user();
-
-        dd($tiktokUser);
+        $tiktokUser = Socialite::driver($this->network)
+            ->scopes($this->scopes)
+            ->user();
 
         $user = Auth::user();
 
         Account::updateOrCreate([
-            'workspace_id' => $user->current_workspace_id,
+            'workspace_id' => $user->workspace_id,
+            'space_id' => $user->currentSpace->id,
             'platform' => Platform::TIKTOK,
             'platform_id' => $tiktokUser->getId(),
         ], [
@@ -49,7 +52,7 @@ class TikTokController extends Controller
             'photo' => $tiktokUser->getAvatar(),
             'access_token' => $tiktokUser->token,
             'refresh_token' => $tiktokUser->tokenSecret,
-            'expires_in' => null,
+            'expires_in' => $tiktokUser->expiresIn,
             'status' => Status::CONNECTED,
         ]);
 

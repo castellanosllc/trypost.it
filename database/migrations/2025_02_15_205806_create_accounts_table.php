@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('platform_id')->unique();
             $table->string('name')->nullable();
             $table->string('username')->nullable();
-            $table->string('photo')->nullable();
+            $table->string('photo', 1024)->nullable();
             $table->text('access_token');
             $table->text('refresh_token')->nullable();
             $table->integer('expires_in')->nullable();

@@ -20,27 +20,20 @@ class TwitterController extends Controller
 
     public function connect()
     {
-        $workspace = Auth::user()->workspace;
-
-        $response = Gate::inspect('reached-accounts-limit', $workspace);
-        if ($response->denied()) {
-            session()->flash('flash.banner', 'You have reached the maximum number of accounts for your workspace.');
-            session()->flash('flash.bannerStyle', 'danger');
-
-            return back();
-        }
-
-        return Inertia::location(Socialite::driver($this->network)->redirect());
+        return Inertia::location(Socialite::driver($this->network)
+            ->redirect());
     }
 
     public function callback()
     {
-        $twitterUser = Socialite::driver($this->network)->user();
+        $twitterUser = Socialite::driver($this->network)
+            ->user();
 
         $user = Auth::user();
 
         Account::updateOrCreate([
             'workspace_id' => $user->workspace_id,
+            'space_id' => $user->currentSpace->id,
             'platform' => Platform::TWITTER,
             'platform_id' => $twitterUser->getId(),
         ], [

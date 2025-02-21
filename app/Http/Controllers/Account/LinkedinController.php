@@ -22,27 +22,32 @@ class LinkedinController extends Controller
 {
     private string $network = 'linkedin-openid';
 
+    private array $scopes = [
+        'r_basicprofile',
+        "w_organization_social",
+        "r_organization_social",
+        "rw_organization_admin",
+        "w_member_social",
+    ];
+
     public function connect()
     {
         return Inertia::location(Socialite::driver($this->network)
-        ->scopes([
-            'r_basicprofile',
-            "w_organization_social",
-            "r_organization_social",
-            "rw_organization_admin",
-            "w_member_social",
-        ])
-        ->redirect());
+            ->scopes($this->scopes)
+            ->redirect());
     }
 
     public function callback()
     {
-        $linkedinUser = Socialite::driver($this->network)->user();
+        $linkedinUser = Socialite::driver($this->network)
+            ->scopes($this->scopes)
+            ->user();
 
         $user = Auth::user();
 
         Account::updateOrCreate([
-            'workspace_id' => $user->current_workspace_id,
+            'workspace_id' => $user->workspace_id,
+            'space_id' => $user->currentSpace->id,
             'platform' => Platform::LINKEDIN,
             'platform_id' => $linkedinUser->getId(),
         ], [
