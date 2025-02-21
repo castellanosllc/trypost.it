@@ -7,15 +7,15 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 
 use App\Enums\Platform;
-use App\Enums\SocialAccount\Status;
+use App\Enums\Account\Status;
 
-class SocialAccount extends Model
+class Account extends Model
 {
     use HasFactory, HasUuids;
 
     protected $fillable = [
         'workspace_id',
-        'social_set_id',
+        'space_id',
         'platform',
         'platform_id',
         'name',
@@ -51,5 +51,10 @@ class SocialAccount extends Model
     public function workspace()
     {
         return $this->belongsTo(Workspace::class);
+    }
+
+    public function space()
+    {
+        return $this->belongsTo(Space::class);
     }
 }

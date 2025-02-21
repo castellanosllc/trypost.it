@@ -32,7 +32,7 @@ class InviteController extends Controller
             return redirect()->route('setting.team-members.index');
         }
 
-        $workspace = auth()->user()->currentWorkspace;
+        $workspace = auth()->user()->workspace;
 
         // check if email already exist
         $user = User::where('email', $request->email)->first();
@@ -69,7 +69,7 @@ class InviteController extends Controller
 
     public function destroy($id)
     {
-        $workspace = auth()->user()->currentWorkspace;
+        $workspace = auth()->user()->workspace;
 
         $invite = Invite::where('id', $id)->where('workspace_id', $workspace->id)->firstOrFail();
         $invite->delete();

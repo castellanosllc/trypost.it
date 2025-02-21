@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\SocialAccount;
+namespace App\Http\Controllers\Account;
 
 use App\Http\Controllers\Controller;
 
@@ -9,10 +9,10 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
 
-use App\Models\SocialAccount;
+use App\Models\Account;
 
 use App\Enums\Platform;
-use App\Enums\SocialAccount\Status;
+use App\Enums\Account\Status;
 
 class TwitterController extends Controller
 {
@@ -20,7 +20,7 @@ class TwitterController extends Controller
 
     public function connect()
     {
-        $workspace = Auth::user()->currentWorkspace;
+        $workspace = Auth::user()->workspace;
 
         $response = Gate::inspect('reached-accounts-limit', $workspace);
         if ($response->denied()) {
@@ -39,8 +39,8 @@ class TwitterController extends Controller
 
         $user = Auth::user();
 
-        SocialAccount::updateOrCreate([
-            'workspace_id' => $user->current_workspace_id,
+        Account::updateOrCreate([
+            'workspace_id' => $user->workspace_id,
             'platform' => Platform::TWITTER,
             'platform_id' => $twitterUser->getId(),
         ], [
@@ -56,6 +56,6 @@ class TwitterController extends Controller
         session()->flash('flash.banner', 'LinkedIn account connected successfully.');
         session()->flash('flash.bannerStyle', 'success');
 
-        return redirect(route('social-accounts.index'));
+        return redirect(route('accounts.index'));
     }
 }

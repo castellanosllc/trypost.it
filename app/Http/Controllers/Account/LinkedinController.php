@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Http\Controllers\SocialAccount;
+namespace App\Http\Controllers\Account;
 
 use App\Http\Controllers\Controller;
 
@@ -11,10 +11,10 @@ use Laravel\Socialite\Facades\Socialite;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Auth;
 
-use App\Models\SocialAccount;
+use App\Models\Account;
 
 use App\Enums\Platform;
-use App\Enums\SocialAccount\Status;
+use App\Enums\Account\Status;
 
 use Inertia\Inertia;
 
@@ -24,16 +24,6 @@ class LinkedinController extends Controller
 
     public function connect()
     {
-        $workspace = Auth::user()->currentWorkspace;
-
-        $response = Gate::inspect('reached-accounts-limit', $workspace);
-        if ($response->denied()) {
-            session()->flash('flash.banner', 'You have reached the maximum number of accounts for your workspace.');
-            session()->flash('flash.bannerStyle', 'danger');
-
-            return back();
-        }
-
         return Inertia::location(Socialite::driver($this->network)
         ->scopes([
             'r_basicprofile',
@@ -51,7 +41,7 @@ class LinkedinController extends Controller
 
         $user = Auth::user();
 
-        SocialAccount::updateOrCreate([
+        Account::updateOrCreate([
             'workspace_id' => $user->current_workspace_id,
             'platform' => Platform::LINKEDIN,
             'platform_id' => $linkedinUser->getId(),
@@ -68,6 +58,6 @@ class LinkedinController extends Controller
         session()->flash('flash.banner', 'LinkedIn Page was connected successfully.');
         session()->flash('flash.bannerStyle', 'success');
 
-        return redirect(route('social-accounts.index'));
+        return redirect(route('accounts.index'));
     }
 }

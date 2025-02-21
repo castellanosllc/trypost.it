@@ -27,6 +27,7 @@ class Tag extends Model
      */
     protected $fillable = [
         'workspace_id',
+        'space_id',
         'name',
         'sort',
         'color'
@@ -57,5 +58,10 @@ class Tag extends Model
     public function posts(): BelongsToMany
     {
         return $this->belongsToMany(Post::class)->withTimestamps();
+    }
+
+    public function space(): BelongsTo
+    {
+        return $this->belongsTo(Space::class);
     }
 }

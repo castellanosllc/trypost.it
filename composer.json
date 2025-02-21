@@ -19,6 +19,7 @@
         "laravel/tinker": "^2.9",
         "league/flysystem-aws-s3-v3": "^3.0",
         "socialiteproviders/linkedin": "^5.0",
+        "socialiteproviders/tiktok": "^5.2",
         "spatie/laravel-medialibrary": "^11.12",
         "tightenco/ziggy": "^2.0"
     },

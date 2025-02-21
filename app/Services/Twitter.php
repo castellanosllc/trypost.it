@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Services;
 
-use App\Models\SocialAccount;
+use App\Models\Account;
 use App\Models\Post;
 
 use Abraham\TwitterOAuth\TwitterOAuth;
@@ -13,7 +13,7 @@ class Twitter
 {
     private $connection;
 
-    public function __construct(SocialAccount $account)
+    public function __construct(Account $account)
     {
         $this->connection = new TwitterOAuth(
             config('services.twitter.client_id'),

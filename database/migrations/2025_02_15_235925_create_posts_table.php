@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('posts', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->foreignUuid('workspace_id')->constrained();
+            $table->foreignUuid('space_id')->constrained();
 
             $table->text('content');
             $table->timestamp('scheduled_at')->nullable();

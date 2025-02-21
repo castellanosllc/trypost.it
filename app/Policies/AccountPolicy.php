@@ -3,9 +3,9 @@
 namespace App\Policies;
 
 use App\Models\User;
-use App\Models\SocialAccount;
+use App\Models\Account;
 
-class SocialAccountPolicy
+class AccountPolicy
 {
 
 }

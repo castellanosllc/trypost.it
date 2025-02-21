@@ -1,26 +1,34 @@
 <?php
 
-namespace App\Http\Controllers\SocialAccount;
+namespace App\Http\Controllers\Account;
 
 use App\Http\Controllers\Controller;
 
 use Laravel\Socialite\Facades\Socialite;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
 
-use App\Models\SocialAccount;
+use App\Models\Account;
 
 use App\Enums\Platform;
-use App\Enums\SocialAccount\Status;
+use App\Enums\Account\Status;
 
-class TiktokController extends Controller
+class TikTokController extends Controller
 {
     private string $network = 'tiktok';
 
     public function connect()
     {
-        return Inertia::location(Socialite::driver($this->network)->redirect());
+        return Inertia::location(Socialite::driver($this->network)
+            ->scopes([
+                'user.info.basic',
+                'user.info.profile',
+                'user.info.stats',
+                'video.list',
+                'video.publish',
+                'video.upload',
+            ])
+            ->redirect());
     }
 
     public function callback()
@@ -31,7 +39,7 @@ class TiktokController extends Controller
 
         $user = Auth::user();
 
-        SocialAccount::updateOrCreate([
+        Account::updateOrCreate([
             'workspace_id' => $user->current_workspace_id,
             'platform' => Platform::TIKTOK,
             'platform_id' => $tiktokUser->getId(),
@@ -48,6 +56,6 @@ class TiktokController extends Controller
         session()->flash('flash.banner', 'LinkedIn account connected successfully.');
         session()->flash('flash.bannerStyle', 'success');
 
-        return redirect(route('social-accounts.index'));
+        return redirect(route('accounts.index'));
     }
 }

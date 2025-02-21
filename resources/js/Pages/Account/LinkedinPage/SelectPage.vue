@@ -20,7 +20,7 @@ const switchToPage = (page) => {
   form.name = page.name;
   form.photo = page.picture;
 
-  form.post(route("social-accounts.linkedin-page.store"), {
+  form.post(route("accounts.linkedin-page.store"), {
     preserveState: true,
     preserveScroll: true,
   });

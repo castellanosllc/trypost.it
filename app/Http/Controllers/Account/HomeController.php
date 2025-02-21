@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Http\Controllers\SocialAccount;
+namespace App\Http\Controllers\Account;
 
 use App\Http\Controllers\Controller;
 
@@ -18,7 +18,7 @@ class HomeController extends Controller
     public function index(Request $request): Response
     {
 
-        $accounts = $request->user()->currentWorkspace->accounts;
+        $accounts = $request->user()->workspace->accounts;
 
         return Inertia::render('Account/Index', [
             'accounts' => $accounts,

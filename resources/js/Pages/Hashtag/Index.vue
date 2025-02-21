@@ -47,8 +47,7 @@ const { hashtags } = defineProps({
       </div>
     </template>
 
-    <div>
-
+    <div class="space-y-2">
       <div v-for="hashtag in hashtags" :key="hashtag.id" class="flex flex-1 items-center space-x-1">
         <div
           class="flex flex-1 items-center justify-between rounded-md px-4 py-2 border border-zinc-100 dark:border-zinc-700">
@@ -77,7 +76,6 @@ const { hashtags } = defineProps({
           </div>
         </div>
       </div>
-
     </div>
   </AppLayout>
 </template>

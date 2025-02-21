@@ -25,6 +25,8 @@ const logo = (platform) => {
       return "/images/accounts/linkedin.png";
     case "linkedin-page":
       return "/images/accounts/linkedin.png";
+    case "tiktok":
+      return "/images/accounts/tiktok.png";
   }
 };
 

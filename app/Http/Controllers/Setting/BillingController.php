@@ -26,7 +26,7 @@ class BillingController extends Controller
 
     public function checkout(Request $request, $id)
     {
-        $workspace = $request->user()->currentWorkspace;
+        $workspace = $request->user()->workspace;
 
         // create a stripe customer
         $workspace->createOrGetStripeCustomer();
@@ -46,7 +46,7 @@ class BillingController extends Controller
 
     public function billingPortal(Request $request)
     {
-        return Inertia::location($request->user()->currentWorkspace->redirectToBillingPortal(route('setting.billing.index')));
+        return Inertia::location($request->user()->workspace->redirectToBillingPortal(route('setting.billing.index')));
     }
 
     public function checkoutSuccess(Request $request)

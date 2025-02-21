@@ -9,21 +9,25 @@ use Illuminate\Auth\Notifications\VerifyEmail;
 use Illuminate\Notifications\Messages\MailMessage;
 
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Vite;
 use Illuminate\Support\ServiceProvider;
 
 use App\Policies\WorkspacePolicy;
-use App\Policies\SocialAccountPolicy;
+use App\Policies\AccountPolicy;
 
 use App\Models\Workspace;
 use App\Models\User;
-use App\Models\SocialAccount;
+use App\Models\Account;
 use App\Models\Invite;
 use App\Models\Post;
 use App\Models\PostStat;
 use App\Models\Media;
 use App\Models\Language;
 use App\Models\Plan;
+use App\Models\Space;
+use App\Models\Tag;
+use App\Models\Hashtag;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -43,6 +47,11 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        // TikTok
+        Event::listen(function (\SocialiteProviders\Manager\SocialiteWasCalled $event) {
+            $event->extendSocialite('tiktok', \SocialiteProviders\TikTok\Provider::class);
+        });
+
         // Cashier configuration
         Cashier::useCustomerModel(Workspace::class);
 
@@ -63,11 +72,11 @@ class AppServiceProvider extends ServiceProvider
 
         // Gate policies
         Gate::policy(Workspace::class, WorkspacePolicy::class);
-        Gate::policy(SocialAccount::class, SocialAccountPolicy::class);
+        Gate::policy(Account::class, AccountPolicy::class);
 
         // Morph map for polymorphic relationships
         Relation::enforceMorphMap([
-            'socialAccount' => SocialAccount::class,
+            'account' => Account::class,
             'invite' => Invite::class,
             'language' => Language::class,
             'media' => Media::class,
@@ -76,6 +85,9 @@ class AppServiceProvider extends ServiceProvider
             'postStat' => PostStat::class,
             'user' => User::class,
             'workspace' => Workspace::class,
+            'space' => Space::class,
+            'tag' => Tag::class,
+            'hashtag' => Hashtag::class,
         ]);
     }
 }

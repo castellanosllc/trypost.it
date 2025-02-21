@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Services;
 
-use App\Models\SocialAccount;
+use App\Models\Account;
 use App\Models\Post;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Http\Client\RequestException;
@@ -14,9 +14,9 @@ class Linkedin
 {
     private string $baseUrl = 'https://api.linkedin.com';
     private string $apiVersion = 'v2';
-    private SocialAccount $account;
+    private Account $account;
 
-    public function __construct(SocialAccount $account)
+    public function __construct(Account $account)
     {
         $this->account = $account;
     }

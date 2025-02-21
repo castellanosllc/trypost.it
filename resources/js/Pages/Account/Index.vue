@@ -14,17 +14,22 @@ const providers = [
   {
     id: "twitter",
     name: "X",
-    href: route("social-accounts.twitter.connect"),
+    href: route("accounts.twitter.connect"),
   },
   {
     id: "linkedin",
     name: "LinkedIn",
-    href: route("social-accounts.linkedin.connect"),
+    href: route("accounts.linkedin.connect"),
   },
   {
     id: "linkedin-page",
     name: "LinkedIn Page",
-    href: route("social-accounts.linkedin-page.connect"),
+    href: route("accounts.linkedin-page.connect"),
+  },
+  {
+    id: "tiktok",
+    name: "TikTok",
+    href: route("accounts.tiktok.connect"),
   },
 ];
 </script>

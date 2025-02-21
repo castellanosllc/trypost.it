@@ -19,7 +19,7 @@ class WorkspaceController extends Controller
 
     public function update(UpdateRequest $request)
     {
-        $workspace = auth()->user()->currentWorkspace;
+        $workspace = auth()->user()->workspace;
 
         $workspace->update([
             'name' => $request->name,

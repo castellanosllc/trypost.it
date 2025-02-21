@@ -16,7 +16,11 @@ class HashtagController extends Controller
 {
     public function index()
     {
-        $hashtags = Hashtag::where('workspace_id', Auth::user()->currentWorkspace->id)->get();
+        $space = Auth::user()->currentSpace;
+
+        $hashtags = Hashtag::where('space_id', $space->id)
+            ->orderBy('created_at', 'asc')
+            ->get();
 
         return Inertia::render('Hashtag/Index', [
             'hashtags' => $hashtags,
@@ -30,15 +34,16 @@ class HashtagController extends Controller
             'collection' => ['required', 'string'],
         ]);
 
-        $workspace = Auth::user()->currentWorkspace;
+        $space = Auth::user()->currentSpace;
 
         Hashtag::create([
-            'workspace_id' => $workspace->id,
+            'space_id' => $space->id,
+            'workspace_id' => $space->workspace_id,
             'name' => $request->name,
             'collection' => $request->collection,
         ]);
 
-        session()->flash('flash.banner', 'Tag created successful.');
+        session()->flash('flash.banner', 'Hashtag created successful.');
         session()->flash('flash.bannerStyle', 'success');
 
         return back();
@@ -51,7 +56,9 @@ class HashtagController extends Controller
             'collection' => ['required', 'string'],
         ]);
 
-        $hashtag = Hashtag::where('id', $id)->where('workspace_id', Auth::user()->currentWorkspace->id)->firstOrFail();
+        $space = Auth::user()->currentSpace;
+
+        $hashtag = Hashtag::where('id', $id)->where('space_id', $space->id)->firstOrFail();
         $hashtag->update([
             'name' => $request->name,
             'collection' => $request->collection,
@@ -65,7 +72,9 @@ class HashtagController extends Controller
 
     public function destroy($id)
     {
-        $hashtag = Hashtag::where('workspace_id', Auth::user()->currentWorkspace->id)->where('id', $id)->firstOrFail();
+        $space = Auth::user()->currentSpace;
+
+        $hashtag = Hashtag::where('space_id', $space->id)->where('id', $id)->firstOrFail();
         $hashtag->delete();
 
         session()->flash('flash.banner', 'Hashtag deleted successful.');

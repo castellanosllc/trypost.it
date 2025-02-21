@@ -4,14 +4,15 @@ declare(strict_types=1);
 
 use Illuminate\Support\Facades\Route;
 
+// social accounts
+use App\Http\Controllers\Account\HomeController as AccountHomeController;
+use App\Http\Controllers\Account\LinkedinController;
+use App\Http\Controllers\Account\LinkedinPageController;
+use App\Http\Controllers\Account\TwitterController;
+use App\Http\Controllers\Account\TikTokController;
 
-use App\Http\Controllers\SocialAccount\HomeController as SocialAccountHomeController;
-use App\Http\Controllers\SocialAccount\LinkedinController;
-use App\Http\Controllers\SocialAccount\LinkedinPageController;
-use App\Http\Controllers\SocialAccount\TwitterController;
-use App\Http\Controllers\SocialAccount\TiktokController;
-
-use App\Http\Controllers\WorkspaceController;
+// general
+use App\Http\Controllers\SpaceController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\MediaController;
 use App\Http\Controllers\TagController;
@@ -20,7 +21,7 @@ use App\Http\Controllers\HashtagController;
 
 // setting
 use App\Http\Controllers\Setting\AccountController;
-use App\Http\Controllers\Setting\WorkspaceController as SettingWorkspaceController;
+use App\Http\Controllers\Setting\WorkspaceController;
 use App\Http\Controllers\Setting\UsageController;
 use App\Http\Controllers\Setting\BillingController;
 use App\Http\Controllers\Setting\InviteController;
@@ -31,17 +32,15 @@ Route::group(
         'middleware' => [
             'auth',
             'verified',
-            'set-workspace',
             'billing'
         ],
     ],
     function () {
 
-        // workspaces
-        Route::get('/workspaces', [WorkspaceController::class, 'index'])->name('workspaces.index')->withoutMiddleware(['billing']);
-        Route::get('/workspaces/create', [WorkspaceController::class, 'create'])->name('workspaces.create')->withoutMiddleware(['billing']);
-        Route::post('/workspaces', [WorkspaceController::class, 'store'])->name('workspaces.store')->withoutMiddleware(['billing']);
-        Route::put('/workspaces/update-current', [WorkspaceController::class, 'setCurrentStore'])->name('workspaces.update-current')->withoutMiddleware(['billing']);
+        // spaces
+        Route::get('/spaces/create', [SpaceController::class, 'create'])->name('spaces.create');
+        Route::post('/spaces', [SpaceController::class, 'store'])->name('spaces.store');
+        Route::put('/spaces/update-current', [SpaceController::class, 'setCurrentStore'])->name('spaces.update-current');
 
         // posts
         Route::get('/posts/{id?}', [PostController::class, 'index'])->name('posts.index');
@@ -57,25 +56,25 @@ Route::group(
         Route::delete('/medias/{modelId}/{id}', [MediaController::class, 'destroy'])->name('medias.destroy');
 
         // accounts
-        Route::get('/social-accounts', [SocialAccountHomeController::class, 'index'])->name('social-accounts.index');
+        Route::get('/social-accounts', [AccountHomeController::class, 'index'])->name('accounts.index');
 
         // linkedin
-        Route::get('/social-accounts/linkedin/connect', [LinkedinController::class, 'connect'])->name('social-accounts.linkedin.connect');
-        Route::get('/social-accounts/linkedin/callback', [LinkedinController::class, 'callback'])->name('social-accounts.linkedin.callback');
+        Route::get('/social-accounts/linkedin/connect', [LinkedinController::class, 'connect'])->name('accounts.linkedin.connect');
+        Route::get('/social-accounts/linkedin/callback', [LinkedinController::class, 'callback'])->name('accounts.linkedin.callback');
 
         // linkedin page
-        Route::get('/social-accounts/linkedin-page/connect', [LinkedinPageController::class, 'connect'])->name('social-accounts.linkedin-page.connect');
-        Route::get('/social-accounts/linkedin-page/callback', [LinkedinPageController::class, 'callback'])->name('social-accounts.linkedin-page.callback');
-        Route::get('/social-accounts/linkedin-page/select', [LinkedinPageController::class, 'selectPage'])->name('social-accounts.linkedin-page.select');
-        Route::post('/social-accounts/linkedin-page/store', [LinkedinPageController::class, 'store'])->name('social-accounts.linkedin-page.store');
+        Route::get('/social-accounts/linkedin-page/connect', [LinkedinPageController::class, 'connect'])->name('accounts.linkedin-page.connect');
+        Route::get('/social-accounts/linkedin-page/callback', [LinkedinPageController::class, 'callback'])->name('accounts.linkedin-page.callback');
+        Route::get('/social-accounts/linkedin-page/select', [LinkedinPageController::class, 'selectPage'])->name('accounts.linkedin-page.select');
+        Route::post('/social-accounts/linkedin-page/store', [LinkedinPageController::class, 'store'])->name('accounts.linkedin-page.store');
 
         // twitter
-        Route::get('/social-accounts/twitter/connect', [TwitterController::class, 'connect'])->name('social-accounts.twitter.connect');
-        Route::get('/social-accounts/twitter/callback', [TwitterController::class, 'callback'])->name('social-accounts.twitter.callback');
+        Route::get('/social-accounts/twitter/connect', [TwitterController::class, 'connect'])->name('accounts.twitter.connect');
+        Route::get('/social-accounts/twitter/callback', [TwitterController::class, 'callback'])->name('accounts.twitter.callback');
 
         // tiktok
-        Route::get('/social-accounts/tiktok/connect', [TiktokController::class, 'connect'])->name('social-accounts.tiktok.connect');
-        Route::get('/social-accounts/tiktok/callback', [TiktokController::class, 'callback'])->name('social-accounts.tiktok.callback');
+        Route::get('/social-accounts/tiktok/connect', [TikTokController::class, 'connect'])->name('accounts.tiktok.connect');
+        Route::get('/social-accounts/tiktok/callback', [TikTokController::class, 'callback'])->name('accounts.tiktok.callback');
 
         // tags
         Route::get('/tags', [TagController::class, 'index'])->name('setting.tags.index');
@@ -99,9 +98,9 @@ Route::group(
             Route::delete('/account/photo', [AccountController::class, 'deletePhoto'])->name('setting.account.photo.destroy');
 
             // workspace
-            Route::get('/workspace', [SettingWorkspaceController::class, 'edit'])->name('setting.workspace.edit');
-            Route::put('/workspace', [SettingWorkspaceController::class, 'update'])->name('setting.workspace.update');
-            Route::delete('/workspace/photo', [SettingWorkspaceController::class, 'deleteLogo'])->name('setting.workspace.logo.destroy');
+            Route::get('/workspace', [WorkspaceController::class, 'edit'])->name('setting.workspace.edit');
+            Route::put('/workspace', [WorkspaceController::class, 'update'])->name('setting.workspace.update');
+            Route::delete('/workspace/photo', [WorkspaceController::class, 'deleteLogo'])->name('setting.workspace.logo.destroy');
 
             // billing
             Route::get('/billing/start-trial', [BillingController::class, 'trial'])->name('setting.billing.start-trial');

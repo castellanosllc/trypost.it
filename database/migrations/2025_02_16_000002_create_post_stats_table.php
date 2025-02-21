@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('post_stats', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->foreignUuid('social_account_id')->constrained()->onDelete('cascade');
+            $table->foreignUuid('account_id')->constrained()->onDelete('cascade');
             $table->foreignUuid('post_id')->constrained()->onDelete('cascade');
             $table->string('url')->nullable();
             $table->string('platform')->nullable();

@@ -11,7 +11,6 @@ use App\Models\Traits\WorkspaceUsage;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 use Laravel\Pennant\Feature;
@@ -27,7 +26,6 @@ class Workspace extends Model implements HasMedia
     use HasFactory;
     use HasUuids;
     use Billable;
-    use SoftDeletes;
     use WorkspaceUsage;
     use HasFeatures;
     use InteractsWithMedia;
@@ -120,7 +118,7 @@ class Workspace extends Model implements HasMedia
      */
     public function stripeEmail(): string|null
     {
-        return $this->users()->where('role', Role::OWNER)->first()->email;
+        return $this->users()->where('users.role', Role::OWNER)->first()->email;
     }
 
     public function registerMediaCollections(): void
@@ -131,17 +129,12 @@ class Workspace extends Model implements HasMedia
 
     public function getLogoUrlAttribute()
     {
-        return $this->hasMedia('logo')
-            ? $this->getFirstMediaUrl('logo')
-            : 'https://ui-avatars.com/api/?name=' . urlencode($this->name) . '&color=FFFFFF&background=000000&length=1';
+        return 'https://ui-avatars.com/api/?name=' . urlencode($this->name) . '&color=FFFFFF&background=000000&length=1';
     }
 
     public function users()
     {
-        return $this->belongsToMany(User::class)
-            ->withPivot('role')
-            ->as('membership')
-            ->withTimestamps();
+        return $this->hasMany(User::class);
     }
 
     public function invites()
@@ -154,14 +147,14 @@ class Workspace extends Model implements HasMedia
         return $this->belongsTo(Plan::class);
     }
 
-    public function socialSets(): HasMany
+    public function spaces(): HasMany
     {
-        return $this->hasMany(SocialSet::class);
+        return $this->hasMany(Space::class);
     }
 
-    public function socialAccounts(): HasMany
+    public function accounts(): HasMany
     {
-        return $this->hasMany(SocialAccount::class);
+        return $this->hasMany(Account::class);
     }
 
     public function posts(): HasMany

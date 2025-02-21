@@ -22,7 +22,7 @@ class Billing
         //     return redirect(route('setting.billing.start-trial'));
         // }
 
-        Inertia::share('usage', $request->user()->currentWorkspace->usage());
+        // Inertia::share('usage', $request->user()->workspace->usage());
         return $next($request);
     }
 }

@@ -14,7 +14,7 @@ use App\Http\Requests\Post\UpdateRequest;
 
 use App\Enums\Post\Status;
 
-use App\Models\SocialAccount;
+use App\Models\Account;
 use App\Models\Post;
 use App\Models\PostStat;
 
@@ -24,7 +24,7 @@ class PostController extends Controller
 {
     public function index(Request $request, $id = null)
     {
-        $workspace = Auth::user()->currentWorkspace;
+        $workspace = Auth::user()->workspace;
 
         if ($request->start && $request->end) {
             $query = Post::where('workspace_id', $workspace->id)->latest();
@@ -37,7 +37,7 @@ class PostController extends Controller
         }
 
         return Inertia::render('Post/Index', [
-            'accounts' => SocialAccount::where('workspace_id', $workspace->id)->get(),
+            'accounts' => Account::where('workspace_id', $workspace->id)->get(),
             'post' => $id ? Post::where('workspace_id', $workspace->id)
                 ->with('postStats.account')
                 ->where('id', $id)
@@ -47,7 +47,7 @@ class PostController extends Controller
 
     public function edit($id)
     {
-        $workspace = Auth::user()->currentWorkspace;
+        $workspace = Auth::user()->workspace;
 
         $post = Post::where('workspace_id', $workspace->id)
             ->where('id', $id)
@@ -58,7 +58,7 @@ class PostController extends Controller
     }
     public function store(CreateRequest $request)
     {
-        $workspace = Auth::user()->currentWorkspace;
+        $workspace = Auth::user()->workspace;
 
         $post = Post::create([
             'workspace_id' => $workspace->id,
@@ -75,7 +75,7 @@ class PostController extends Controller
 
     public function update($id, UpdateRequest $request)
     {
-        $workspace = Auth::user()->currentWorkspace;
+        $workspace = Auth::user()->workspace;
 
         $post = Post::where('workspace_id', $workspace->id)->where('id', $id)->firstOrFail();
 
@@ -90,7 +90,7 @@ class PostController extends Controller
 
         foreach ($request->accounts as $accountId) {
 
-            $account = SocialAccount::where('workspace_id', $workspace->id)->where('id', $accountId)->firstOrFail();
+            $account = Account::where('workspace_id', $workspace->id)->where('id', $accountId)->firstOrFail();
 
             // create or update
             PostStat::create([
@@ -105,7 +105,7 @@ class PostController extends Controller
 
     public function destroy($id)
     {
-        $workspace = Auth::user()->currentWorkspace;
+        $workspace = Auth::user()->workspace;
 
         $post = Post::where('workspace_id', $workspace->id)->where('id', $id)->firstOrFail();
         $post->delete();

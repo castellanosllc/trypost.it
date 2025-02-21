@@ -7,7 +7,7 @@ use Illuminate\Foundation\Queue\Queueable;
 
 use App\Models\Post;
 use App\Models\PostStat;
-use App\Models\SocialAccount;
+use App\Models\Account;
 
 use App\Enums\Post\Status as PostStatus;
 use App\Enums\PostStat\Status as PostStatStatus;
@@ -24,7 +24,7 @@ class PublishAtLinkedin implements ShouldQueue
     public function __construct(
         public Post $post,
         public PostStat $postStat,
-        public SocialAccount $account
+        public Account $account
     ) {}
 
     /**

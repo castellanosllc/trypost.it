@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Enums\SocialAccount;
+namespace App\Enums\Account;
 
 enum Status: string
 {

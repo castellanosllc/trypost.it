@@ -28,7 +28,6 @@ class InviteRequest extends FormRequest
         return [
             'email' => ['required', 'string', 'email', 'max:255', 'unique:invites'],
             'role' => [new Enum(Role::class)],
-
         ];
     }
 }

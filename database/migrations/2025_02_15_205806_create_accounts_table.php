@@ -11,10 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('social_accounts', function (Blueprint $table) {
+        Schema::create('accounts', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->foreignUuid('workspace_id')->constrained();
-            $table->foreignUuid('social_set_id')->constrained();
+            $table->foreignUuid('space_id')->constrained();
             $table->string('platform');
             $table->string('platform_id')->unique();
             $table->string('name')->nullable();
@@ -35,6 +35,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('social_accounts');
+        Schema::dropIfExists('accounts');
     }
 };

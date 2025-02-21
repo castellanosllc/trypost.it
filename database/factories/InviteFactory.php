@@ -23,7 +23,7 @@ class InviteFactory extends Factory
     {
         return [
             'email' => $this->faker->email,
-            'role' => Role::ROLE_ADMIN,
+            'role' => Role::USER,
             'workspace_id' => Workspace::factory(),
         ];
     }

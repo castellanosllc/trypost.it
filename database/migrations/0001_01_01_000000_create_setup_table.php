@@ -13,35 +13,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('users', function (Blueprint $table) {
+        Schema::create('languages', function (Blueprint $table) {
             $table->uuid('id')->primary();
+            $table->string('code');
             $table->string('name');
-            $table->string('email')->unique();
-            $table->timestamp('email_verified_at')->nullable();
-            $table->string('password');
-            $table->string('theme')->default(Theme::LIGHT);
-            $table->foreignUuid('language_id')->constrained();
-            $table->foreignUuid('current_workspace_id')->nullable();
-            $table->rememberToken();
+            $table->string('flag');
             $table->timestamps();
             $table->softDeletes('deleted_at');
-
-            $table->unique(['email', 'deleted_at']);
-        });
-
-        Schema::create('password_reset_tokens', function (Blueprint $table) {
-            $table->string('email')->primary();
-            $table->string('token');
-            $table->timestamp('created_at')->nullable();
-        });
-
-        Schema::create('sessions', function (Blueprint $table) {
-            $table->string('id')->primary();
-            $table->foreignUuid('user_id')->nullable()->index();
-            $table->string('ip_address', 45)->nullable();
-            $table->text('user_agent')->nullable();
-            $table->longText('payload');
-            $table->integer('last_activity')->index();
         });
 
         Schema::create('plans', function (Blueprint $table) {
@@ -64,17 +42,45 @@ return new class extends Migration
             $table->string('pm_type')->nullable();
             $table->string('pm_last_four', 4)->nullable();
             $table->timestamp('trial_ends_at')->nullable();
-
             $table->timestamps();
-            $table->softDeletes('deleted_at');
         });
 
-        Schema::create('user_workspace', function (Blueprint $table) {
-            $table->id();
-            $table->foreignUuid('user_id')->constrained();
+        Schema::create('spaces', function (Blueprint $table) {
+            $table->uuid('id')->primary();
+            $table->string('name');
             $table->foreignUuid('workspace_id')->constrained();
-            $table->string('role');
             $table->timestamps();
+            $table->softDeletes();
+        });
+
+        Schema::create('users', function (Blueprint $table) {
+            $table->uuid('id')->primary();
+            $table->string('name');
+            $table->string('email')->unique();
+            $table->timestamp('email_verified_at')->nullable();
+            $table->string('password');
+            $table->string('theme')->default(Theme::LIGHT);
+            $table->string('role');
+            $table->foreignUuid('language_id')->constrained();
+            $table->foreignUuid('current_space_id')->constrained(table: 'spaces');
+            $table->foreignUuid('workspace_id')->constrained();
+            $table->rememberToken();
+            $table->timestamps();
+        });
+
+        Schema::create('password_reset_tokens', function (Blueprint $table) {
+            $table->string('email')->primary();
+            $table->string('token');
+            $table->timestamp('created_at')->nullable();
+        });
+
+        Schema::create('sessions', function (Blueprint $table) {
+            $table->string('id')->primary();
+            $table->foreignUuid('user_id')->nullable()->index();
+            $table->string('ip_address', 45)->nullable();
+            $table->text('user_agent')->nullable();
+            $table->longText('payload');
+            $table->integer('last_activity')->index();
         });
 
         Schema::create('invites', function (Blueprint $table) {
@@ -95,5 +101,9 @@ return new class extends Migration
         Schema::dropIfExists('users');
         Schema::dropIfExists('password_reset_tokens');
         Schema::dropIfExists('sessions');
+        Schema::dropIfExists('invites');
+        Schema::dropIfExists('workspaces');
+        Schema::dropIfExists('plans');
+        Schema::dropIfExists('languages');
     }
 };

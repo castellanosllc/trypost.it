@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Enums\User\Role;
+
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -16,14 +18,11 @@ use Illuminate\Notifications\Notifiable;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 
-use App\Models\Traits\HasWorkspaces;
-
 class User extends Authenticatable implements MustVerifyEmail, HasMedia
 {
     use HasFactory;
     use Notifiable;
     use HasUuids;
-    use HasWorkspaces;
     use InteractsWithMedia;
 
     /**
@@ -36,9 +35,11 @@ class User extends Authenticatable implements MustVerifyEmail, HasMedia
         'email',
         'password',
         'language_id',
-        'current_workspace_id',
+        'workspace_id',
         'email_verified_at',
-        'theme'
+        'theme',
+        'role',
+        'current_space_id',
     ];
 
     /**
@@ -61,6 +62,7 @@ class User extends Authenticatable implements MustVerifyEmail, HasMedia
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'role' => Role::class,
         ];
     }
 
@@ -91,5 +93,15 @@ class User extends Authenticatable implements MustVerifyEmail, HasMedia
     public function language(): BelongsTo
     {
         return $this->belongsTo(Language::class);
+    }
+
+    public function workspace(): BelongsTo
+    {
+        return $this->belongsTo(Workspace::class);
+    }
+
+    public function currentSpace(): BelongsTo
+    {
+        return $this->belongsTo(Space::class, 'current_space_id');
     }
 }

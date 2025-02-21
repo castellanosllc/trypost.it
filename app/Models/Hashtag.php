@@ -23,6 +23,7 @@ class Hashtag extends Model
      */
     protected $fillable = [
         'workspace_id',
+        'space_id',
         'name',
         'collection',
     ];
@@ -42,5 +43,10 @@ class Hashtag extends Model
     public function workspace(): BelongsTo
     {
         return $this->belongsTo(Workspace::class);
+    }
+
+    public function space(): BelongsTo
+    {
+        return $this->belongsTo(Space::class);
     }
 }

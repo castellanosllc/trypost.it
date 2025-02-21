@@ -28,6 +28,7 @@ class Post extends Model implements HasMedia
      */
     protected $fillable = [
         'workspace_id',
+        'space_id',
         'content',
         'scheduled_at',
         'status'
@@ -70,6 +71,11 @@ class Post extends Model implements HasMedia
     public function account(): BelongsTo
     {
         return $this->belongsTo(Account::class);
+    }
+
+    public function space(): BelongsTo
+    {
+        return $this->belongsTo(Space::class);
     }
 
     public function workspace(): BelongsTo

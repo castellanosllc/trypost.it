@@ -19,7 +19,7 @@ class TeamMemberController extends Controller
 {
     public function index(Request $request)
     {
-        $workspace = auth()->user()->currentWorkspace;
+        $workspace = auth()->user()->workspace;
 
         $workspace = Workspace::where('id', $workspace->id)
             ->with('users', function ($query) use ($request) {
@@ -44,12 +44,12 @@ class TeamMemberController extends Controller
         // validate user
         $user = User::where('id', $id)
         ->whereHas('workspaces', function (Builder $query) {
-            $query->where('workspaces.id', auth()->user()->currentWorkspace->id);
+            $query->where('workspaces.id', auth()->user()->workspace->id);
         })
         ->firstOrFail();
 
         // update user role
-        $user->workspaces()->syncWithPivotValues([auth()->user()->currentWorkspace->id], ['role' => $request->role], false);
+        $user->workspaces()->syncWithPivotValues([auth()->user()->workspace->id], ['role' => $request->role], false);
 
         session()->flash('flash.banner', 'User role updated');
         session()->flash('flash.bannerStyle', 'success');
@@ -65,12 +65,12 @@ class TeamMemberController extends Controller
         // validate if user exist on workspace
         $user = User::where('id', $id)
         ->whereHas('workspaces', function (Builder $query) {
-            $query->where('workspaces.id', auth()->user()->currentWorkspace->id);
+            $query->where('workspaces.id', auth()->user()->workspace->id);
         })
         ->firstOrFail();
 
         // detach user from workspace
-        $user->workspaces()->detach(auth()->user()->currentWorkspace->id);
+        $user->workspaces()->detach(auth()->user()->workspace->id);
 
         session()->flash('flash.banner', 'User removed successful');
         session()->flash('flash.bannerStyle', 'success');
@@ -81,7 +81,7 @@ class TeamMemberController extends Controller
     public function leave()
     {
         $user = auth()->user();
-        $workspace = auth()->user()->currentWorkspace;
+        $workspace = auth()->user()->workspace;
 
         if ($workspace->users()->count() == 1) {
             session()->flash('flash.banner', 'The Team cannot stay without a user');

@@ -18,7 +18,9 @@ class TagController extends Controller
 {
     public function index()
     {
-        $tags = Tag::where('workspace_id', Auth::user()->currentWorkspace->id)->get();
+        $user = Auth::user();
+
+        $tags = Tag::where('space_id', $user->currentSpace->id)->get();
 
         return Inertia::render('Tag/Index', [
             'tags' => $tags,
@@ -32,14 +34,15 @@ class TagController extends Controller
             'color' => ['required', 'max:255'],
         ]);
 
-        $workspace = Auth::user()->currentWorkspace;
+        $space = Auth::user()->currentSpace;
 
-        $label = new Tag;
-        $label->workspace_id = $workspace->id;
-        $label->name = $request->name;
-        $label->color = $request->color;
-        $label->sort = Tag::where('workspace_id', $workspace->id)->count() + 1;
-        $label->save();
+        Tag::create([
+            'space_id' => $space->id,
+            'workspace_id' => $space->workspace_id,
+            'name' => $request->name,
+            'color' => $request->color,
+            'sort' => Tag::where('space_id', $space->id)->count() + 1,
+        ]);
 
         session()->flash('flash.banner', 'Tag created successful.');
         session()->flash('flash.bannerStyle', 'success');
@@ -54,10 +57,13 @@ class TagController extends Controller
             'color' => ['required', 'max:255'],
         ]);
 
-        $tag = Tag::where('id', $id)->where('workspace_id', Auth::user()->currentWorkspace->id)->firstOrFail();
-        $tag->name = $request->name;
-        $tag->color = $request->color;
-        $tag->save();
+        $space = Auth::user()->currentSpace;
+
+        $tag = Tag::where('id', $id)->where('space_id', $space->id)->firstOrFail();
+        $tag->update([
+            'name' => $request->name,
+            'color' => $request->color,
+        ]);
 
         session()->flash('flash.banner', 'Tag updated successful.');
         session()->flash('flash.bannerStyle', 'success');
@@ -67,7 +73,9 @@ class TagController extends Controller
 
     public function destroy($id)
     {
-        $tag = Tag::where('workspace_id', Auth::user()->currentWorkspace->id)->where('id', $id)->firstOrFail();
+        $space = Auth::user()->currentSpace;
+
+        $tag = Tag::where('id', $id)->where('space_id', $space->id)->firstOrFail();
         $tag->delete();
 
         session()->flash('flash.banner', 'Tag deleted successful.');
@@ -82,13 +90,13 @@ class TagController extends Controller
             'tags' => ['required', 'array']
         ]);
 
-        $workspace = Auth::user()->currentWorkspace;
+        $space = Auth::user()->currentSpace;
 
         DB::beginTransaction();
 
         try {
             foreach ($request->tags as $sort => $tag) {
-                $tag = Tag::where('id', $tag['id'])->where('workspace_id', $workspace->id)->firstOrFail();
+                $tag = Tag::where('id', $tag['id'])->where('space_id', $space->id)->firstOrFail();
                 $tag->sort = $sort + 1;
                 $tag->save();
             }

@@ -39,12 +39,10 @@ class HandleInertiaRequests extends Middleware
                         return;
                     }
 
-                    $currentWorkspace = $request->user()->current_workspace_id ? $request->user()->currentWorkspace : null;
-                    $currentWorkspace ? $currentWorkspace->role = $request->user()->workspaceRole($currentWorkspace) : null;
-
                     return array_merge($request->user()->toArray(), array_filter([
-                        'current_workspace' => $currentWorkspace,
-                        'workspaces' => $request->user()->workspaces,
+                        'workspace' => $request->user()->workspace,
+                        'current_space' => $request->user()->currentSpace,
+                        'spaces' => $request->user()->workspace->spaces,
                     ]));
                 },
             ],
