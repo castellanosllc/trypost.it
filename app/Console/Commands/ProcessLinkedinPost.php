@@ -31,7 +31,7 @@ class ProcessLinkedinPost extends Command
     public function handle()
     {
         $query = Post::scheduled()
-            ->withWhereHas('postStats', function ($query) {
+            ->withWhereHas('postContents', function ($query) {
                 $query->whereNull('status');
                 $query->where('platform', Platform::LINKEDIN);
                 $query->with('account');
@@ -39,7 +39,7 @@ class ProcessLinkedinPost extends Command
 
         $query->chunk(100, function ($posts) {
             foreach ($posts as $post) {
-                PublishAtLinkedin::dispatch($post, $post->postStats->first(), $post->postStats->first()->account);
+                PublishAtLinkedin::dispatch($post, $post->postContents->first(), $post->postContents->first()->account);
             }
         });
     }

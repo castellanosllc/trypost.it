@@ -32,7 +32,7 @@ class ProcessTwitterPost extends Command
     public function handle()
     {
         $query = Post::scheduled()
-            ->withWhereHas('postStats', function ($query) {
+            ->withWhereHas('postContents', function ($query) {
                 $query->whereNull('status');
                 $query->where('platform', Platform::TWITTER);
                 $query->with('account');
@@ -40,7 +40,7 @@ class ProcessTwitterPost extends Command
 
         $query->chunk(100, function ($posts) {
             foreach ($posts as $post) {
-                PublishAtTwitter::dispatch($post, $post->postStats->first(), $post->postStats->first()->account);
+                PublishAtTwitter::dispatch($post, $post->postContents->first(), $post->postContents->first()->account);
             }
         });
     }

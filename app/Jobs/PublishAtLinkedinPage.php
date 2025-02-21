@@ -6,11 +6,11 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
 
 use App\Models\Post;
-use App\Models\PostStat;
+use App\Models\PostContent;
 use App\Models\Account;
 
 use App\Enums\Post\Status as PostStatus;
-use App\Enums\PostStat\Status as PostStatStatus;
+use App\Enums\PostContent\Status as PostContentStatus;
 
 use App\Services\LinkedinPage;
 
@@ -23,7 +23,7 @@ class PublishAtLinkedinPage implements ShouldQueue
      */
     public function __construct(
         public Post $post,
-        public PostStat $postStat,
+        public PostContent $postContent,
         public Account $account
     ) {}
 
@@ -39,9 +39,9 @@ class PublishAtLinkedinPage implements ShouldQueue
         $this->post->status = PostStatus::PUBLISHED;
         $this->post->save();
 
-        // update post stat
-        $this->postStat->update([
-            'status' => PostStatStatus::PUBLISHED,
+        // update post content
+        $this->postContent->update([
+            'status' => PostContentStatus::PUBLISHED,
             'published_at' => now(),
             'url' => $data['url'],
             'platform_id' => $data['id'],

@@ -162,9 +162,9 @@ class Workspace extends Model implements HasMedia
         return $this->hasMany(Post::class);
     }
 
-    public function postStats(): HasMany
+    public function postContents(): HasMany
     {
-        return $this->hasMany(PostStat::class);
+        return $this->hasMany(PostContent::class);
     }
 
     public function tags(): HasMany

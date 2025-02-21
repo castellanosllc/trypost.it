@@ -5,7 +5,7 @@ import Accordion from "@/Components/Accordion.vue";
 import Label from "@/Components/Label.vue";
 
 const props = defineProps({
-  post: {
+  postContent: {
     type: Object,
     required: true
   }
@@ -16,7 +16,7 @@ const isDragging = ref(false);
 const isLoading = ref(false);
 const error = ref(null);
 const dragCounter = ref(0);
-const uploadedFiles = ref(props.post.media || []);
+const uploadedFiles = ref(props.postContent.media || []);
 
 const handleDragEnter = (e) => {
   e.preventDefault();
@@ -68,8 +68,8 @@ const uploadFiles = async (files) => {
     for (const file of files) {
       const formData = new FormData();
       formData.append("media", file);
-      formData.append("model", "Post");
-      formData.append("model_id", props.post.id);
+      formData.append("model", "PostContent");
+      formData.append("model_id", props.postContent.id);
       formData.append("collection", "medias");
       formData.append("visibility", "public");
 
@@ -91,7 +91,7 @@ const uploadFiles = async (files) => {
 const deleteMedia = async (mediaId) => {
   try {
     await axios.delete(route("medias.destroy", {
-      modelId: props.post.id,
+      modelId: props.postContent.id,
       id: mediaId,
     }));
 

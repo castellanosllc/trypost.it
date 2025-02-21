@@ -12,14 +12,10 @@ use Illuminate\Database\Eloquent\Builder;
 
 use App\Enums\Post\Status;
 
-use Spatie\MediaLibrary\HasMedia;
-use Spatie\MediaLibrary\InteractsWithMedia;
-
-class Post extends Model implements HasMedia
+class Post extends Model
 {
     use HasFactory;
     use HasUuids;
-    use InteractsWithMedia;
 
     /**
      * The attributes that are mass assignable.
@@ -29,12 +25,10 @@ class Post extends Model implements HasMedia
     protected $fillable = [
         'workspace_id',
         'space_id',
-        'content',
         'scheduled_at',
-        'status'
+        'status',
+        'auto_sync',
     ];
-
-    protected $with = ['media'];
 
     /**
      * Get the attributes that should be cast.
@@ -44,7 +38,8 @@ class Post extends Model implements HasMedia
     protected function casts(): array
     {
         return [
-            'status' => Status::class
+            'status' => Status::class,
+            'auto_sync' => 'boolean',
         ];
     }
 
@@ -62,12 +57,6 @@ class Post extends Model implements HasMedia
             ->where('scheduled_at', '<=', now());
     }
 
-    public function registerMediaCollections(): void
-    {
-        $this->addMediaCollection('medias')
-            ->onlyKeepLatest(5);
-    }
-
     public function account(): BelongsTo
     {
         return $this->belongsTo(Account::class);
@@ -83,9 +72,9 @@ class Post extends Model implements HasMedia
         return $this->belongsTo(Workspace::class);
     }
 
-    public function postStats(): HasMany
+    public function postContents(): HasMany
     {
-        return $this->hasMany(PostStat::class);
+        return $this->hasMany(PostContent::class);
     }
 
     public function tags(): BelongsToMany

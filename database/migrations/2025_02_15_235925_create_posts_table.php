@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignUuid('workspace_id')->constrained();
             $table->foreignUuid('space_id')->constrained();
 
-            $table->text('content');
+            $table->boolean('auto_sync')->default(true);
             $table->timestamp('scheduled_at')->nullable();
             $table->string('status');
 

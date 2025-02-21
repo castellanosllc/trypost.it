@@ -8,5 +8,6 @@ enum Status: string
     case DRAFT = 'draft';
     case SCHEDULED = 'scheduled';
     case PUBLISHED = 'published';
+    case PARTIALLY_PUBLISHED = 'partially-published';
     case FAILED = 'failed';
 }

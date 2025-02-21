@@ -21,7 +21,7 @@ use App\Models\User;
 use App\Models\Account;
 use App\Models\Invite;
 use App\Models\Post;
-use App\Models\PostStat;
+use App\Models\PostContent;
 use App\Models\Media;
 use App\Models\Language;
 use App\Models\Plan;
@@ -82,7 +82,7 @@ class AppServiceProvider extends ServiceProvider
             'media' => Media::class,
             'plan' => Plan::class,
             'post' => Post::class,
-            'postStat' => PostStat::class,
+            'postContent' => PostContent::class,
             'user' => User::class,
             'workspace' => Workspace::class,
             'space' => Space::class,

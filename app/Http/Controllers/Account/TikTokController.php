@@ -51,7 +51,7 @@ class TikTokController extends Controller
             'username' => $tiktokUser->getNickname(),
             'photo' => $tiktokUser->getAvatar(),
             'access_token' => $tiktokUser->token,
-            'refresh_token' => $tiktokUser->tokenSecret,
+            'refresh_token' => $tiktokUser->refreshToken,
             'expires_in' => $tiktokUser->expiresIn,
             'status' => Status::CONNECTED,
         ]);

@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Route;
 // general
 use App\Http\Controllers\SpaceController;
 use App\Http\Controllers\PostController;
+use App\Http\Controllers\PostContentController;
 use App\Http\Controllers\MediaController;
 use App\Http\Controllers\TagController;
 use App\Http\Controllers\HashtagController;
@@ -31,6 +32,11 @@ Route::group(
         Route::post('/posts', [PostController::class, 'store'])->name('posts.store');
         Route::put('/posts/{id}', [PostController::class, 'update'])->name('posts.update');
         Route::delete('/posts/{id}', [PostController::class, 'destroy'])->name('posts.destroy');
+
+        // post contents
+        Route::post('/posts/{id}/post-contents', [PostContentController::class, 'store'])->name('post-contents.store');
+        Route::put('/posts/{id}/post-contents/{postContentId}', [PostContentController::class, 'update'])->name('post-contents.update');
+        Route::delete('/posts/{id}/post-contents/{postContentId}', [PostContentController::class, 'destroy'])->name('post-contents.destroy');
 
         // medias
         Route::get('/medias/{id}/download', [MediaController::class, 'download'])->name('medias.download')->withoutMiddleware('*');

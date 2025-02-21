@@ -92,10 +92,18 @@ const navigation = [
     items: [
       {
         name: "Settings",
-
+        href: route("posts.index"),
         current: route().current("setting.*"),
         target: "_self",
         icon: IconSettings,
+        show: true,
+      },
+      {
+        name: "Accounts",
+        href: route("accounts.index"),
+        current: route().current("accounts.*"),
+        target: "_self",
+        icon: IconUsers,
         show: true,
       },
     ],

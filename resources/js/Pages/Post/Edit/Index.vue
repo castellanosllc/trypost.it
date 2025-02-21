@@ -12,10 +12,17 @@ import Dropdown from "@/Components/Dropdown.vue";
 import Textarea from "@/Components/Textarea.vue";
 import DatePicker from "@/Components/DatePicker.vue";
 import ConfirmDeleteModal from "@/Components/ConfirmDeleteModal.vue";
+import DialogModal from "@/Components/DialogModal.vue";
 import dayjs from "@/dayjs";
 import Account from "@/Components/Account.vue";
-import GeneralForm from "./Form/General.vue";
-import MediaForm from "./Form/Media.vue";
+
+import TwitterForm from "./Partial/Twitter.vue";
+import TiktokForm from "./Partial/Tiktok.vue";
+import LinkedinForm from "./Partial/Linkedin.vue";
+import LinkedinPageForm from "./Partial/LinkedinPage.vue";
+
+import GeneralForm from "./Partial/General.vue";
+import MediaForm from "./Partial/Media.vue";
 
 const confirmDeleteModal = ref(null);
 
@@ -29,10 +36,8 @@ const { post } = defineProps({
 });
 
 const form = useForm({
-  content: post.content,
+  ...post,
   scheduled_at: dayjs(post.scheduled_at).format("YYYY-MM-DD HH:mm:ss"),
-  status: post.status,
-  accounts: post.post_stats.map((a) => a.account_id),
 });
 
 const saveDraft = () => {
@@ -65,12 +70,25 @@ const close = () => {
   <ConfirmDeleteModal ref="confirmDeleteModal" @deleted="close" description="Are you sure you want to delete this post?"
     :preserveState="false" />
 
-  <SlideOver max-width="2xl" :show="true" @close="close">
-    <template #title> Edit Post </template>
+  <DialogModal max-width="2xl" :show="true" @close="close">
+    <template #title>
+      {{ form.status === 'scheduled' ? 'Schedule Post' : 'Draft Post' }}
+    </template>
     <template #content>
-      <div class="flex flex-col gap-4">
+      <div class="border-b border-zinc-200 dark:border-zinc-800 py-4">
         <GeneralForm :form="form" />
-        <MediaForm :post="post" />
+      </div>
+      <div class="flex flex-col space-y-4 divide-y divide-zinc-200 dark:divide-zinc-800">
+        <div v-for="postContent in form.post_contents" :key="postContent.id" class="py-4">
+          <TwitterForm v-if="postContent.account.platform === 'twitter'" :post-content="postContent"
+            :account="postContent.account" />
+          <TiktokForm v-if="postContent.account.platform === 'tiktok'" :post-content="postContent"
+            :account="postContent.account" />
+          <LinkedinForm v-if="postContent.account.platform === 'linkedin'" :post-content="postContent"
+            :account="postContent.account" />
+          <LinkedinPageForm v-if="postContent.account.platform === 'linkedin-page'" :post-content="postContent"
+            :account="postContent.account" />
+        </div>
       </div>
     </template>
     <template #footer>
@@ -86,7 +104,6 @@ const close = () => {
         Delete Post
       </Button>
 
-
       <Button @click="saveDraft" :class="{
         'opacity-25': form.processing,
         'btn-primary': true,
@@ -101,5 +118,5 @@ const close = () => {
         Add to Calendar
       </Button>
     </template>
-  </SlideOver>
+  </DialogModal>
 </template>
