@@ -16,6 +16,8 @@ return new class extends Migration
             $table->foreignUuid('account_id')->constrained()->onDelete('cascade');
             $table->foreignUuid('post_id')->constrained()->onDelete('cascade');
 
+            $table->string('type');
+
             $table->text('content')->nullable();
 
             $table->string('url')->nullable();

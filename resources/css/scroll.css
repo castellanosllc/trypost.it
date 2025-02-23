@@ -1,0 +1,34 @@
+Oculta o scrollbar quando não for necessário
+::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+    background: transparent;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+    border-radius: 100vh;
+    background: transparent;
+    /* Mantém invisível até necessário */
+}
+
+/* Handle (só aparece quando houver necessidade de scroll) */
+::-webkit-scrollbar-thumb {
+    background: #b3b8c0;
+    border-radius: 100vh;
+    border: 2px solid #e5e7eb;
+    visibility: hidden;
+    /* Esconde por padrão */
+}
+
+/* Mostra o scrollbar quando houver interação */
+:hover::-webkit-scrollbar-thumb,
+:active::-webkit-scrollbar-thumb,
+:focus::-webkit-scrollbar-thumb {
+    visibility: visible;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+    background: #9ea2ad;
+}

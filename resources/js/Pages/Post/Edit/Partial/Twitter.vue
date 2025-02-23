@@ -6,6 +6,8 @@ import debounce from "@/debounce";
 import InputError from "@/Components/InputError.vue";
 import Label from "@/Components/Label.vue";
 import Textarea from "@/Components/Textarea.vue";
+import Dropdown from "@/Components/Dropdown.vue";
+
 import MediaForm from "./Media.vue";
 import Account from "@/Components/Account.vue";
 
@@ -44,20 +46,37 @@ watch(
 </script>
 
 <template>
-  <div class="flex items-center gap-2">
+  <div class="flex items-center gap-2 mb-6">
     <Account :account="props.account" :tooltip="true" size="medium" />
     <div class="font-medium">
       {{ `@${props.account.username}` }}
     </div>
   </div>
-  <div class="grid grid-cols-10 gap-4">
-    <div class="col-span-4">
+  <div class="flex items-start gap-4 h-52">
+    <div class="w-2/5">
       <MediaForm :post-content="props.postContent" />
     </div>
-    <div class="col-span-6">
-      <Label for="content" value="Content" />
-      <Textarea id="content" v-model="form.content" rows="8" />
-      <InputError :message="form.errors.content" class="mt-2" />
+    <div class="w-3/5 space-y-4">
+      <div>
+        <Label for="type" value="Post Type" :required="true" />
+        <Dropdown id="type" :options="[
+          {
+            id: 'text',
+            label: 'Text',
+          },
+          {
+            id: 'image',
+            label: 'Image',
+          }
+        ]" class="w-full" v-model="form.type" />
+
+        <InputError :message="form.errors.type" class="mt-2" />
+      </div>
+
+      <div>
+        <Textarea id="content" v-model="form.content" rows="8" />
+        <InputError :message="form.errors.content" class="mt-2" />
+      </div>
     </div>
   </div>
 </template>

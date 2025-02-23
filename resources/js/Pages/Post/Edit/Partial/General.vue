@@ -50,24 +50,23 @@ const togglePostContent = (account) => {
 
 <template>
 
-  <div class="col-span-6">
-    <Label for="scheduled_at" value="Date and Time" :required="false" class="sr-only" />
-
-    <div class="flex flex-wrap gap-4">
-      <div v-for="account in accounts" :key="account.id" :class="{
-        'cursor-pointer': true,
-        'opacity-50': !form.post_contents.some(pc => pc.account_id === account.id),
-      }" @click="togglePostContent(account)">
-        <Account :account="account" :tooltip="true" size="large" />
+  <div class="grid grid-cols-10 gap-4">
+    <div class="col-span-6 md:col-span-8">
+      <Label for="scheduled_at" value="Date and Time" :required="false" class="sr-only" />
+      <div class="flex flex-wrap gap-4">
+        <div v-for="account in accounts" :key="account.id" :class="{
+          'cursor-pointer': true,
+          'opacity-50': !form.post_contents.some(pc => pc.account_id === account.id),
+        }" @click="togglePostContent(account)">
+          <Account :account="account" :tooltip="true" size="large" />
+        </div>
       </div>
+      <InputError :message="form.errors.post_contents" class="mt-2" />
     </div>
-    <InputError :message="form.errors.post_contents" class="mt-2" />
+    <div class="col-span-6 md:col-span-2">
+      <Label for="scheduled_at" value="Date and Time" :required="false" class="sr-only" />
+      <DatePicker v-model="form.scheduled_at" mode="dateTime" placement="bottom-end" />
+      <InputError :message="form.errors.scheduled_at" class="mt-2" />
+    </div>
   </div>
-  <!--
-
-      <div class="col-span-6">
-        <Label for="scheduled_at" value="Date and Time" :required="false" />
-        <DatePicker v-model="form.scheduled_at" mode="dateTime" />
-        <InputError :message="form.errors.scheduled_at" class="mt-2" />
-      </div> -->
 </template>

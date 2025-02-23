@@ -4,6 +4,7 @@
 
 @import "v-calendar.css";
 @import "floating.css";
+@import "scroll.css";
 
 #app {
     height: 100%;

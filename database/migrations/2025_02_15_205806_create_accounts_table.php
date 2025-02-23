@@ -26,7 +26,8 @@ return new class extends Migration
             $table->string('status');
             $table->boolean('is_verified')->default(false);
             $table->timestamps();
-            $table->softDeletes();
+
+            $table->unique(['space_id', 'platform']);
         });
     }
 

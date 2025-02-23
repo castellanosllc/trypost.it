@@ -12,7 +12,7 @@ import Dropdown from "@/Components/Dropdown.vue";
 import Textarea from "@/Components/Textarea.vue";
 import DatePicker from "@/Components/DatePicker.vue";
 import ConfirmDeleteModal from "@/Components/ConfirmDeleteModal.vue";
-import DialogModal from "@/Components/DialogModal.vue";
+import Modal from "./Partial/Modal.vue";
 import dayjs from "@/dayjs";
 import Account from "@/Components/Account.vue";
 
@@ -70,7 +70,7 @@ const close = () => {
   <ConfirmDeleteModal ref="confirmDeleteModal" @deleted="close" description="Are you sure you want to delete this post?"
     :preserveState="false" />
 
-  <DialogModal max-width="2xl" :show="true" @close="close">
+  <Modal max-width="4xl" :show="true" @close="close">
     <template #title>
       {{ form.status === 'scheduled' ? 'Schedule Post' : 'Draft Post' }}
     </template>
@@ -118,5 +118,5 @@ const close = () => {
         Add to Calendar
       </Button>
     </template>
-  </DialogModal>
+  </Modal>
 </template>

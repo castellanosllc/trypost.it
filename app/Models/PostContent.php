@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 use App\Enums\PostContent\Status;
+use App\Enums\PostContent\Type;
 use App\Enums\Platform;
 
 use Spatie\MediaLibrary\HasMedia;
@@ -32,6 +33,7 @@ class PostContent extends Model implements HasMedia
     protected $fillable = [
         'account_id',
         'post_id',
+        'type',
         'content',
         'url',
         'platform',
@@ -51,6 +53,7 @@ class PostContent extends Model implements HasMedia
             'status' => Status::class,
             'platform' => Platform::class,
             'published_at' => 'datetime',
+            'type' => Type::class,
         ];
     }
 
