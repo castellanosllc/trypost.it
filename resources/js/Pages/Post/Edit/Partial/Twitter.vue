@@ -53,8 +53,8 @@ watch(
     </div>
   </div>
   <div class="flex items-start gap-4">
-    <div class="w-5/12 ">
-      <Media :postContent="props.postContent" />
+    <div class="w-5/12">
+      <Media :postContent="props.postContent" :type="form.type" />
     </div>
     <div class="w-7/12 space-y-4 ">
       <div>

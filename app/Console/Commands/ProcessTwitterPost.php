@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use Illuminate\Console\Command;
 
 use App\Jobs\PublishAtTwitter;
+use App\Enums\PostContent\Status as PostContentStatus;
 
 use App\Models\Post;
 use App\Enums\Platform;
@@ -33,7 +34,6 @@ class ProcessTwitterPost extends Command
     {
         $query = Post::scheduled()
             ->withWhereHas('postContents', function ($query) {
-                $query->whereNull('status');
                 $query->where('platform', Platform::TWITTER);
                 $query->with('account');
             });

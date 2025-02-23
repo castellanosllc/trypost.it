@@ -14,6 +14,10 @@ const props = defineProps({
   postContent: {
     type: Object,
     required: true
+  },
+  type: {
+    type: String,
+    required: true
   }
 });
 
@@ -49,18 +53,14 @@ const removeMedia = async (mediaId) => {
 <template>
   <MediaLibraryCreate ref="mediaLibraryCreate" @created="addMedia" />
   <div class="flex flex-col gap-4">
-    <!-- Imagem Selecionada -->
     <div v-if="selectedMedia" class="relative group w-52 h-52">
-      <!-- Imagem -->
       <img :src="selectedMedia.url" class="object-cover rounded-lg w-full h-full" />
-      <!-- Botão de Remover (fica oculto até hover) -->
       <Button class="btn btn-secondary btn-sm rounded absolute top-2 right-2
                opacity-0 group-hover:opacity-100 transition" @click.stop="removeMedia(selectedMedia.id)">
         Remove
       </Button>
     </div>
 
-    <!-- Lista de Miniaturas -->
     <div class="flex flex-wrap gap-2">
       <div v-for="media in medias" :key="media.id" @click="selectedMedia = media" :class="{
         'border-2 border-blue-500': selectedMedia === media,
@@ -70,7 +70,6 @@ const removeMedia = async (mediaId) => {
       </div>
     </div>
 
-    <!-- Caso não tenha mídias -->
     <div v-if="medias.length === 0" class="flex flex-col items-start gap-2">
       <div class="flex flex-col items-center justify-center
                border border-dashed border-zinc-200 dark:border-zinc-800
@@ -80,8 +79,7 @@ const removeMedia = async (mediaId) => {
       </div>
     </div>
 
-    <!-- Botão para abrir o Media Library -->
-    <div>
+    <div v-if="type !== 'text'">
       <Button class="btn btn-secondary btn-sm rounded" @click="mediaLibraryCreate.open()">
         Add Media
       </Button>
