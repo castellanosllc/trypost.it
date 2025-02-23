@@ -10,6 +10,10 @@ use App\Http\Controllers\Account\LinkedinController;
 use App\Http\Controllers\Account\LinkedinPageController;
 use App\Http\Controllers\Account\TwitterController;
 use App\Http\Controllers\Account\TikTokController;
+use App\Http\Controllers\Account\ThreadsController;
+use App\Http\Controllers\Account\YoutubeController;
+use App\Http\Controllers\Account\PinterestController;
+use App\Http\Controllers\Account\FacebookController;
 
 Route::group(
     [
@@ -41,5 +45,21 @@ Route::group(
         // tiktok
         Route::get('/accounts/tiktok/connect', [TikTokController::class, 'connect'])->name('accounts.tiktok.connect');
         Route::get('/accounts/tiktok/callback', [TikTokController::class, 'callback'])->name('accounts.tiktok.callback');
+
+        // threads
+        Route::get('/accounts/threads/connect', [ThreadsController::class, 'connect'])->name('accounts.threads.connect');
+        Route::get('/accounts/threads/callback', [ThreadsController::class, 'callback'])->name('accounts.threads.callback');
+
+        // youtube
+        Route::get('/accounts/youtube/connect', [YoutubeController::class, 'connect'])->name('accounts.youtube.connect');
+        Route::get('/accounts/youtube/callback', [YoutubeController::class, 'callback'])->name('accounts.youtube.callback');
+
+        // pinterest
+        Route::get('/accounts/pinterest/connect', [PinterestController::class, 'connect'])->name('accounts.pinterest.connect');
+        Route::get('/accounts/pinterest/callback', [PinterestController::class, 'callback'])->name('accounts.pinterest.callback');
+
+        // facebook
+        Route::get('/accounts/facebook/connect', [FacebookController::class, 'connect'])->name('accounts.facebook.connect');
+        Route::get('/accounts/facebook/callback', [FacebookController::class, 'callback'])->name('accounts.facebook.callback');
     }
 );

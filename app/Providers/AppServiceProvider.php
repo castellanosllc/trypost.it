@@ -47,9 +47,13 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        // TikTok
+        // Socialite providers
         Event::listen(function (\SocialiteProviders\Manager\SocialiteWasCalled $event) {
             $event->extendSocialite('tiktok', \SocialiteProviders\TikTok\Provider::class);
+            $event->extendSocialite('threads', \SocialiteProviders\Threads\Provider::class);
+            $event->extendSocialite('youtube', \SocialiteProviders\YouTube\Provider::class);
+            $event->extendSocialite('pinterest', \SocialiteProviders\Pinterest\Provider::class);
+            $event->extendSocialite('facebook', \SocialiteProviders\Facebook\Provider::class);
         });
 
         // Cashier configuration
