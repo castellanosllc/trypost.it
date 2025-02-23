@@ -50,8 +50,9 @@ defineExpose({
             <div
               class="flex grow flex-col gap-y-5 overflow-y-auto bg-zinc-100 dark:bg-zinc-900 px-6 py-4 pb-2 ring-1 ring-white/10">
 
-              <Menu />
               <UserDropdown class="-mx-2" />
+              <Menu />
+
             </div>
           </DialogPanel>
         </TransitionChild>
@@ -61,9 +62,10 @@ defineExpose({
 
   <!-- Static sidebar for desktop -->
   <div class="hidden lg:fixed lg:inset-y-0 lg:z-40 lg:flex lg:w-64 lg:flex-col h-full">
-    <div class="flex-1 flex flex-col overflow-y-auto bg-zinc-100 dark:bg-zinc-900 px-6 pt-6 pb-4">
+    <div class="flex-1 flex flex-col overflow-y-auto bg-zinc-100 dark:bg-zinc-900 p-6">
+      <UserDropdown class="mb-8 -mx-2" />
       <Menu />
-      <UserDropdown class="mt-2 -mx-2" />
+
     </div>
   </div>
 

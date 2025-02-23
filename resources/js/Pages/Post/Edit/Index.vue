@@ -70,12 +70,12 @@ const close = () => {
   <ConfirmDeleteModal ref="confirmDeleteModal" @deleted="close" description="Are you sure you want to delete this post?"
     :preserveState="false" />
 
-  <Modal max-width="4xl" :show="true" @close="close">
+  <Modal max-width="3xl" :show="true" @close="close">
     <template #title>
       {{ form.status === 'scheduled' ? 'Schedule Post' : 'Draft Post' }}
     </template>
     <template #content>
-      <div class="border-b border-zinc-200 dark:border-zinc-800 py-4">
+      <div class="border-b border-zinc-200 dark:border-zinc-800 pb-4">
         <GeneralForm :form="form" />
       </div>
       <div class="flex flex-col space-y-4 divide-y divide-zinc-200 dark:divide-zinc-800">

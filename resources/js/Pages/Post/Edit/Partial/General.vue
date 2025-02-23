@@ -50,8 +50,8 @@ const togglePostContent = (account) => {
 
 <template>
 
-  <div class="grid grid-cols-10 gap-4">
-    <div class="col-span-6 md:col-span-8">
+  <div class="grid grid-cols-12 gap-4">
+    <div class="col-span-6 md:col-span-9">
       <Label for="scheduled_at" value="Date and Time" :required="false" class="sr-only" />
       <div class="flex flex-wrap gap-4">
         <div v-for="account in accounts" :key="account.id" :class="{
@@ -63,7 +63,7 @@ const togglePostContent = (account) => {
       </div>
       <InputError :message="form.errors.post_contents" class="mt-2" />
     </div>
-    <div class="col-span-6 md:col-span-2">
+    <div class="col-span-6 md:col-span-3">
       <Label for="scheduled_at" value="Date and Time" :required="false" class="sr-only" />
       <DatePicker v-model="form.scheduled_at" mode="dateTime" placement="bottom-end" />
       <InputError :message="form.errors.scheduled_at" class="mt-2" />

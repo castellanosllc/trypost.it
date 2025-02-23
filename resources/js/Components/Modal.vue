@@ -82,11 +82,11 @@ const maxWidthClass = computed(() => {
             <div v-show="show"
               class="bg-white dark:bg-zinc-900 border border-zinc-900 dark:border-zinc-700 rounded-xl overflow-hidden transform transition-all sm:w-full sm:mx-auto"
               :class="maxWidthClass">
-              <button v-if="props.closeable" @click="close"
+              <!-- <button v-if="props.closeable" @click="close"
                 class="absolute right-3 top-3 text-zinc-400 hover:text-zinc-600 focus:outline-none focus:ring-0">
                 <span class="sr-only">Close</span>
                 <PhX class="h-6 w-6" weight="bold" />
-              </button>
+              </button> -->
               <slot v-if="show" />
             </div>
           </div>

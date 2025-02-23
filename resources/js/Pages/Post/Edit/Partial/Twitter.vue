@@ -8,7 +8,7 @@ import Label from "@/Components/Label.vue";
 import Textarea from "@/Components/Textarea.vue";
 import Dropdown from "@/Components/Dropdown.vue";
 
-import MediaForm from "./Media.vue";
+import Media from "./Media.vue";
 import Account from "@/Components/Account.vue";
 
 const props = defineProps({
@@ -52,11 +52,11 @@ watch(
       {{ `@${props.account.username}` }}
     </div>
   </div>
-  <div class="flex items-start gap-4 h-52">
-    <div class="w-2/5">
-      <MediaForm :post-content="props.postContent" />
+  <div class="flex items-start gap-4">
+    <div class="w-5/12 ">
+      <Media :medias="props.postContent.media" />
     </div>
-    <div class="w-3/5 space-y-4">
+    <div class="w-7/12 space-y-4 ">
       <div>
         <Label for="type" value="Post Type" :required="true" />
         <Dropdown id="type" :options="[
@@ -74,7 +74,7 @@ watch(
       </div>
 
       <div>
-        <Textarea id="content" v-model="form.content" rows="8" />
+        <Textarea id="content" v-model="form.content" :rows="2" :resize="true" />
         <InputError :message="form.errors.content" class="mt-2" />
       </div>
     </div>

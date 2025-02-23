@@ -5,7 +5,7 @@ import { usePage, Link, router } from "@inertiajs/vue3";
 import {
   IconCheck,
   IconUser,
-  IconChevronUp,
+  IconChevronDown,
   IconLogout,
   IconBell,
 } from "@tabler/icons-vue";
@@ -48,7 +48,7 @@ const switchToSpace = (space) => {
                 {{ currentSpace.name }}
               </div>
             </div>
-            <IconChevronUp class="h-4 w-4 text-zinc-400 stroke-2" aria-hidden="true" />
+            <IconChevronDown class="h-4 w-4 text-zinc-400 stroke-2" aria-hidden="true" />
           </MenuButton>
         </div>
 
@@ -57,7 +57,7 @@ const switchToSpace = (space) => {
           leave-active-class="transition ease-in duration-75" leave-from-class="transform opacity-100 scale-100"
           leave-to-class="transform opacity-0 scale-95">
           <MenuItems
-            class="fixed bottom-0 z-40 mb-16 w-56 origin-top-right divide-y divide-zinc-100 dark:divide-zinc-700 rounded-lg bg-white dark:bg-zinc-800 shadow-2xl focus:outline-none border border-zinc-200 dark:border-zinc-700">
+            class="fixed top-0 z-40 mt-16 w-72 lg:w-56 origin-top-right divide-y divide-zinc-100 dark:divide-zinc-700 rounded-lg bg-white dark:bg-zinc-800 shadow-2xl focus:outline-none border border-zinc-200 dark:border-zinc-700">
             <div class="py-1">
               <div class="block px-4 py-2 text-xs text-zinc-400 font-medium">
                 {{ user.email }}

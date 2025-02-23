@@ -46,6 +46,7 @@ class HandleInertiaRequests extends Middleware
                     ]));
                 },
             ],
+            'csrf_token' => fn () => csrf_token(),
             'flash' => $request->session()->get('flash', []),
             'env' => config('app.env'),
             'locale' => app()->getLocale(),

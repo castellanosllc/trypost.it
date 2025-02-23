@@ -17,8 +17,9 @@ return new class extends Migration
             $table->foreignUuid('post_id')->constrained()->onDelete('cascade');
 
             $table->string('type');
-
             $table->text('content')->nullable();
+
+            $table->json('options')->nullable();
 
             $table->string('url')->nullable();
             $table->string('platform')->nullable();

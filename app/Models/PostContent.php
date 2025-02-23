@@ -40,6 +40,7 @@ class PostContent extends Model implements HasMedia
         'platform_id',
         'status',
         'published_at',
+        'options',
     ];
 
     /**
@@ -54,6 +55,7 @@ class PostContent extends Model implements HasMedia
             'platform' => Platform::class,
             'published_at' => 'datetime',
             'type' => Type::class,
+            'options' => 'array',
         ];
     }
 
