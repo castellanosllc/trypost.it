@@ -94,6 +94,7 @@ class LinkedinPageController extends Controller
 
         $user = Auth::user();
         $linkedinUser = decrypt($request->user);
+        $photo = uploadFromUrl($request->photo, 'accounts');
 
         Account::updateOrCreate([
             'workspace_id' => $user->workspace_id,
@@ -103,7 +104,7 @@ class LinkedinPageController extends Controller
         ], [
             'name' => $request->name,
             'username' => $request->name,
-            'photo' => $request->photo,
+            'photo' => $photo,
             'access_token' => $linkedinUser['token'],
             'refresh_token' => $linkedinUser['refresh_token'],
             'expires_in' => $linkedinUser['expires_in'],

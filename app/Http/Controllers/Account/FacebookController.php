@@ -29,6 +29,7 @@ class FacebookController extends Controller
         $facebookUser = Socialite::driver($this->network)
             ->user();
 
+        $photo = uploadFromUrl($facebookUser->getAvatar(), 'accounts');
         $user = Auth::user();
 
         Account::updateOrCreate([
@@ -39,7 +40,7 @@ class FacebookController extends Controller
         ], [
             'name' => $facebookUser->getName(),
             'username' => $facebookUser->getNickname(),
-            'photo' => $facebookUser->getAvatar(),
+            'photo' => $photo,
             'access_token' => $facebookUser->token,
             'refresh_token' => $facebookUser->tokenSecret,
             'expires_in' => null,

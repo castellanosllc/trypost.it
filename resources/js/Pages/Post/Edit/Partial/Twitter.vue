@@ -54,7 +54,7 @@ watch(
   </div>
   <div class="flex items-start gap-4">
     <div class="w-5/12 ">
-      <Media :medias="props.postContent.media" />
+      <Media :postContent="props.postContent" />
     </div>
     <div class="w-7/12 space-y-4 ">
       <div>
@@ -74,7 +74,7 @@ watch(
       </div>
 
       <div>
-        <Textarea id="content" v-model="form.content" :rows="2" :resize="true" />
+        <Textarea id="content" v-model="form.content" :rows="2" :resize="true" :showCounter="true" :maxLength="280" />
         <InputError :message="form.errors.content" class="mt-2" />
       </div>
     </div>

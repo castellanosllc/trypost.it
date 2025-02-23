@@ -29,6 +29,7 @@ class PinterestController extends Controller
         $pinterestUser = Socialite::driver($this->network)
             ->user();
 
+        $photo = uploadFromUrl($pinterestUser->getAvatar(), 'accounts');
         $user = Auth::user();
 
         Account::updateOrCreate([
@@ -39,7 +40,7 @@ class PinterestController extends Controller
         ], [
             'name' => $pinterestUser->getName(),
             'username' => $pinterestUser->getNickname(),
-            'photo' => $pinterestUser->getAvatar(),
+            'photo' => $photo,
             'access_token' => $pinterestUser->token,
             'refresh_token' => $pinterestUser->tokenSecret,
             'expires_in' => null,

@@ -45,17 +45,7 @@ class PostController extends Controller
         ]);
     }
 
-    public function edit($id)
-    {
-        $workspace = Auth::user()->workspace;
 
-        $post = Post::where('workspace_id', $workspace->id)
-            ->where('id', $id)
-            ->with('postContents')
-            ->firstOrFail();
-
-        return response()->json($post);
-    }
     public function store(CreateRequest $request)
     {
         $user = Auth::user();
@@ -86,24 +76,40 @@ class PostController extends Controller
             'auto_sync' => $request->auto_sync,
         ]);
 
-        // delete all post stats
-        PostContent::where('post_id', $post->id)->delete();
+        return back();
+    }
 
-        foreach ($request->accounts as $account) {
+    public function clone($id)
+    {
+        $space = Auth::user()->currentSpace;
 
-            $account = Account::where('workspace_id', $workspace->id)->where('id', $account['id'])->firstOrFail();
+        $post = Post::where('space_id', $space->id)->where('id', $id)->firstOrFail();
 
-            // create or update
-            PostContent::create([
-                'content' => $account['content'],
-                'status' => $request->status,
-                'account_id' => $account->id,
-                'post_id' => $post->id,
-                'platform' => $account->platform,
-            ]);
+        // Clone the post
+        $newPost = $post->replicate()->fill([
+            'status' => Status::DRAFT,
+        ]);
+        $newPost->save();
+
+        // Clone the related postContents
+        foreach ($post->postContents as $content) {
+            $newContent = $content->replicate();
+            $newContent->post_id = $newPost->id;
+            $newContent->save();
+
+            // clone medias
+            foreach ($content->getMedia('medias') as $media) {
+                $media->copy(
+                    $newContent,
+                    'medias'
+                );
+            }
         }
 
-        return redirect(route('posts.index'));
+        session()->flash('flash.banner', 'Post cloned successfully');
+        session()->flash('flash.bannerStyle', 'success');
+
+        return Inertia::location(route('posts.index', $newPost->id));
     }
 
     public function destroy($id)

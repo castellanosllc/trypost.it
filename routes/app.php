@@ -30,6 +30,7 @@ Route::group(
 
         // posts
         Route::get('/posts/{id?}', [PostController::class, 'index'])->name('posts.index');
+        Route::post('/posts/clone/{id}', [PostController::class, 'clone'])->name('posts.clone');
         Route::post('/posts', [PostController::class, 'store'])->name('posts.store');
         Route::put('/posts/{id}', [PostController::class, 'update'])->name('posts.update');
         Route::delete('/posts/{id}', [PostController::class, 'destroy'])->name('posts.destroy');
@@ -44,7 +45,8 @@ Route::group(
 
         // medias
         Route::get('/medias/{id}/download', [MediaController::class, 'download'])->name('medias.download')->withoutMiddleware('*');
-        Route::post('/medias', [MediaController::class, 'store'])->name('medias.store');
+        Route::post('/medias/upload', [MediaController::class, 'store'])->name('medias.store');
+        Route::post('/medias/copy', [MediaController::class, 'copy'])->name('medias.copy');
         Route::delete('/medias/{modelId}/{id}', [MediaController::class, 'destroy'])->name('medias.destroy');
 
         // tags

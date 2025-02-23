@@ -30,6 +30,7 @@ class YoutubeController extends Controller
             ->user();
 
         $user = Auth::user();
+        $photo = uploadFromUrl($youtubeUser->getAvatar(), 'accounts');
 
         Account::updateOrCreate([
             'workspace_id' => $user->workspace_id,
@@ -39,7 +40,7 @@ class YoutubeController extends Controller
         ], [
             'name' => $youtubeUser->getName(),
             'username' => $youtubeUser->getNickname(),
-            'photo' => $youtubeUser->getAvatar(),
+            'photo' => $photo,
             'access_token' => $youtubeUser->token,
             'refresh_token' => $youtubeUser->tokenSecret,
             'expires_in' => null,

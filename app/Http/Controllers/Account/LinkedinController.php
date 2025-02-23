@@ -43,6 +43,7 @@ class LinkedinController extends Controller
             ->scopes($this->scopes)
             ->user();
 
+        $photo = uploadFromUrl($linkedinUser->getAvatar(), 'accounts');
         $user = Auth::user();
 
         Account::updateOrCreate([
@@ -53,7 +54,7 @@ class LinkedinController extends Controller
         ], [
             'name' => $linkedinUser->getName(),
             'username' => $linkedinUser->getNickname(),
-            'photo' => $linkedinUser->getAvatar(),
+            'photo' => $photo,
             'access_token' => $linkedinUser->token,
             'refresh_token' => $linkedinUser->refreshToken,
             'expires_in' => $linkedinUser->expiresIn,

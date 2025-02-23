@@ -39,6 +39,7 @@ class TikTokController extends Controller
             ->scopes($this->scopes)
             ->user();
 
+        $photo = uploadFromUrl($tiktokUser->getAvatar(), 'accounts');
         $user = Auth::user();
 
         Account::updateOrCreate([
@@ -49,7 +50,7 @@ class TikTokController extends Controller
         ], [
             'name' => $tiktokUser->getName(),
             'username' => $tiktokUser->getNickname(),
-            'photo' => $tiktokUser->getAvatar(),
+            'photo' => $photo,
             'access_token' => $tiktokUser->token,
             'refresh_token' => $tiktokUser->refreshToken,
             'expires_in' => $tiktokUser->expiresIn,

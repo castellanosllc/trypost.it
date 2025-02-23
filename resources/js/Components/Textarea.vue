@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, ref, watch, nextTick } from "vue";
+import { onMounted, ref, watch, nextTick, computed } from "vue";
 
 const props = defineProps({
   modelValue: String,
@@ -9,20 +9,40 @@ const props = defineProps({
   },
   rows: {
     type: Number,
-    default: 2,
+    default: 4,
+  },
+  maxLength: {
+    type: Number,
+    default: 512, // Valor padrão de 512 caracteres
+  },
+  showCounter: {
+    type: Boolean,
+    default: false,
   },
 });
 
-defineEmits(["update:modelValue"]);
+const emit = defineEmits(["update:modelValue"]);
 
 const input = ref(null);
 
+// Função para auto redimensionamento do textarea
 const autoResize = () => {
-  if (!props.resize || !input.value) return; // 🔹 Só ajusta se `resize` for `true`
-
-  input.value.style.height = "auto"; // 🔹 Reseta para evitar crescimento infinito
-  input.value.style.height = `${input.value.scrollHeight}px`; // 🔹 Ajusta a altura conforme o conteúdo
+  if (!props.resize || !input.value) return;
+  input.value.style.height = "auto";
+  input.value.style.height = `${input.value.scrollHeight}px`;
 };
+
+// Função para atualizar o valor do campo, respeitando o limite de caracteres
+const updateValue = (event) => {
+  let newValue = event.target.value;
+  if (newValue.length > props.maxLength) {
+    newValue = newValue.slice(0, props.maxLength);
+  }
+  emit("update:modelValue", newValue);
+};
+
+const characterCount = computed(() => props.modelValue?.length || 0);
+const percentageFilled = computed(() => (characterCount.value / props.maxLength) * 100);
 
 onMounted(() => {
   if (input.value.hasAttribute("autofocus")) {
@@ -30,11 +50,10 @@ onMounted(() => {
   }
 
   nextTick(() => {
-    autoResize(); // 🔹 Ajusta altura inicial se `resize` for `true`
+    autoResize();
   });
 });
 
-// 🔹 Atualiza a altura sempre que o conteúdo mudar
 watch(() => props.modelValue, () => {
   autoResize();
 });
@@ -43,6 +62,13 @@ defineExpose({ focus: () => input.value.focus() });
 </script>
 
 <template>
-  <textarea class="w-full form-input" :value="modelValue" @input="$emit('update:modelValue', $event.target.value)"
-    ref="input" :rows="resize ? rows : undefined" />
+  <div class="relative w-full">
+    <textarea class="w-full form-input !pb-8 resize-none" :value="modelValue" @input="updateValue" ref="input"
+      :rows="resize ? rows : undefined" :maxlength="maxLength" />
+
+    <!-- Contador de caracteres -->
+    <div v-if="showCounter" class="absolute bottom-2 right-2 flex items-center justify-center ">
+      {{ `${characterCount} / ${maxLength}` }}
+    </div>
+  </div>
 </template>

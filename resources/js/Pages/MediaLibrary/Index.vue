@@ -5,15 +5,13 @@ import draggable from "vuedraggable";
 import Button from "@/Components/Button.vue";
 import ConfirmDeleteModal from "@/Components/ConfirmDeleteModal.vue";
 
-import { PhX, PhGear, PhDotsSixVertical } from "@phosphor-icons/vue";
+import { IconX } from "@tabler/icons-vue";
 
 import AppLayout from "@/Layouts/Master.vue";
 import CreateModal from "./Create.vue";
 
 const confirmDeleteModal = ref(null);
 const createModal = ref(null);
-
-const space = usePage().props.auth.user.current_space;
 
 const { medias } = defineProps({
   medias: Object,
@@ -27,7 +25,7 @@ const { medias } = defineProps({
   <Head title="Media Library" />
 
   <AppLayout>
-    <CreateModal ref="createModal" :space="space" />
+    <CreateModal ref="createModal" />
 
     <ConfirmDeleteModal ref="confirmDeleteModal" description="Are you sure you want to delete this hashtag?" />
 
@@ -46,41 +44,29 @@ const { medias } = defineProps({
       </div>
     </template>
 
-    <div class="space-y-2">
-      <div v-for="media in medias" :key="media.id" class="flex flex-1 items-center space-x-1">
-        <div
-          class="flex flex-1 items-center justify-between rounded-md px-4 py-2 border border-zinc-100 dark:border-zinc-700">
-          <div class="flex flex-1 items-center space-x-4">
-            <div class="flex items-center space-x-2">
-              <img :src="media.url" class="w-10 h-10 rounded-md" />
-              <div>
-                <div class="font-medium text-sm text-zinc-600 dark:text-white">
-                  {{ media.file_name }}
-                </div>
-                <div class="text-xs text-zinc-500 dark:text-zinc-400">
-                  {{ media.size_formatted }}
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="flex items-center space-x-2">
-            <Button class="btn-secondary btn-xs space-x-1" @click="editModal.open(media)">
-              <PhGear class="h-3 w-3 stroke-2" />
-              <div>Edit</div>
-            </Button>
-            <Button class="btn-secondary btn-xs space-x-1" @click="
-              confirmDeleteModal.open({
-                url: route('medias.destroy', {
-                  modelId: media.model_id,
-                  id: media.id,
-                }),
-              })
-              ">
-              <PhX class="h-3 w-3 stroke-2" />
-              <div>Delete</div>
-            </Button>
+    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+      <div v-for="media in medias" :key="media.id" class="relative group">
+        <div class="relative border border-zinc-100 dark:border-zinc-700 rounded-md overflow-hidden">
+          <img :src="media.url" class="w-full h-40 object-cover rounded-md" />
+          <div
+            class="absolute inset-0 bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 flex flex-col justify-end p-2 transition-opacity">
+            <div class="text-white text-sm font-medium">{{ media.file_name }}</div>
+            <div class="text-xs text-zinc-300">{{ media.size_formatted }}</div>
           </div>
         </div>
+
+        <button
+          class="absolute top-2 right-2 bg-red-500 text-white p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+          @click="
+            confirmDeleteModal.open({
+              url: route('medias.destroy', {
+                modelId: media.model_id,
+                id: media.id,
+              }),
+            })
+            ">
+          <IconX class="h-4 w-4 stroke-2" />
+        </button>
       </div>
     </div>
   </AppLayout>

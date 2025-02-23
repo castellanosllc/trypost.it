@@ -25,7 +25,8 @@ import {
   IconLockSquare,
   IconAccessPoint,
   IconHash,
-  IconTags
+  IconTags,
+  IconCalendar
 } from "@tabler/icons-vue";
 
 
@@ -34,13 +35,11 @@ const navigation = [
     group: "Posts",
     items: [
       {
-        name: "Inbox",
-        href: route("posts.index", {
-          inbox: "true",
-        }),
+        name: "Posts",
+        href: route("posts.index"),
         current: route().current("posts.*"),
         target: "_self",
-        icon: IconInbox,
+        icon: IconCalendar,
         show: true,
       },
       {

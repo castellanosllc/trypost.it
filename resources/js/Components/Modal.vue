@@ -15,6 +15,10 @@ const props = defineProps({
     type: Boolean,
     default: true,
   },
+  zIndex: {
+    type: Number,
+    default: 50,
+  },
 });
 
 const emit = defineEmits(["close"]);
@@ -29,6 +33,10 @@ watch(
     }
   }
 );
+
+const zIndexClass = computed(() => {
+  return `z-[${props.zIndex}]`;
+});
 
 const close = () => {
   if (props.closeable) {
@@ -65,7 +73,7 @@ const maxWidthClass = computed(() => {
 <template>
   <teleport to="body">
     <transition leave-active-class="duration-200">
-      <div v-show="show" class="fixed inset-0 overflow-y-auto z-50" scroll-region>
+      <div v-show="show" class="fixed inset-0 overflow-y-auto" :style="{ zIndex: props.zIndex }" scroll-region>
         <transition enter-active-class="ease-out duration-300" enter-from-class="opacity-0" enter-to-class="opacity-100"
           leave-active-class="ease-in duration-200" leave-from-class="opacity-100" leave-to-class="opacity-0">
           <div v-show="show" class="fixed inset-0 transform transition-all" @click="close">

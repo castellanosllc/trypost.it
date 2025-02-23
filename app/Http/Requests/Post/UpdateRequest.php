@@ -5,16 +5,17 @@ declare(strict_types=1);
 namespace App\Http\Requests\Post;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rules\Enum;
+use App\Enums\Post\Status;
 
 class UpdateRequest extends FormRequest
 {
     public function rules(): array
     {
         return [
-            'content' => ['required', 'string', 'min:2'],
+            'status' => [new Enum(Status::class)],
             'scheduled_at' => ['required', 'date', 'after:now'],
-            'accounts' => ['required', 'array'],
-            'social_accounts.*' => ['required', 'exists:social_accounts,id'],
+            'auto_sync' => ['required', 'boolean'],
         ];
     }
 }

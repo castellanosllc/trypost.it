@@ -29,6 +29,7 @@ class ThreadsController extends Controller
         $threadsUser = Socialite::driver($this->network)
             ->user();
 
+        $photo = uploadFromUrl($threadsUser->getAvatar(), 'accounts');
         $user = Auth::user();
 
         Account::updateOrCreate([
@@ -39,7 +40,7 @@ class ThreadsController extends Controller
         ], [
             'name' => $threadsUser->getName(),
             'username' => $threadsUser->getNickname(),
-            'photo' => $threadsUser->getAvatar(),
+            'photo' => $photo,
             'access_token' => $threadsUser->token,
             'refresh_token' => $threadsUser->tokenSecret,
             'expires_in' => null,

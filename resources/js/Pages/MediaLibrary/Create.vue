@@ -13,18 +13,14 @@ import Unsplash from "@uppy/unsplash";
 import DialogModal from "@/Components/DialogModal.vue";
 import Button from "@/Components/Button.vue";
 
-
 import "@uppy/core/dist/style.css";
 import "@uppy/dashboard/dist/style.css";
 import '@uppy/url/dist/style.min.css';
 import '@uppy/webcam/dist/style.min.css';
 
-const props = defineProps({
-  space: {
-    type: Object,
-    required: true,
-  },
-});
+const emit = defineEmits(['created']);
+
+const space = usePage().props.auth.user.current_space;
 
 const show = ref(false);
 const error = ref(null);
@@ -94,11 +90,10 @@ const initializeUppy = () => {
         const extension = file.extension || (blob.type.includes("video") ? "mp4" : "jpg");
 
 
-
         const formData = new FormData();
         formData.append("media", blob, `${file.id}.${extension}`);
         formData.append("model", "Space");
-        formData.append("model_id", props.space.id);
+        formData.append("model_id", space.id);
         formData.append("collection", "media-library");
         formData.append("visibility", "public");
 
@@ -114,7 +109,7 @@ const initializeUppy = () => {
     } else {
       uppy.setFileMeta(file.id, {
         model: "Space",
-        model_id: props.space.id,
+        model_id: space.id,
         collection: "media-library",
         visibility: "public",
       });
@@ -138,6 +133,13 @@ const initializeUppy = () => {
     }
     isLoading.value = false;
     show.value = false;
+
+    if (result.successful.length > 0) {
+      const uploadedFiles = result.successful.map((file) => file.response.body);
+      uploadedFiles.forEach((fileData) => {
+        emit("created", fileData.id); // 🔹 Emite o ID do objeto criado no backend
+      });
+    }
   });
 };
 

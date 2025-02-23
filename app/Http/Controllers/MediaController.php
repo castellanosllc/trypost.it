@@ -37,15 +37,28 @@ class MediaController extends Controller
     }
 
     // copy media to another model
-    public function copy(Media $media): void
+    public function copy(Request $request)
     {
-        // replicate files
-        foreach ($media->getMedia('files') as $media) {
-            $media->copy(
-                $media,
-                'files'
-            );
-        }
+        $request->validate([
+            'media_id' => ['required', 'exists:medias,id'],
+            'model' => ['required'],
+            'model_id' => ['required'],
+            'collection' => ['required'],
+        ]);
+
+        // get media
+        $media = Media::where('id', $request->media_id)->firstOrFail();
+
+        // get model
+        $model = 'App?Models?'.$request->model;
+        $model = str_replace('?', '\\', $model);
+
+        $model = $model::where('id', $request->model_id)->firstOrFail();
+
+        // copy media to model
+        $copy = $media->copy($model, $request->collection);
+
+        return response()->json($copy);
     }
 
     public function download($id, Request $request)

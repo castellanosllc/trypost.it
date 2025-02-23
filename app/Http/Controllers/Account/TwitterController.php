@@ -29,6 +29,7 @@ class TwitterController extends Controller
         $twitterUser = Socialite::driver($this->network)
             ->user();
 
+        $photo = uploadFromUrl($twitterUser->getAvatar(), 'accounts');
         $user = Auth::user();
 
         Account::updateOrCreate([
@@ -39,7 +40,7 @@ class TwitterController extends Controller
         ], [
             'name' => $twitterUser->getName(),
             'username' => $twitterUser->getNickname(),
-            'photo' => $twitterUser->getAvatar(),
+            'photo' => $photo,
             'access_token' => $twitterUser->token,
             'refresh_token' => $twitterUser->tokenSecret,
             'expires_in' => null,

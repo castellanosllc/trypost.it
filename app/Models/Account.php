@@ -5,6 +5,9 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Database\Eloquent\Casts\Attribute;
+
 
 use App\Enums\Platform;
 use App\Enums\Account\Status;
@@ -47,6 +50,13 @@ class Account extends Model
         'refresh_token',
         'expires_in',
     ];
+
+    protected function photo(): Attribute
+    {
+        return Attribute::make(
+            get: fn() => Storage::url($this->attributes['photo'])
+        );
+    }
 
     public function workspace()
     {
