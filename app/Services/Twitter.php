@@ -6,6 +6,9 @@ namespace App\Services;
 
 use Illuminate\Support\Facades\Storage;
 
+use App\Enums\PostContent\Type;
+use App\Enums\PostContent\Status;
+
 use App\Models\Account;
 use App\Models\PostContent;
 
@@ -34,11 +37,29 @@ class Twitter
         ];
 
         $mediaIds = [];
-        if ($content->getMedia('medias') && count($content->getMedia('medias')) >= 1) {
+        if ($content->type !== Type::TEXT) {
+
+            // Twitter only allows 4 images per post
+            $mediaCount = 0;
+            $maxMedia = 0;
+
+            if ($content->type === Type::IMAGE) {
+                $maxMedia = 4;
+            }
+
+            if ($content->type === Type::VIDEO) {
+                $maxMedia = 1;
+            }
+
             foreach ($content->getMedia('medias') as $media) {
+                if ($mediaCount >= $maxMedia) {
+                    break;
+                }
+
                 $twitterImage = $this->upload($media);
                 if ($twitterImage) {
                     $mediaIds[] = strval($twitterImage->media_id);
+                    $mediaCount++;
                 }
             }
         }
@@ -50,8 +71,16 @@ class Twitter
         }
 
         $this->connection->setApiVersion('2');
+        $data = $this->connection->post("tweets", $data);
 
-        return $this->connection->post("tweets", $data);
+        $content->update([
+            'status' => Status::PUBLISHED,
+            'published_at' => now(),
+            'url' => "https://x.com/{$content->account->username}/status/{$data->data->id}",
+            'platform_id' => $data->data->id,
+        ]);
+
+        return true;
     }
 
     public function upload($media)

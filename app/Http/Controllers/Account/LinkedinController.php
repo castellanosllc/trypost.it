@@ -53,7 +53,7 @@ class LinkedinController extends Controller
             'platform_id' => $linkedinUser->getId(),
         ], [
             'name' => $linkedinUser->getName(),
-            'username' => $linkedinUser->getNickname(),
+            'username' => $linkedinUser->getName(),
             'photo' => $photo,
             'access_token' => $linkedinUser->token,
             'refresh_token' => $linkedinUser->refreshToken,

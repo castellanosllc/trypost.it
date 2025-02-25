@@ -5,7 +5,10 @@ declare(strict_types=1);
 namespace App\Services;
 
 use App\Models\Account;
-use App\Models\Post;
+use App\Models\PostContent;
+
+use App\Enums\PostContent\Status;
+
 use Illuminate\Support\Facades\Http;
 use Illuminate\Http\Client\RequestException;
 use Illuminate\Support\Facades\Log;
@@ -21,7 +24,7 @@ class LinkedinPage
         $this->account = $account;
     }
 
-    public function post(Post $post)
+    public function post(PostContent $postContent)
     {
         try {
             // First verify if token is valid
@@ -35,7 +38,7 @@ class LinkedinPage
                 ->post("{$this->baseUrl}/{$this->apiVersion}/shares", [
                     'owner' => "urn:li:organization:{$this->account->platform_id}",
                     'text' => [
-                        'text' => $post->content
+                        'text' => $postContent->content
                     ],
                     'distribution' => [
                         'linkedInDistributionTarget' => [
@@ -54,17 +57,22 @@ class LinkedinPage
                 if ($response->status() === 401) {
                     // Try to refresh token and post again
                     $this->refreshToken();
-                    return $this->post($post); // Try once more
+                    return $this->post($postContent); // Try once more
                 }
             }
 
             $response->throw();
             $postData = $response->json();
 
-            return [
-                'id' => $postData['id'],
-                'url' => "https://www.linkedin.com/feed/update/urn:li:share:{$postData['id']}"
-            ];
+            // update post content
+            $postContent->update([
+                'status' => Status::PUBLISHED,
+                'published_at' => now(),
+                'url' => "https://www.linkedin.com/feed/update/urn:li:share:{$postData['id']}",
+                'platform_id' => $postData['id'],
+            ]);
+
+            return true;
         } catch (RequestException $e) {
             Log::error('LinkedIn API Error', [
                 'error' => $e->getMessage(),

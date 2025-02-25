@@ -3,7 +3,7 @@
     style="grid-template-rows: repeat(24, minmax(5rem, 1fr));">
     <template v-for="event in events" :key="event.id">
       <li v-bind="getEventStyles(event)" class="pointer-events-auto">
-        <Link :href="route('posts.index', event.id)" preserve-scroll preserve-state :class="{
+        <Link :href="route('posts.edit', event.id)" preserve-scroll preserve-state :class="{
           'group absolute inset-0 m-1 flex flex-col overflow-y-auto rounded-lg  px-3 py-2 text-sm cursor-pointer':
             true,
           'bg-blue-100/70 hover:bg-blue-100': event.status === 'scheduled',

@@ -14,6 +14,7 @@ use App\Http\Requests\Post\UpdateRequest;
 
 use App\Enums\Post\Status;
 use App\Enums\PostContent\Status as PostContentStatus;
+use App\Enums\PostContent\Type as PostContentType;
 use App\Models\Account;
 use App\Models\Post;
 use App\Models\PostContent;
@@ -22,12 +23,12 @@ use Inertia\Inertia;
 
 class PostController extends Controller
 {
-    public function index(Request $request, $id = null)
+    public function index(Request $request)
     {
-        $workspace = Auth::user()->workspace;
+        $space = Auth::user()->currentSpace;
 
         if ($request->start && $request->end) {
-            $query = Post::where('workspace_id', $workspace->id)->latest();
+            $query = Post::where('space_id', $space->id)->latest();
             $query->whereBetween('scheduled_at', [$request->start, $request->end]);
             $query->with('postContents.account');
             $query->where('status', '!=', Status::GHOST);
@@ -36,34 +37,52 @@ class PostController extends Controller
             return response()->json($posts);
         }
 
-        return Inertia::render('Post/Index', [
-            'accounts' => Account::where('workspace_id', $workspace->id)->get(),
-            'post' => $id ? Post::where('workspace_id', $workspace->id)
-                ->with('postContents.account')
-                ->where('id', $id)
-                ->firstOrFail() : null
-        ]);
+        return Inertia::render('Post/Index');
     }
 
 
     public function store(CreateRequest $request)
     {
         $user = Auth::user();
+        $accounts = Account::where('space_id', $user->currentSpace->id)->get();
 
         $post = Post::create([
             'workspace_id' => $user->workspace_id,
             'space_id' => $user->currentSpace->id,
             'content' => '',
-            'status' => Status::GHOST,
+            'status' => Status::DRAFT,
             'scheduled_at' => $request->scheduled_at,
         ]);
 
         // load post stats
-        $post->load('postContents');
+        foreach ($accounts as $account) {
+            PostContent::create([
+                'post_id' => $post->id,
+                'account_id' => $account->id,
+                'status' => PostContentStatus::DRAFT,
+                'type' => PostContentType::TEXT,
+                'platform' => $account->platform,
+            ]);
+        }
 
-        return redirect(route('posts.index', $post->id));
+        return redirect(route('posts.edit', $post->id));
     }
 
+    public function edit($id)
+    {
+
+        $space = Auth::user()->currentSpace;
+
+        $post = Post::where('space_id', $space->id)
+            ->with('postContents.account')
+            ->where('id', $id)
+            ->firstOrFail();
+
+        return Inertia::render('Post/Edit/Index', [
+            'post' => $post,
+            'accounts' => Account::where('space_id', $space->id)->get(),
+        ]);
+    }
     public function update($id, UpdateRequest $request)
     {
         $workspace = Auth::user()->workspace;
@@ -109,7 +128,7 @@ class PostController extends Controller
         session()->flash('flash.banner', 'Post cloned successfully');
         session()->flash('flash.bannerStyle', 'success');
 
-        return Inertia::location(route('posts.index', $newPost->id));
+        return Inertia::location(route('posts.edit', $newPost->id));
     }
 
     public function destroy($id)

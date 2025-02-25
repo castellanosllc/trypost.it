@@ -67,7 +67,8 @@ defineExpose({ focus: () => input.value.focus() });
       :rows="resize ? rows : undefined" :maxlength="maxLength" />
 
     <!-- Contador de caracteres -->
-    <div v-if="showCounter" class="absolute bottom-2 right-2 flex items-center justify-center ">
+    <div v-if="showCounter"
+      class="absolute bottom-2 right-2 flex items-center justify-center text-[11px] text-zinc-400">
       {{ `${characterCount} / ${maxLength}` }}
     </div>
   </div>

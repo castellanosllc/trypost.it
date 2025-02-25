@@ -5,7 +5,10 @@ declare(strict_types=1);
 namespace App\Services;
 
 use App\Models\Account;
-use App\Models\Post;
+use App\Models\PostContent;
+
+use App\Enums\PostContent\Status;
+
 use Illuminate\Support\Facades\Http;
 use Illuminate\Http\Client\RequestException;
 use Illuminate\Support\Facades\Log;
@@ -21,7 +24,7 @@ class Linkedin
         $this->account = $account;
     }
 
-    public function post(Post $post)
+    public function post(PostContent $postContent)
     {
         try {
             // First verify if token is valid
@@ -41,7 +44,7 @@ class Linkedin
                     'specificContent' => [
                         'com.linkedin.ugc.ShareContent' => [
                             'shareCommentary' => [
-                                'text' => $post->content
+                                'text' => $postContent->content
                             ],
                             'shareMediaCategory' => 'NONE'
                         ]
@@ -61,17 +64,22 @@ class Linkedin
                 if ($response->status() === 401) {
                     // Try to refresh token and post again
                     $this->refreshToken();
-                    return $this->post($post); // Try once more
+                    return $this->post($postContent); // Try once more
                 }
             }
 
             $response->throw();
             $postData = $response->json();
 
-            return [
-                'id' => $postData['id'],
-                'url' => "https://www.linkedin.com/feed/update/urn:li:share:{$postData['id']}"
-            ];
+            // update post stat
+            $postContent->update([
+                'published_at' => now(),
+                'status' => Status::PUBLISHED,
+                'url' => "https://www.linkedin.com/feed/update/urn:li:share:{$postData['id']}",
+                'platform_id' => $postData['id'],
+            ]);
+
+            return true;
         } catch (RequestException $e) {
             Log::error('LinkedIn Profile API Error', [
                 'error' => $e->getMessage(),

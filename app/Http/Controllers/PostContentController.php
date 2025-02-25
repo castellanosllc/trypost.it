@@ -22,6 +22,30 @@ use App\Models\PostContent;
 
 class PostContentController extends Controller
 {
+    // public function store($id, Request $request)
+    // {
+    //     $request->validate([
+    //         'account_id' => 'required',
+    //     ]);
+
+    //     $user = Auth::user();
+
+    //     $account = Account::where('space_id', $user->currentSpace->id)->where('id', $request->account_id)->firstOrFail();
+    //     $post = Post::where('space_id', $user->currentSpace->id)->where('id', $id)->firstOrFail();
+
+    //     // create or update
+    // PostContent::create([
+    //     'content' => $request->content,
+    //     'type' => Type::TEXT,
+    //     'status' => Status::DRAFT,
+    //     'account_id' => $account->id,
+    //     'post_id' => $post->id,
+    //     'platform' => $account->platform,
+    // ]);
+
+    //     return back();
+    // }
+
     public function store($id, Request $request)
     {
         $request->validate([
@@ -29,19 +53,43 @@ class PostContentController extends Controller
         ]);
 
         $user = Auth::user();
+        $currentSpaceId = $user->currentSpace->id;
 
-        $account = Account::where('space_id', $user->currentSpace->id)->where('id', $request->account_id)->firstOrFail();
-        $post = Post::where('space_id', $user->currentSpace->id)->where('id', $id)->firstOrFail();
+        $account = Account::where('space_id', $currentSpaceId)
+        ->where('id', $request->account_id)
+            ->firstOrFail();
 
-        // create or update
-        PostContent::create([
+        $post = Post::where('space_id', $currentSpaceId)
+        ->where('id', $id)
+        ->firstOrFail();
+
+        $postContentData = [
             'content' => $request->content,
             'type' => Type::TEXT,
             'status' => Status::DRAFT,
+            'platform' => $account->platform,
             'account_id' => $account->id,
             'post_id' => $post->id,
-            'platform' => $account->platform,
-        ]);
+        ];
+
+        // Tenta encontrar, incluindo deletados
+        $postContent = PostContent::withTrashed()
+            ->where('post_id', $post->id)
+            ->where('account_id', $account->id)
+            ->first();
+
+        if ($postContent) {
+            // Se encontrou e estava deletado, restaura
+            if ($postContent->trashed()) {
+                $postContent->restore();
+            }
+
+            // Atualiza os dados
+            $postContent->update($postContentData);
+        } else {
+            // Se não encontrou, cria um novo
+            PostContent::create($postContentData);
+        }
 
         return back();
     }

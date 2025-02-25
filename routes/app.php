@@ -29,7 +29,8 @@ Route::group(
         Route::put('/spaces/update-current', [SpaceController::class, 'setCurrentStore'])->name('spaces.update-current');
 
         // posts
-        Route::get('/posts/{id?}', [PostController::class, 'index'])->name('posts.index');
+        Route::get('/posts', [PostController::class, 'index'])->name('posts.index');
+        Route::get('/posts/{id}', [PostController::class, 'edit'])->name('posts.edit');
         Route::post('/posts/clone/{id}', [PostController::class, 'clone'])->name('posts.clone');
         Route::post('/posts', [PostController::class, 'store'])->name('posts.store');
         Route::put('/posts/{id}', [PostController::class, 'update'])->name('posts.update');

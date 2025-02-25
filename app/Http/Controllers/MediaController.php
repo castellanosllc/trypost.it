@@ -62,12 +62,13 @@ class MediaController extends Controller
         // If upload is completed, call store() with the final file
         if ($save->isFinished()) {
             $upload = $this->storeChunk($request, $save->getFile());
+            return response()->json(['finished' => true, 'upload' => $upload]);
         }
 
         // Continue receiving chunks
         $save->handler();
 
-        return response()->json($upload);
+        return response()->json(['finished' => false]);
     }
 
     public function storeChunk(Request $request, UploadedFile $file)

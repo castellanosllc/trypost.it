@@ -26,6 +26,10 @@ const props = defineProps({
   allowedFileTypes: {
     type: Array,
     default: () => ["image/*", "video/*"]
+  },
+  maxNumberOfFiles: {
+    type: Number,
+    default: 10
   }
 });
 
@@ -78,7 +82,7 @@ const initializeUppy = () => {
   try {
     if (uppy) {
       try {
-        uppy.close();
+        uppy = null;
       } catch (e) {
         console.warn("Erro ao fechar instância anterior do Uppy:", e);
       }
@@ -87,9 +91,10 @@ const initializeUppy = () => {
     uppy = new Uppy({
       locale: en_US,
       restrictions: {
-        maxNumberOfFiles: 10,
+        maxNumberOfFiles: props.maxNumberOfFiles,
         allowedFileTypes: props.allowedFileTypes,
-        maxFileSize: props.maxFileSize
+        maxFileSize: props.maxFileSize,
+        maxNumberOfFiles: 1
       },
       autoProceed: false,
     })
@@ -202,16 +207,19 @@ const uploadFileInChunks = (file) => {
     });
 
     uploader.on("chunkSuccess", (response) => {
+
       // convert to json
-      const media = JSON.parse(response.detail.response.body);
+      const data = JSON.parse(response.detail.response.body);
 
-      emit('created', media.id);
+      if (data.finished) {
+        emit('created', data.upload.id);
 
-      close();
+        close();
 
-      router.reload({
-        only: ['medias']
-      });
+        router.reload({
+          only: ['medias']
+        });
+      }
     });
 
     uploader.on("success", (response) => {
@@ -379,7 +387,7 @@ onUnmounted(() => {
 
   try {
     if (uppy) {
-      uppy.close();
+      uppy = null;
     }
   } catch (e) {
     console.warn("Erro ao fechar Uppy durante desmontagem:", e);
