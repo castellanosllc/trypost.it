@@ -45,7 +45,8 @@ Route::group(
 
         // medias
         Route::get('/medias/{id}/download', [MediaController::class, 'download'])->name('medias.download')->withoutMiddleware('*');
-        Route::post('/medias/upload', [MediaController::class, 'store'])->name('medias.store');
+        Route::post('/medias/chunk', [MediaController::class, 'chunk'])->name('medias.chunk');
+        Route::post('/medias/store', [MediaController::class, 'store'])->name('medias.store');
         Route::post('/medias/copy', [MediaController::class, 'copy'])->name('medias.copy');
         Route::delete('/medias/{modelId}/{id}', [MediaController::class, 'destroy'])->name('medias.destroy');
 

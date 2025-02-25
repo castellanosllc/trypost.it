@@ -129,7 +129,10 @@ class Workspace extends Model implements HasMedia
 
     public function getLogoUrlAttribute()
     {
-        return 'https://ui-avatars.com/api/?name=' . urlencode($this->name) . '&color=FFFFFF&background=000000&length=1';
+        return $this->hasMedia('logo')
+            ? $this->getFirstMediaUrl('logo')
+            :
+            "https://api.dicebear.com/7.x/initials/svg?backgroundType=gradientLinear&fontFamily=Helvetica&fontSize=40&seed=" . urlencode($this->name);
     }
 
     public function users()

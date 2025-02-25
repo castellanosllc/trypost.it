@@ -54,7 +54,10 @@ const removeMedia = async (mediaId) => {
   <MediaLibraryCreate ref="mediaLibraryCreate" @created="addMedia" />
   <div class="flex flex-col gap-4">
     <div v-if="selectedMedia" class="relative group w-52 h-52">
-      <img :src="selectedMedia.url" class="object-cover rounded-lg w-full h-full" />
+      <img v-if="selectedMedia.mime_type.includes('image')" :src="selectedMedia.url"
+        class="object-cover rounded-lg w-full h-full" />
+      <video v-else-if="selectedMedia.mime_type.includes('video')" :src="selectedMedia.url"
+        class="object-cover rounded-lg w-full h-full" controls draggable="false" />
       <Button class="btn btn-secondary btn-sm rounded absolute top-2 right-2
                opacity-0 group-hover:opacity-100 transition" @click.stop="removeMedia(selectedMedia.id)">
         Remove
@@ -66,7 +69,8 @@ const removeMedia = async (mediaId) => {
         'border-2 border-blue-500': selectedMedia === media,
         'cursor-pointer rounded-lg overflow-hidden': true
       }">
-        <img :src="media.url" class="object-cover w-12 h-12" />
+        <img v-if="media.mime_type.includes('image')" :src="media.url" class="object-cover w-12 h-12" />
+        <video v-else-if="media.mime_type.includes('video')" :src="media.url" class="object-cover w-12 h-12" />
       </div>
     </div>
 

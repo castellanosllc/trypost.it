@@ -12,82 +12,81 @@ const isLoading = ref(false);
 const workspace = computed(() => usePage().props.auth.user.current_workspace);
 
 const upload = async () => {
-    inputRef.value.click();
+  inputRef.value.click();
 
-    inputRef.value.onchange = async () => {
-        // loading
-        isLoading.value = true;
+  inputRef.value.onchange = async () => {
+    // loading
+    isLoading.value = true;
 
-        const formData = new FormData();
-        formData.append("media", event.target.files[0]);
-        formData.append("model", "Workspace");
-        formData.append("model_id", workspace.value.id);
-        formData.append("collection", "logo");
-        formData.append("visibility", "public");
+    const formData = new FormData();
+    formData.append("media", event.target.files[0]);
+    formData.append("model", "Workspace");
+    formData.append("model_id", workspace.value.id);
+    formData.append("collection", "logo");
+    formData.append("visibility", "public");
 
-        await axios
-            .post(route("medias.store"), formData)
-            .then((data) => {
-                // reset
-                uploadHasErrors.value = null;
+    await axios
+      .post(route("medias.store"), formData)
+      .then((data) => {
+        // reset
+        uploadHasErrors.value = null;
 
-                router.reload();
-            })
-            .catch((error) => {
-                console.log(error);
-            })
-            .finally(() => {
-                // reset
-                isLoading.value = false;
-                inputRef.value.value = null;
-            });
-    };
+        router.reload();
+      })
+      .catch((error) => {
+        console.log(error);
+      })
+      .finally(() => {
+        // reset
+        isLoading.value = false;
+        inputRef.value.value = null;
+      });
+  };
 };
 
 const destroy = () => {
-    router.delete(
-        route("medias.destroy", {
-            modelId: workspace.value.media?.[0].model_id,
-            id: workspace.value.media?.[0].id,
-        }),
-        {
-            onSuccess: () => {
-                router.reload();
-            },
-        }
-    );
+  router.delete(
+    route("medias.destroy", {
+      modelId: workspace.value.media?.[0].model_id,
+      id: workspace.value.media?.[0].id,
+    }),
+    {
+      onSuccess: () => {
+        router.reload();
+      },
+    }
+  );
 };
 </script>
 
 <template>
-    <input type="file" ref="inputRef" class="hidden" />
+  <input type="file" ref="inputRef" class="hidden" />
 
-    <div class="flex items-center justify-between">
-        <div class="flex items-center space-x-4">
-            <div>
-                <img :src="workspace.logo_url" :alt="workspace.name" class="h-10 w-10 rounded-full" />
-            </div>
-            <div>
-                <Button @click="upload" :class="{
-                    'btn-secondary btn-sm': true,
-                    'opacity-25': isLoading,
-                }">
-                    Choose
-                </Button>
-            </div>
-            <div class="text-sm text-zinc-500">
-                JPG, PNG, or JPEG. Max size of 1MB
-            </div>
-        </div>
+  <div class="flex items-center justify-between">
+    <div class="flex items-center space-x-4">
+      <div>
+        <img :src="workspace.logo_url" :alt="workspace.name" class="h-10 w-10 rounded-full" />
+      </div>
+      <div>
+        <Button @click="upload" :class="{
+          'btn-secondary btn-sm': true,
+          'opacity-25': isLoading,
+        }">
+          Choose
+        </Button>
+      </div>
+      <div class="text-sm text-zinc-500">
+        JPG, PNG, or JPEG. Max size of 1MB
+      </div>
+    </div>
 
-        <div v-if="workspace.media?.length >= 1" @click="destroy"
-            class="p-2 hover:bg-zinc-100 rounded-md cursor-pointer">
-            <PhTrash class="text-zinc-500" size="20" />
-        </div>
+    <div v-if="workspace.media?.length >= 1" @click="destroy" class="p-2 hover:bg-zinc-100 rounded-md cursor-pointer">
+      <PhTrash class="text-zinc-500" size="20" />
     </div>
-    <div v-show="uploadHasErrors" class="my-2">
-        <p class="text-sm text-red-600">
-            {{ uploadHasErrors }}
-        </p>
-    </div>
+  </div>
+  <div v-show="uploadHasErrors" class="my-2">
+    <p class="text-sm text-red-600">
+      {{ uploadHasErrors }}
+    </p>
+  </div>
 </template>

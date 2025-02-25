@@ -47,7 +47,10 @@ const { medias } = defineProps({
     <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
       <div v-for="media in medias" :key="media.id" class="relative group">
         <div class="relative border border-zinc-100 dark:border-zinc-700 rounded-md overflow-hidden">
-          <img :src="media.url" class="w-full h-40 object-cover rounded-md" />
+          <img v-if="media.mime_type.includes('image')" :src="media.url" class="w-full h-40 object-cover rounded-md"
+            loading="lazy" />
+          <video v-else-if="media.mime_type.includes('video')" :src="media.url"
+            class="w-full h-40 object-cover rounded-md" controls draggable="false" loading="lazy" />
           <div
             class="absolute inset-0 bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 flex flex-col justify-end p-2 transition-opacity">
             <div class="text-white text-sm font-medium">{{ media.file_name }}</div>

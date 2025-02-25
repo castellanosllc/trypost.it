@@ -40,7 +40,7 @@ class HandleInertiaRequests extends Middleware
                     }
 
                     return array_merge($request->user()->toArray(), array_filter([
-                        'workspace' => $request->user()->workspace,
+                        'current_workspace' => $request->user()->workspace,
                         'current_space' => $request->user()->currentSpace,
                         'spaces' => $request->user()->workspace->spaces,
                     ]));

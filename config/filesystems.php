@@ -13,7 +13,7 @@ return [
     |
     */
 
-    'default' => env('FILESYSTEM_DISK', 'spaces'),
+    'default' => env('FILESYSTEM_DISK', 'r2'),
 
     /*
     |--------------------------------------------------------------------------
@@ -60,14 +60,17 @@ return [
             'report' => false,
         ],
 
-        'spaces' => [
+        'r2' => [
             'driver' => 's3',
-            'key' => env('DIGITALOCEAN_SPACES_KEY'),
-            'secret' => env('DIGITALOCEAN_SPACES_SECRET'),
-            'endpoint' => env('DIGITALOCEAN_SPACES_ENDPOINT'),
-            'region' => env('DIGITALOCEAN_SPACES_REGION'),
-            'bucket' => env('DIGITALOCEAN_SPACES_BUCKET'),
-            'throw' => true,
+            'key' => env('R2_ACCESS_KEY_ID'),
+            'secret' => env('R2_SECRET_ACCESS_KEY'),
+            'region' => env('R2_REGION'),
+            'bucket' => env('R2_BUCKET'),
+            'url' => env('R2_URL'),
+            'endpoint' => env('R2_ENDPOINT'),
+            'visibility' => 'public',
+            'throw' => false,
+            'report' => false,
         ],
 
     ],

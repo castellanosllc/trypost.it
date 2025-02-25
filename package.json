@@ -27,10 +27,12 @@
     "dependencies": {
         "@headlessui/vue": "^1.7.23",
         "@kurkle/color": "^0.3.4",
+        "@mux/upchunk": "^3.5.0",
         "@phosphor-icons/vue": "^2.2.1",
         "@tabler/icons-vue": "^3.30.0",
         "@tailwindcss/aspect-ratio": "^0.4.2",
         "@tailwindcss/typography": "^0.5.16",
+        "@uppy/compressor": "^2.2.1",
         "@uppy/core": "^4.4.2",
         "@uppy/dashboard": "^4.3.1",
         "@uppy/locales": "^4.5.1",

@@ -1,14 +1,14 @@
 <script setup>
-import { ref, watch, onUnmounted } from "vue";
-import { usePage } from "@inertiajs/vue3";
+import { ref, reactive, computed, onMounted, onUnmounted } from "vue";
+import { usePage, router } from "@inertiajs/vue3";
 import Uppy from "@uppy/core";
 import en_US from '@uppy/locales/lib/en_US';
 import Url from '@uppy/url';
 import Webcam from '@uppy/webcam';
 import { COMPANION_URL, COMPANION_ALLOWED_HOSTS } from '@uppy/transloadit';
 import Dashboard from "@uppy/dashboard";
-import XHRUpload from "@uppy/xhr-upload";
 import Unsplash from "@uppy/unsplash";
+import { createUpload } from "@mux/upchunk";
 
 import DialogModal from "@/Components/DialogModal.vue";
 import Button from "@/Components/Button.vue";
@@ -18,154 +18,389 @@ import "@uppy/dashboard/dist/style.css";
 import '@uppy/url/dist/style.min.css';
 import '@uppy/webcam/dist/style.min.css';
 
-const emit = defineEmits(['created']);
+const props = defineProps({
+  maxFileSize: {
+    type: Number,
+    default: 512 * 1024 * 1024 // 512MB
+  },
+  allowedFileTypes: {
+    type: Array,
+    default: () => ["image/*", "video/*"]
+  }
+});
+
+const emit = defineEmits(['created', 'success', 'error']);
 
 const space = usePage().props.auth.user.current_space;
-
 const show = ref(false);
-const error = ref(null);
-const isLoading = ref(false);
 const areaRef = ref(null);
 let uppy = null;
 
+// Estado reativo para gerenciar o upload
+const initialState = {
+  file: null,
+  uploader: null,
+  progress: 0,
+  uploading: false,
+  error: null,
+};
+
+const state = reactive({
+  ...initialState,
+  formattedProgress: computed(() => Math.round(state.progress)),
+  reset: () => {
+    state.progress = 0;
+    state.uploading = false;
+    state.error = null;
+  },
+  fullReset: () => {
+    state.file = null;
+    state.uploader = null;
+    state.progress = 0;
+    state.uploading = false;
+    state.error = null;
+  }
+});
+
+// Configurações
+const CHUNK_SIZE = 10 * 1024; // 10mb
+
+// Flag para controlar múltiplas inicializações
+const isInitializing = ref(false);
+
+// Armazenar os IDs de arquivo e seus uploaders correspondentes
+const fileUploaders = ref({});
+
 const initializeUppy = () => {
+  if (isInitializing.value) return;
+  isInitializing.value = true;
 
-  // reset
-  uppy = null;
+  try {
+    if (uppy) {
+      try {
+        uppy.close();
+      } catch (e) {
+        console.warn("Erro ao fechar instância anterior do Uppy:", e);
+      }
+    }
 
-  uppy = new Uppy({
-    locale: en_US,
-    restrictions: {
-      maxNumberOfFiles: 10,
-      allowedFileTypes: ["image/*", "video/*"],
-    },
-    autoProceed: false,
-  })
-    .use(Dashboard, {
-      inline: true,
-      target: areaRef.value,
-      replaceTargetContent: true,
-      showProgressDetails: true,
-      proudlyDisplayPoweredByUppy: false,
+    uppy = new Uppy({
+      locale: en_US,
+      restrictions: {
+        maxNumberOfFiles: 10,
+        allowedFileTypes: props.allowedFileTypes,
+        maxFileSize: props.maxFileSize
+      },
+      autoProceed: false,
     })
-    .use(Webcam)
-    // .use(Url, {
-    //   companionUrl: COMPANION_URL,
-    //   companionAllowedHosts: COMPANION_ALLOWED_HOSTS,
-    // })
-    .use(XHRUpload, {
-      endpoint: route("medias.store"),
-      fieldName: "media",
-      formData: true,
+      .use(Dashboard, {
+        inline: true,
+        target: areaRef.value,
+        replaceTargetContent: true,
+        showProgressDetails: true,
+        proudlyDisplayPoweredByUppy: false,
+      })
+      .use(Webcam)
+      .use(Unsplash, {
+        companionUrl: COMPANION_URL,
+        companionAllowedHosts: COMPANION_ALLOWED_HOSTS,
+        companionKeysParams: {
+          key: import.meta.env.VITE_UNSPLASH_ACCESS_KEY,
+          credentialsName: 'try_post_it_unsplash_creds',
+        },
+      });
+
+    uppy.on("upload", () => {
+      const files = uppy.getFiles();
+
+      if (files.length > 0) {
+        // Para cada arquivo, iniciamos um upload em chunks
+        files.forEach(file => {
+          // Isso irá atualizar o estado do Uppy para mostrar que estamos processando
+          uppy.setFileState(file.id, {
+            progress: {
+              uploadStarted: Date.now(),
+              uploadComplete: false,
+              percentage: 0,
+              bytesUploaded: 0,
+              bytesTotal: file.size
+            }
+          });
+
+          // Inicie o upload em chunks
+          uploadFileInChunks(file);
+        });
+      }
+    });
+  } catch (error) {
+    console.error("Erro ao inicializar Uppy:", error);
+  } finally {
+    isInitializing.value = false;
+  }
+};
+
+const uploadFileInChunks = (file) => {
+  const fileId = file.id;
+  const fileData = file.data;
+  const fileName = file.name;
+  const fileSize = file.size;
+
+  state.file = fileData;
+  state.error = null;
+  state.uploading = true;
+  state.progress = 0;
+
+  try {
+    const uploader = createUpload({
+      endpoint: route('medias.chunk', {
+        model: 'Space',
+        collection: 'media-library',
+        visibility: 'public',
+        model_id: space.id,
+      }),
       headers: {
-        Accept: "application/json",
         "X-CSRF-TOKEN": usePage().props.csrf_token,
       },
-      bundle: false, // Importante para enviar cada arquivo individualmente!
-    })
-    .use(Unsplash, {
-      companionUrl: COMPANION_URL,
-      companionAllowedHosts: COMPANION_ALLOWED_HOSTS,
-      companionKeysParams: {
-        key: import.meta.env.VITE_UNSPLASH_ACCESS_KEY,
-        credentialsName: 'try_post_it_unsplash_creds',
-      },
+      method: "post",
+      file: fileData,
+      chunkSize: CHUNK_SIZE,
+      metadata: {
+        fileName: fileName,
+        spaceId: space.id,
+      }
     });
 
-  uppy.on("file-added", async (file) => {
-    if (file.source === "Url" || file.source === "Unsplash") {
+    // Armazene o uploader para este arquivo
+    state.uploader = uploader;
+    fileUploaders.value[fileId] = uploader;
+
+    uploader.on("attempt", () => {
+      state.error = null;
+    });
+
+    uploader.on("progress", (p) => {
+      const percentage = p.detail;
+      state.progress = percentage;
+
+      // Importante: Atualizar o progresso no Uppy para visualização
       try {
-        const fileUrl = file.remote?.url || file.preview; // 🔹 Garante que a URL é válida
-
-        console.log(`Baixando arquivo da URL: ${fileUrl}`);
-
-        // 🔹 Baixa a mídia da URL fornecida pelo usuário
-        const response = await fetch(fileUrl, { mode: "cors" });
-
-        if (!response.ok) {
-          throw new Error(`Erro ao baixar mídia: ${response.statusText}`);
+        if (uppy && uppy.getFile(fileId)) {
+          const bytesUploaded = Math.floor((fileSize * percentage) / 100);
+          uppy.setFileState(fileId, {
+            progress: {
+              uploadStarted: uppy.getFile(fileId).progress.uploadStarted,
+              uploadComplete: false,
+              percentage: percentage,
+              bytesUploaded: bytesUploaded,
+              bytesTotal: fileSize
+            }
+          });
         }
-
-        const blob = await response.blob(); // Converte para Blob
-        const extension = file.extension || (blob.type.includes("video") ? "mp4" : "jpg");
-
-
-        const formData = new FormData();
-        formData.append("media", blob, `${file.id}.${extension}`);
-        formData.append("model", "Space");
-        formData.append("model_id", space.id);
-        formData.append("collection", "media-library");
-        formData.append("visibility", "public");
-
-        await axios.post(route("medias.store"), formData, {
-          headers: { "X-CSRF-TOKEN": usePage().props.csrf_token },
-        });
-
-        uppy.removeFile(file.id); // Remove do Uppy após upload
-      } catch (err) {
-        console.error("Erro ao baixar/enviar imagem do Unsplash:", err);
-        error.value = "Erro ao enviar imagem do Unsplash.";
+      } catch (e) {
+        console.warn("Erro ao atualizar progresso no Uppy:", e);
       }
-    } else {
-      uppy.setFileMeta(file.id, {
-        model: "Space",
-        model_id: space.id,
-        collection: "media-library",
-        visibility: "public",
+    });
+
+    uploader.on("chunkSuccess", (response) => {
+      // convert to json
+      const media = JSON.parse(response.detail.response.body);
+
+      emit('created', media.id);
+
+      close();
+
+      router.reload({
+        only: ['medias']
       });
-    }
-  });
+    });
 
-  uppy.on("upload-success", (file, response) => {
-    if (response.body && response.body.url) {
-      // uploadedFiles.value.push(response.body);
-    }
-  });
+    uploader.on("success", (response) => {
 
-  uppy.on("upload-error", (file, error) => {
-    console.error("Erro no upload:", error);
-    error.value = "Erro ao fazer upload da imagem.";
-  });
+      // Marcar como completo no Uppy
+      try {
+        if (uppy && uppy.getFile(fileId)) {
+          uppy.setFileState(fileId, {
+            progress: {
+              uploadStarted: uppy.getFile(fileId).progress.uploadStarted,
+              uploadComplete: true,
+              percentage: 100,
+              bytesUploaded: fileSize,
+              bytesTotal: fileSize
+            }
+          });
+        }
+      } catch (e) {
+        console.warn("Erro ao finalizar progresso no Uppy:", e);
+      }
 
-  uppy.on("complete", (result) => {
-    if (result.failed.length > 0) {
-      error.value = "Algumas imagens falharam no upload.";
-    }
-    isLoading.value = false;
-    show.value = false;
+      // Reset parcial do estado
+      state.reset();
 
-    if (result.successful.length > 0) {
-      const uploadedFiles = result.successful.map((file) => file.response.body);
-      uploadedFiles.forEach((fileData) => {
-        emit("created", fileData.id); // 🔹 Emite o ID do objeto criado no backend
-      });
+      // Limpar o uploader deste arquivo
+      delete fileUploaders.value[fileId];
+
+      // Agende uma limpeza completa após um atraso
+      setTimeout(() => {
+        try {
+          state.fullReset();
+        } catch (e) {
+          console.warn("Erro ao resetar completamente o estado:", e);
+        }
+      }, 500);
+    });
+
+    uploader.on("error", (error) => {
+      console.error("Erro no upload:", error);
+
+      // Marcar como erro no Uppy
+      try {
+        if (uppy && uppy.getFile(fileId)) {
+          uppy.setFileState(fileId, {
+            error: "Falha no upload",
+            progress: {
+              ...uppy.getFile(fileId).progress,
+              uploadComplete: false
+            }
+          });
+        }
+      } catch (e) {
+        console.warn("Erro ao definir erro no Uppy:", e);
+      }
+
+      // Defina uma mensagem de erro segura
+      let errorMessage = "Erro no upload";
+      try {
+        if (error && error.detail && error.detail.message) {
+          errorMessage = error.detail.message;
+        }
+      } catch (e) {
+        console.warn("Erro ao acessar detalhes do erro:", e);
+      }
+
+      state.error = errorMessage;
+
+      // Emitir evento de erro
+      emit('error', { message: errorMessage });
+
+      // Reset parcial
+      state.reset();
+
+      // Limpar o uploader deste arquivo
+      delete fileUploaders.value[fileId];
+
+      // Agende uma limpeza completa após um atraso
+      setTimeout(() => {
+        try {
+          state.fullReset();
+        } catch (e) {
+          console.warn("Erro ao resetar completamente o estado após erro:", e);
+        }
+      }, 500);
+    });
+
+  } catch (e) {
+    console.error("Erro ao configurar o upload:", e);
+    state.error = "Falha ao iniciar o upload";
+    emit('error', { message: "Falha ao iniciar o upload" });
+
+    // Marcar como erro no Uppy
+    try {
+      if (uppy && uppy.getFile(fileId)) {
+        uppy.setFileState(fileId, {
+          error: "Falha ao iniciar o upload"
+        });
+      }
+    } catch (err) {
+      console.warn("Erro ao definir estado de erro inicial:", err);
     }
-  });
+
+    state.reset();
+  }
+};
+
+const cancel = () => {
+  try {
+    // Cancelar todos os uploads ativos
+    Object.values(fileUploaders.value).forEach(uploader => {
+      try {
+        uploader.abort();
+      } catch (e) {
+        console.warn("Erro ao abortar um uploader:", e);
+      }
+    });
+
+    fileUploaders.value = {};
+
+    if (state.uploader) {
+      state.uploader.abort();
+    }
+  } catch (e) {
+    console.warn("Erro ao abortar upload:", e);
+  }
+
+  state.reset();
 };
 
 const open = () => {
   show.value = true;
 
+  // Certifique-se de que qualquer estado anterior está limpo
+  state.fullReset();
+  fileUploaders.value = {};
+
+  // Inicialize o Uppy após um pequeno atraso
   setTimeout(() => {
     initializeUppy();
-  }, 100);
+  }, 300);
+};
+
+const close = () => {
+  show.value = false;
 }
 
+onUnmounted(() => {
+  // Certifique-se de limpar todos os recursos
+  try {
+    // Cancelar todos os uploads ativos
+    Object.values(fileUploaders.value).forEach(uploader => {
+      try {
+        uploader.abort();
+      } catch (e) {
+        console.warn("Erro ao abortar um uploader durante desmontagem:", e);
+      }
+    });
+
+    if (state.uploader) {
+      state.uploader.abort();
+    }
+  } catch (e) {
+    console.warn("Erro ao abortar upload durante desmontagem:", e);
+  }
+
+  try {
+    if (uppy) {
+      uppy.close();
+    }
+  } catch (e) {
+    console.warn("Erro ao fechar Uppy durante desmontagem:", e);
+  }
+
+  // Limpe todas as referências
+  uppy = null;
+  fileUploaders.value = {};
+  state.fullReset();
+});
+
+// Expõe a função open para uso externo
 defineExpose({
   open
-})
+});
 </script>
 
 <template>
   <DialogModal max-width="2xl" :show="show" @close="show = false">
-
     <template #content>
-      <div ref="areaRef"></div>
-
-      <!-- Mensagem de erro -->
-      <p v-if="error" class="mt-2 text-sm text-red-600">
-        {{ error }}
-      </p>
+      <div ref="areaRef" />
     </template>
   </DialogModal>
 </template>
